@@ -15,7 +15,7 @@ export function PageLayout() {
   });
 
   return (
-    <div className="min-h-screen flex flex-col font-sans selection:bg-cyan-900 selection:text-cyan-100">
+    <div className="min-h-screen w-full max-w-full overflow-x-clip flex flex-col font-sans selection:bg-cyan-900 selection:text-cyan-100">
       <motion.div
         className="fixed top-0 left-0 right-0 h-[2px] bg-cyan-500 origin-left z-[100] shadow-[0_0_10px_rgba(34,211,238,0.8)] pointer-events-none"
         style={{ scaleX }}

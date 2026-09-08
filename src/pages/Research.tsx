@@ -4,6 +4,7 @@ import { Filter, Tag, Hash, ShieldAlert, X, ExternalLink } from 'lucide-react';
 import { DecodeText } from '../components/ui/DecodeText';
 import { TerminalLoader } from '../components/ui/TerminalLoader';
 import { useBlog } from '../context/BlogContext';
+import { sanitizeExternalUrl } from '../lib/sanitizeUrl';
 import { 
   CONTENT_TYPES, 
   getNoteContentType, 
@@ -57,24 +58,24 @@ export function Research() {
   });
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-24 min-h-[80vh]">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-24 min-h-[80vh]">
       {/* Header */}
-      <div className="border-b border-gray-800 pb-8 mb-8">
+      <div className="border-b border-gray-800 pb-6 sm:pb-8 mb-6 sm:mb-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
-            <h1 className="text-4xl font-bold text-white tracking-tight mb-3 cursor-crosshair">
+            <h1 className="text-3xl sm:text-4xl font-bold text-white tracking-tight mb-2 sm:mb-3 cursor-crosshair">
               <DecodeText text="Insights" delay={100} />
             </h1>
-            <p className="text-gray-400 font-mono text-sm">
+            <p className="text-gray-400 font-mono text-xs sm:text-sm">
               Standardized lab observation logs, vulnerability disclosures, and incident notes.
             </p>
           </div>
-          <div className="font-mono text-xs text-gray-500 flex items-center gap-3">
+          <div className="font-mono text-xs text-gray-500 flex flex-wrap items-center gap-2 sm:gap-3">
             <span className="flex items-center gap-1.5 text-cyan-400">
               <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
               CONTENT TYPE
             </span>
-            <span>•</span>
+            <span className="text-gray-700 hidden sm:inline">•</span>
             <span className="flex items-center gap-1.5 text-emerald-400">
               <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
               TECHNICAL TAGS
@@ -84,10 +85,10 @@ export function Research() {
       </div>
 
       {/* Filter Bar */}
-      <div className="mb-10 space-y-4 bg-gray-950/60 p-4 rounded border border-gray-800/80 font-mono text-xs">
-        <div className="flex items-center justify-between">
+      <div className="mb-8 sm:mb-10 space-y-4 bg-gray-950/60 p-3.5 sm:p-4 rounded border border-gray-800/80 font-mono text-xs">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2 text-gray-400">
-            <Filter className="w-3.5 h-3.5 text-cyan-400" />
+            <Filter className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
             <span className="uppercase tracking-wider">Classification Filter:</span>
           </div>
           {(selectedType !== 'All' || selectedTag !== 'All') && (
@@ -96,7 +97,7 @@ export function Research() {
                 setSelectedType('All');
                 setSelectedTag('All');
               }}
-              className="text-gray-400 hover:text-white flex items-center gap-1 text-[11px] underline"
+              className="text-gray-400 hover:text-white flex items-center gap-1 text-[11px] underline min-h-[32px]"
             >
               <X className="w-3 h-3 text-rose-400" /> Reset Filters
             </button>
@@ -105,14 +106,14 @@ export function Research() {
 
         {/* Content Type Filters */}
         <div className="flex flex-wrap items-center gap-2 pt-1">
-          <span className="text-gray-500 mr-1 flex items-center gap-1">
+          <span className="text-gray-500 mr-1 flex items-center gap-1 text-xs shrink-0">
             <Tag className="w-3 h-3 text-cyan-400" /> Content Type:
           </span>
           <button
             onClick={() => setSelectedType('All')}
-            className={`px-2.5 py-1 rounded text-xs transition-colors border ${
+            className={`px-3 py-1.5 rounded text-xs transition-colors border min-h-[32px] ${
               selectedType === 'All'
-                ? 'bg-gray-800 text-white border-gray-600 shadow-[0_0_8px_rgba(255,255,255,0.15)]'
+                ? 'bg-gray-800 text-white border-gray-600 shadow-[0_0_8px_rgba(255,255,255,0.15)] font-semibold'
                 : 'text-gray-400 border-gray-800 hover:border-gray-700 bg-gray-900/40'
             }`}
           >
@@ -124,9 +125,9 @@ export function Research() {
               <button
                 key={t.value}
                 onClick={() => setSelectedType(isSelected ? 'All' : t.value)}
-                className={`px-2.5 py-1 rounded text-xs border transition-all ${
+                className={`px-3 py-1.5 rounded text-xs border transition-all min-h-[32px] ${
                   isSelected
-                    ? `${t.badgeClass} ring-1 ring-cyan-400/50 shadow-[0_0_8px_rgba(34,211,238,0.25)]`
+                    ? `${t.badgeClass} ring-1 ring-cyan-400/50 shadow-[0_0_8px_rgba(34,211,238,0.25)] font-semibold`
                     : 'text-gray-400 border-gray-800/80 hover:border-gray-700 bg-gray-900/40'
                 }`}
               >
@@ -139,14 +140,14 @@ export function Research() {
         {/* Technical Tags Filter (dynamic from contents) */}
         {availableTags.length > 0 && (
           <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-gray-900">
-            <span className="text-gray-500 mr-1 flex items-center gap-1">
+            <span className="text-gray-500 mr-1 flex items-center gap-1 text-xs shrink-0">
               <Hash className="w-3 h-3 text-emerald-400" /> Technical Tags:
             </span>
             <button
               onClick={() => setSelectedTag('All')}
-              className={`px-2.5 py-1 rounded text-xs transition-colors border ${
+              className={`px-3 py-1.5 rounded text-xs transition-colors border min-h-[32px] ${
                 selectedTag === 'All'
-                  ? 'bg-gray-800 text-white border-gray-600 shadow-[0_0_8px_rgba(255,255,255,0.15)]'
+                  ? 'bg-gray-800 text-white border-gray-600 shadow-[0_0_8px_rgba(255,255,255,0.15)] font-semibold'
                   : 'text-gray-400 border-gray-800 hover:border-gray-700 bg-gray-900/40'
               }`}
             >
@@ -158,7 +159,7 @@ export function Research() {
                 <button
                   key={tag}
                   onClick={() => setSelectedTag(isSelected ? 'All' : tag)}
-                  className={`px-2 py-0.5 rounded text-[11px] border transition-all ${
+                  className={`px-2.5 py-1 rounded text-[11px] border transition-all min-h-[28px] ${
                     isSelected
                       ? `${getTagBadgeStyle(tag)} ring-1 ring-white/50 shadow-[0_0_8px_rgba(52,211,153,0.25)] font-bold`
                       : 'text-gray-400 border-gray-800/80 hover:border-gray-700 bg-gray-900/40'
@@ -205,7 +206,7 @@ export function Research() {
                 <motion.div 
                   key={note.id} 
                   variants={itemVariants}
-                  className="flex flex-col gap-3 border-l-2 border-gray-800/80 pl-6 relative group py-3 transition-colors hover:border-cyan-500/50"
+                  className="flex flex-col gap-3 border-l-2 border-gray-800/80 pl-4 sm:pl-6 relative group py-3 transition-colors hover:border-cyan-500/50"
                 >
                   {/* Visual indicator node on the timeline */}
                   <div className="absolute w-2.5 h-2.5 rounded-full bg-gray-800 group-hover:bg-cyan-400 -left-[6px] top-4 transition-all shadow-[0_0_8px_rgba(34,211,238,0)] group-hover:shadow-[0_0_10px_rgba(34,211,238,0.8)]"></div>
@@ -237,7 +238,7 @@ export function Research() {
                       })}
 
                       {note.author && (
-                        <span className="text-[10px] font-mono text-gray-500 ml-auto">
+                        <span className="text-[10px] font-mono text-gray-500">
                           #{note.author.replace(/^#/, '')}
                         </span>
                       )}
@@ -260,20 +261,20 @@ export function Research() {
                     </p>
 
                     {(note.sourceName || note.sourceUrl) && (
-                      <div className="mt-3 pt-2 border-t border-gray-800/60 flex items-center gap-2 text-xs font-mono text-gray-400">
+                      <div className="mt-3 pt-2 border-t border-gray-800/60 flex items-center gap-2 text-xs font-mono text-gray-400 min-w-0 max-w-full">
                         <ExternalLink className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-                        <span className="text-gray-500">Source:</span>
-                        {note.sourceUrl ? (
+                        <span className="text-gray-500 shrink-0">Source:</span>
+                        {note.sourceUrl && sanitizeExternalUrl(note.sourceUrl) ? (
                           <a
-                            href={note.sourceUrl}
+                            href={sanitizeExternalUrl(note.sourceUrl)!}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-cyan-400 hover:underline hover:text-cyan-300 truncate transition-colors"
+                            className="text-cyan-400 hover:underline hover:text-cyan-300 truncate transition-colors min-w-0"
                           >
                             {note.sourceName || note.sourceUrl}
                           </a>
                         ) : (
-                          <span className="text-gray-300">{note.sourceName}</span>
+                          <span className="text-gray-300 truncate min-w-0">{note.sourceName || note.sourceUrl}</span>
                         )}
                       </div>
                     )}

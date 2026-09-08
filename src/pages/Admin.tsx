@@ -108,13 +108,13 @@ export function Admin() {
   // -------------------------------------------------------------
   if (!isAdminLoggedIn) {
     return (
-      <div className="min-h-[85vh] flex items-center justify-center px-4 py-24">
+      <div className="min-h-[85vh] flex items-center justify-center px-4 py-12 sm:py-24">
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           className="w-full max-w-md"
         >
-          <SpotlightCard className="p-8 hud-border relative overflow-hidden bg-[#090a0f]/90">
+          <SpotlightCard className="p-5 sm:p-8 hud-border relative overflow-hidden bg-[#090a0f]/90">
             <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
             
             <div className="flex items-center gap-3 mb-6 border-b border-gray-800/80 pb-4">
@@ -173,16 +173,16 @@ export function Admin() {
   // ADMIN DASHBOARD
   // -------------------------------------------------------------
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
       {/* Top Bar Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between border-b border-gray-800 pb-6 mb-8 gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-gray-800 pb-6 mb-6 sm:mb-8 gap-4">
         <div>
           <div className="flex items-center gap-3 mb-1">
-            <span className="flex w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_10px_rgba(34,211,238,0.8)]" />
-            <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight font-sans">
+            <span className="flex w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_10px_rgba(34,211,238,0.8)] shrink-0" />
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white tracking-tight font-sans">
               <DecodeText text="ADMINISTRATOR PANEL" delay={100} />
             </h1>
-            <span className="text-xs font-mono px-2 py-0.5 rounded bg-cyan-950 border border-cyan-800 text-cyan-400">
+            <span className="text-[10px] sm:text-xs font-mono px-2 py-0.5 rounded bg-cyan-950 border border-cyan-800 text-cyan-400 shrink-0">
               v2.6
             </span>
           </div>
@@ -191,7 +191,7 @@ export function Admin() {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           <button
             onClick={() => {
               setCurrentPasswordInput('');
@@ -200,22 +200,22 @@ export function Admin() {
               setPasswordStatus({ type: null, message: '' });
               setShowPasswordModal(true);
             }}
-            className="px-3 py-1.5 text-xs font-mono text-cyan-400 border border-cyan-800/60 bg-cyan-950/30 hover:bg-cyan-900/40 rounded transition-colors flex items-center gap-1.5"
+            className="px-3 py-1.5 text-xs font-mono text-cyan-400 border border-cyan-800/60 bg-cyan-950/30 hover:bg-cyan-900/40 rounded transition-colors flex items-center gap-1.5 min-h-[36px]"
             title="Update administrator passcode"
           >
-            <KeyRound className="w-3.5 h-3.5" /> Change Password
+            <KeyRound className="w-3.5 h-3.5 shrink-0" /> Change Password
           </button>
           <button
             onClick={logoutAdmin}
-            className="px-3 py-1.5 text-xs font-mono text-rose-400 border border-rose-900/60 bg-rose-950/20 hover:bg-rose-900/40 rounded transition-colors flex items-center gap-1.5"
+            className="px-3 py-1.5 text-xs font-mono text-rose-400 border border-rose-900/60 bg-rose-950/20 hover:bg-rose-900/40 rounded transition-colors flex items-center gap-1.5 min-h-[36px]"
           >
-            <Lock className="w-3.5 h-3.5" /> Logout
+            <Lock className="w-3.5 h-3.5 shrink-0" /> Logout
           </button>
         </div>
       </div>
 
       {/* Navigation Tabs */}
-      <div className="flex items-center space-x-2 border-b border-gray-800 pb-4 mb-8 overflow-x-auto scrollbar-none">
+      <div className="flex items-center space-x-2 border-b border-gray-800 pb-4 mb-6 sm:mb-8 overflow-x-auto scrollbar-none">
         {[
           { id: 'kpis', label: 'KPIs & Analytics', icon: BarChart3, count: null },
           { id: 'articles', label: 'Articles', icon: FileText, count: articles.length },
@@ -471,7 +471,7 @@ export function Admin() {
           {/* Article List Table */}
           <div className="border border-gray-800/80 rounded overflow-hidden bg-gray-950/40">
             <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
+              <table className="w-full text-left border-collapse min-w-[640px]">
                 <thead>
                   <tr className="border-b border-gray-800 bg-gray-900/60 text-xs font-mono text-gray-400 uppercase">
                     <th className="p-4">Title</th>
@@ -537,7 +537,7 @@ export function Admin() {
           {/* Article Form Modal */}
           {showArticleForm && editingArticle && (
             <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-2xl">
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-2xl max-h-[90vh] overflow-y-auto my-auto">
                 <SpotlightCard className="p-6 hud-border bg-[#090a0f] border-gray-800 space-y-4">
                   <div className="flex items-center justify-between border-b border-gray-800 pb-3">
                     <h3 className="text-lg font-bold text-white font-sans">
@@ -665,7 +665,7 @@ export function Admin() {
       {/* ========================================================= */}
       {activeTab === 'notes' && (
         <div className="space-y-6">
-          <div className="flex items-center justify-between bg-gray-950/60 p-4 border border-gray-800 rounded">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-gray-950/60 p-4 border border-gray-800 rounded">
             <p className="text-xs font-mono text-gray-400">Curated lab observation logs, technology watch, vulnerability disclosures, and external source insights</p>
             <button
               onClick={() => {
@@ -782,8 +782,8 @@ export function Admin() {
 
           {/* Insight Form Modal */}
           {showNoteForm && editingNote && (
-            <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-2xl max-h-[90vh] overflow-y-auto my-auto">
                 <SpotlightCard className="p-6 hud-border bg-[#090a0f] border-gray-800 space-y-4">
                   <div className="flex items-center justify-between border-b border-gray-800 pb-3">
                     <h3 className="text-base font-bold text-white font-sans">
@@ -995,7 +995,7 @@ export function Admin() {
       {/* ========================================================= */}
       {activeTab === 'projects' && (
         <div className="space-y-6">
-          <div className="flex items-center justify-between bg-gray-950/60 p-4 border border-gray-800 rounded">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-gray-950/60 p-4 border border-gray-800 rounded">
             <p className="text-xs font-mono text-gray-400">Open-source tools, platforms, and research initiatives</p>
             <button
               onClick={() => {
@@ -1058,8 +1058,8 @@ export function Admin() {
 
           {/* Project Form Modal */}
           {showProjectForm && editingProject && (
-            <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-lg">
+            <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-lg max-h-[90vh] overflow-y-auto my-auto">
                 <SpotlightCard className="p-6 hud-border bg-[#090a0f] border-gray-800 space-y-4">
                   <div className="flex items-center justify-between border-b border-gray-800 pb-3">
                     <h3 className="text-base font-bold text-white font-sans">
@@ -1118,7 +1118,7 @@ export function Admin() {
                       />
                     </div>
 
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div>
                         <label className="block text-gray-400 mb-1">GitHub Repository URL</label>
                         <input
@@ -1217,7 +1217,7 @@ export function Admin() {
               <span className="text-xs text-gray-500 font-normal">Click &quot;Copy Link&quot; to insert into posts</span>
             </h3>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
               {mediaLibrary.map((item) => (
                 <SpotlightCard key={item.id} className="p-3 border border-gray-800/80 bg-gray-950/40 flex flex-col justify-between group">
                   <div>
@@ -1272,8 +1272,8 @@ export function Admin() {
       {/* CHANGE PASSWORD MODAL */}
       {/* ========================================================= */}
       {showPasswordModal && (
-        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-md">
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-md max-h-[90vh] overflow-y-auto my-auto">
             <SpotlightCard className="p-6 hud-border bg-[#090a0f] border-gray-800 space-y-4">
               <div className="flex items-center justify-between border-b border-gray-800 pb-3">
                 <div className="flex items-center gap-2">

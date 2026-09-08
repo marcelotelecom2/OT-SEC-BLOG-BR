@@ -319,8 +319,8 @@ export function BlogProvider({ children }: { children: React.ReactNode }) {
   });
 
   const loginAdmin = (password: string) => {
-    // Accepts custom password, or initial master fallback keys
-    if (password === adminPassword || password === 'sec2026' || password === 'admin' || password === 'root') {
+    // Accepts custom password or default initialization key
+    if (password === adminPassword || password === 'sec2026') {
       setIsAdminLoggedIn(true);
       localStorage.setItem('ot_sec_admin_auth', 'true');
       return true;

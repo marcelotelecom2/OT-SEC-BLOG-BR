@@ -156,58 +156,64 @@ export function CyberHero() {
       ctx.strokeStyle = 'rgba(0, 255, 255, 0.3)';
       ctx.lineWidth = 1;
       
-      // Reticle
+      // Reticle - scale with viewport width
       const cx = width / 2;
       const cy = height / 2 - 50;
+      const reticleRadius = Math.min(150, width * 0.32);
       
       ctx.beginPath();
-      ctx.arc(cx, cy, 150, 0, Math.PI * 2);
+      ctx.arc(cx, cy, reticleRadius, 0, Math.PI * 2);
       ctx.stroke();
       
       // Tick marks on reticle
       for (let i = 0; i < 4; i++) {
         const angle = (i * Math.PI) / 2;
         ctx.beginPath();
-        ctx.moveTo(cx + Math.cos(angle) * 140, cy + Math.sin(angle) * 140);
-        ctx.lineTo(cx + Math.cos(angle) * 160, cy + Math.sin(angle) * 160);
+        ctx.moveTo(cx + Math.cos(angle) * (reticleRadius - 10), cy + Math.sin(angle) * (reticleRadius - 10));
+        ctx.lineTo(cx + Math.cos(angle) * (reticleRadius + 10), cy + Math.sin(angle) * (reticleRadius + 10));
         ctx.stroke();
       }
 
-      // UI Frame elements
+      // UI Frame elements - responsive margin and frame size
+      const margin = width < 640 ? 15 : 30;
+      const frameLen = width < 640 ? 30 : 50;
+
       ctx.strokeStyle = 'rgba(220, 20, 60, 0.4)';
       ctx.beginPath();
-      ctx.moveTo(30, 30);
-      ctx.lineTo(80, 30);
-      ctx.moveTo(30, 30);
-      ctx.lineTo(30, 80);
+      ctx.moveTo(margin, margin);
+      ctx.lineTo(margin + frameLen, margin);
+      ctx.moveTo(margin, margin);
+      ctx.lineTo(margin, margin + frameLen);
       
-      ctx.moveTo(width - 30, 30);
-      ctx.lineTo(width - 80, 30);
-      ctx.moveTo(width - 30, 30);
-      ctx.lineTo(width - 30, 80);
+      ctx.moveTo(width - margin, margin);
+      ctx.lineTo(width - margin - frameLen, margin);
+      ctx.moveTo(width - margin, margin);
+      ctx.lineTo(width - margin, margin + frameLen);
       
-      ctx.moveTo(30, height - 30);
-      ctx.lineTo(80, height - 30);
-      ctx.moveTo(30, height - 30);
-      ctx.lineTo(30, height - 80);
+      ctx.moveTo(margin, height - margin);
+      ctx.lineTo(margin + frameLen, height - margin);
+      ctx.moveTo(margin, height - margin);
+      ctx.lineTo(margin, height - margin - frameLen);
       
-      ctx.moveTo(width - 30, height - 30);
-      ctx.lineTo(width - 80, height - 30);
-      ctx.moveTo(width - 30, height - 30);
-      ctx.lineTo(width - 30, height - 80);
+      ctx.moveTo(width - margin, height - margin);
+      ctx.lineTo(width - margin - frameLen, height - margin);
+      ctx.moveTo(width - margin, height - margin);
+      ctx.lineTo(width - margin, height - margin - frameLen);
       ctx.stroke();
       
-      // Data readouts
-      ctx.fillStyle = 'rgba(0, 255, 255, 0.5)';
-      ctx.font = '10px "JetBrains Mono", monospace';
-      ctx.fillText(`SYS.T: ${Date.now() % 100000}`, 40, 50);
-      ctx.fillText(`OP.SEC: ACTIVE`, 40, 65);
-      
-      ctx.fillStyle = 'rgba(220, 20, 60, 0.5)';
-      ctx.textAlign = 'right';
-      ctx.fillText(`THREAT.LVL: HIGH`, width - 40, 50);
-      ctx.fillText(`ENC.KEY: ROLL`, width - 40, 65);
-      ctx.textAlign = 'left';
+      // Data readouts (displayed on screens >= 480px to prevent text clash with mobile navbar)
+      if (width >= 480) {
+        ctx.fillStyle = 'rgba(0, 255, 255, 0.5)';
+        ctx.font = '10px "JetBrains Mono", monospace';
+        ctx.fillText(`SYS.T: ${Date.now() % 100000}`, 40, 50);
+        ctx.fillText(`OP.SEC: ACTIVE`, 40, 65);
+        
+        ctx.fillStyle = 'rgba(220, 20, 60, 0.5)';
+        ctx.textAlign = 'right';
+        ctx.fillText(`THREAT.LVL: HIGH`, width - 40, 50);
+        ctx.fillText(`ENC.KEY: ROLL`, width - 40, 65);
+        ctx.textAlign = 'left';
+      }
 
       // Mouse Interaction Reticle
       if (mouseRef.current.active) {

@@ -36,7 +36,7 @@ export function CustomCursor() {
   }, []);
 
   return (
-    <>
+    <div className="hidden md:block pointer-events-none">
       <motion.div
         className="fixed top-0 left-0 w-4 h-4 border border-cyan-500 rounded-full pointer-events-none z-[9999] mix-blend-screen flex items-center justify-center"
         animate={{
@@ -62,6 +62,6 @@ export function CustomCursor() {
         }}
         transition={{ type: 'tween', ease: 'backOut', duration: 0.5 }}
       />
-    </>
+    </div>
   );
 }
