@@ -1,0 +1,6 @@
+{
+  "name": "OT-SEC Digital Research Lab",
+  "description": "Independent research on Industrial Cybersecurity, Artificial Intelligence and Critical Infrastructure.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
