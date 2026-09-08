@@ -19,10 +19,15 @@ export function Footer() {
           <div>
             <h3 className="text-xs font-mono tracking-widest text-gray-400 uppercase mb-4">Sitemap</h3>
             <ul className="space-y-2">
-              {['Articles', 'Research', 'Projects', 'About'].map((item) => (
-                <li key={item}>
-                  <Link to={`/${item.toLowerCase()}`} className="text-sm text-gray-500 hover:text-cyan-400 transition-colors">
-                    {item}
+              {[
+                { name: 'Articles', path: '/articles' },
+                { name: 'Insights', path: '/insights' },
+                { name: 'Projects', path: '/projects' },
+                { name: 'About', path: '/about' },
+              ].map((item) => (
+                <li key={item.name}>
+                  <Link to={item.path} className="text-sm text-gray-500 hover:text-cyan-400 transition-colors">
+                    {item.name}
                   </Link>
                 </li>
               ))}

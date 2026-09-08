@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { BlogProvider } from './context/BlogContext';
 import { PageLayout } from './components/layout/PageLayout';
 import { Home } from './pages/Home';
@@ -23,7 +23,8 @@ export default function App() {
             <Route index element={<Home />} />
             <Route path="articles" element={<Articles />} />
             <Route path="articles/:id" element={<ArticleDetail />} />
-            <Route path="research" element={<Research />} />
+            <Route path="insights" element={<Research />} />
+            <Route path="research" element={<Navigate to="/insights" replace />} />
             <Route path="projects" element={<Projects />} />
             <Route path="about" element={<About />} />
             <Route path="admin" element={<Admin />} />

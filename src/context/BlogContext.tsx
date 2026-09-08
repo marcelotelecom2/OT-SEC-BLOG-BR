@@ -79,35 +79,45 @@ const INITIAL_NOTES: ResearchNote[] = [
   {
     id: '1',
     date: '2026-07-20',
-    tag: '#VULN_ANALYSIS',
+    tag: '#IEC62443',
+    tags: ['IEC62443', 'ICS', 'SCADA'],
+    contentType: 'Vulnerability Analysis',
     content: 'Observing interesting artifacts in the recent Siemens S7-1500 firmware dump. The encrypted payload mechanism seems to utilize a custom implementation of Curve25519 rather than standard libraries. Investigating further.',
     author: 'SYS_ADMIN_01'
   },
   {
     id: '2',
     date: '2026-07-18',
-    tag: '#THREAT_INTEL',
+    tag: '#OT_SECURITY',
+    tags: ['OT_SECURITY', 'CISA', 'SCADA'],
+    contentType: 'Industry Watch',
     content: 'Activity linked to Volt Typhoon identified in water treatment facility Honeypots. Primary vector appears to be exploiting legacy VPN gateways (CVE-2023-XXXX) to establish initial foothold before moving laterally via SMB.',
     author: 'SYS_ADMIN_01'
   },
   {
     id: '3',
     date: '2026-07-05',
-    tag: '#PROTOCOL_RE',
+    tag: '#SCADA',
+    tags: ['SCADA', 'ICS', 'IEC61850'],
+    contentType: 'Technology Watch',
     content: 'Mapped out the undocumented function codes in the Omron FINS protocol. Functions 0x09 and 0x0A allow for unauthenticated memory reads across the controller backplane. Developing a PoC.',
     author: 'SEC_RESEARCHER'
   },
   {
     id: '4',
     date: '2026-06-22',
-    tag: '#INCIDENT_RESP',
+    tag: '#ICS',
+    tags: ['ICS', 'OT_SECURITY', 'POWER_GRID'],
+    contentType: 'News Analysis',
     content: 'Ransomware deployment on a manufacturing execution system (MES). The threat actors did not encrypt the PLCs directly but locked the HMI SQL databases, effectively halting production. Time-to-recovery is heavily dependent on bare-metal backups.',
     author: 'SEC_RESEARCHER'
   },
   {
     id: '5',
     date: '2026-06-01',
-    tag: '#AI_MODELS',
+    tag: '#AI',
+    tags: ['AI', 'LLM', 'SCADA'],
+    contentType: 'Paper Review',
     content: 'Fine-tuning the SLM for log analysis. It struggles with distinguishing between legitimate engineering workstation programming events and unauthorized ladder logic modifications. Need to weight the dataset heavier towards normal engineering behavior.',
     author: 'AI_LAB_LEAD'
   }
@@ -242,7 +252,26 @@ export function BlogProvider({ children }: { children: React.ReactNode }) {
 
   const [notes, setNotes] = useState<ResearchNote[]>(() => {
     const saved = localStorage.getItem('ot_sec_notes');
-    return saved ? JSON.parse(saved) : INITIAL_NOTES;
+    if (saved) {
+      try {
+        const parsed: ResearchNote[] = JSON.parse(saved);
+        return parsed.map((n) => {
+          const defaultMatch = INITIAL_NOTES.find((init) => init.id === n.id);
+          if (defaultMatch && (!n.tags || n.tags.length === 0 || (n.tag && n.tag.startsWith('#VULN_ANALYSIS')))) {
+            return {
+              ...n,
+              tag: defaultMatch.tag,
+              tags: defaultMatch.tags,
+              contentType: n.contentType || defaultMatch.contentType
+            };
+          }
+          return n;
+        });
+      } catch (e) {
+        return INITIAL_NOTES;
+      }
+    }
+    return INITIAL_NOTES;
   });
 
   const [projects, setProjects] = useState<Project[]>(() => {

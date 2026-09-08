@@ -15,10 +15,13 @@ import {
 } from 'lucide-react';
 import { Article, ResearchNote, Project } from '../types';
 import { 
-  RESEARCH_TAGS, 
   RESEARCH_AUTHORS, 
   getTagBadgeStyle, 
-  getAuthorBadgeStyle 
+  getAuthorBadgeStyle,
+  CONTENT_TYPES,
+  getNoteContentType,
+  getContentTypeBadgeStyle,
+  getNoteTags 
 } from '../constants/researchClassification';
 
 export function Admin() {
@@ -216,7 +219,7 @@ export function Admin() {
         {[
           { id: 'kpis', label: 'KPIs & Analytics', icon: BarChart3, count: null },
           { id: 'articles', label: 'Articles', icon: FileText, count: articles.length },
-          { id: 'notes', label: 'Research Notes', icon: FlaskConical, count: notes.length },
+          { id: 'notes', label: 'Insights', icon: FlaskConical, count: notes.length },
           { id: 'projects', label: 'Projects', icon: FolderGit2, count: projects.length },
           { id: 'media', label: 'Image Library', icon: ImageIcon, count: mediaLibrary.length },
         ].map((tab) => {
@@ -658,61 +661,117 @@ export function Admin() {
       )}
 
       {/* ========================================================= */}
-      {/* 3. RESEARCH NOTES MANAGEMENT TAB */}
+      {/* 3. INSIGHTS MANAGEMENT TAB */}
       {/* ========================================================= */}
       {activeTab === 'notes' && (
         <div className="space-y-6">
           <div className="flex items-center justify-between bg-gray-950/60 p-4 border border-gray-800 rounded">
-            <p className="text-xs font-mono text-gray-400">Quick vulnerability logs and observation notes</p>
+            <p className="text-xs font-mono text-gray-400">Curated lab observation logs, technology watch, vulnerability disclosures, and external source insights</p>
             <button
               onClick={() => {
                 setEditingNote({
+                  title: '',
                   date: new Date().toISOString().split('T')[0],
-                  tag: '#VULN_ANALYSIS',
+                  summary: '',
                   content: '',
-                  author: 'SYS_ADMIN_01'
+                  contentType: 'Technology Watch',
+                  tag: 'IEC62443, SCADA',
+                  tags: ['IEC62443', 'SCADA'],
+                  sourceName: '',
+                  sourceUrl: '',
+                  author: 'SYS_ADMIN_01',
+                  published: true
                 });
                 setShowNoteForm(true);
               }}
               className="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-mono font-bold text-xs uppercase rounded transition-colors flex items-center gap-2"
             >
-              <Plus className="w-4 h-4" /> Add Research Note
+              <Plus className="w-4 h-4" /> Add Insight
             </button>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {notes.map((note) => (
-              <SpotlightCard key={note.id} className="p-5 border border-gray-800/80 bg-gray-950/40 relative group">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2 font-mono text-xs">
-                    <span className="text-gray-500">{note.date}</span>
-                    <span className={`px-2 py-0.5 rounded border text-[10px] font-bold ${getTagBadgeStyle(note.tag)}`}>
-                      {note.tag}
-                    </span>
+              <SpotlightCard key={note.id} className="p-5 border border-gray-800/80 bg-gray-950/40 relative group flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between mb-2.5">
+                    <div className="flex items-center gap-2 font-mono text-xs flex-wrap">
+                      <span className="text-gray-500">{note.date}</span>
+                      <span className={`px-2 py-0.5 rounded border text-[10px] font-bold ${getContentTypeBadgeStyle(getNoteContentType(note))}`}>
+                        {getNoteContentType(note)}
+                      </span>
+                      <span className={`px-1.5 py-0.5 rounded text-[9px] font-mono border ${
+                        note.published !== false 
+                          ? 'text-emerald-400 bg-emerald-950/40 border-emerald-800/60' 
+                          : 'text-amber-400 bg-amber-950/40 border-amber-800/60'
+                      }`}>
+                        {note.published !== false ? 'PUBLISHED' : 'DRAFT'}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => {
+                          setEditingNote(note);
+                          setShowNoteForm(true);
+                        }}
+                        className="p-1 text-gray-500 hover:text-cyan-400"
+                        title="Edit Insight"
+                      >
+                        <Edit3 className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        onClick={() => deleteNote(note.id)}
+                        className="p-1 text-gray-500 hover:text-rose-400"
+                        title="Delete Insight"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => {
-                        setEditingNote(note);
-                        setShowNoteForm(true);
-                      }}
-                      className="p-1 text-gray-500 hover:text-cyan-400"
-                    >
-                      <Edit3 className="w-3.5 h-3.5" />
-                    </button>
-                    <button
-                      onClick={() => deleteNote(note.id)}
-                      className="p-1 text-gray-500 hover:text-rose-400"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
+
+                  {/* Technical Tags */}
+                  <div className="flex flex-wrap gap-1 mb-2">
+                    {getNoteTags(note).map(t => (
+                      <span key={t} className={`px-1.5 py-0.5 rounded border text-[9px] font-mono ${getTagBadgeStyle(t)}`}>
+                        #{t}
+                      </span>
+                    ))}
                   </div>
+
+                  {note.title && (
+                    <h4 className="text-sm font-bold text-white font-sans mb-1.5 line-clamp-2">
+                      {note.title}
+                    </h4>
+                  )}
+
+                  {note.summary && (
+                    <p className="text-xs text-cyan-300/90 font-mono mb-2 line-clamp-2 bg-cyan-950/20 p-2 rounded border border-cyan-900/40">
+                      {note.summary}
+                    </p>
+                  )}
+
+                  <p className="text-xs text-gray-300 font-sans leading-relaxed line-clamp-3 mb-3">
+                    {note.content}
+                  </p>
+
+                  {(note.sourceName || note.sourceUrl) && (
+                    <div className="mb-2 text-[10px] font-mono text-cyan-400/80 flex items-center gap-1.5 truncate">
+                      <span className="text-gray-500">Source:</span>
+                      {note.sourceUrl ? (
+                        <a href={note.sourceUrl} target="_blank" rel="noopener noreferrer" className="hover:underline truncate text-cyan-400">
+                          {note.sourceName || note.sourceUrl}
+                        </a>
+                      ) : (
+                        <span className="text-gray-300">{note.sourceName}</span>
+                      )}
+                    </div>
+                  )}
                 </div>
-                <p className="text-sm text-gray-300 font-sans leading-relaxed">{note.content}</p>
+
                 {note.author && (
-                  <div className="mt-4 pt-2 border-t border-gray-800/60 flex items-center justify-between">
-                    <span className="text-[10px] font-mono text-gray-500">Operator:</span>
-                    <span className={`text-[10px] font-mono px-2 py-0.5 rounded border ${getAuthorBadgeStyle(note.author)}`}>
+                  <div className="mt-3 pt-2 border-t border-gray-800/60 flex items-center justify-between text-[10px] font-mono">
+                    <span className="text-gray-500">Author:</span>
+                    <span className={`px-2 py-0.5 rounded border ${getAuthorBadgeStyle(note.author)}`}>
                       #{note.author.replace(/^#/, '')}
                     </span>
                   </div>
@@ -721,37 +780,140 @@ export function Admin() {
             ))}
           </div>
 
-          {/* Note Form Modal */}
+          {/* Insight Form Modal */}
           {showNoteForm && editingNote && (
             <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-lg">
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
                 <SpotlightCard className="p-6 hud-border bg-[#090a0f] border-gray-800 space-y-4">
                   <div className="flex items-center justify-between border-b border-gray-800 pb-3">
                     <h3 className="text-base font-bold text-white font-sans">
-                      {editingNote.id ? 'Edit Research Note' : 'Add Research Note'}
+                      {editingNote.id ? 'Edit Insight' : 'New Insight'}
                     </h3>
-                    <button onClick={() => setShowNoteForm(false)} className="text-gray-500 hover:text-white">✕</button>
+                    <button onClick={() => setShowNoteForm(false)} className="text-gray-500 hover:text-white text-base">✕</button>
                   </div>
 
                   <div className="space-y-4 font-mono text-xs">
-                    <div className="grid grid-cols-2 gap-3">
+                    {/* Title */}
+                    <div>
+                      <label className="block text-gray-400 mb-1">Title</label>
+                      <input
+                        type="text"
+                        value={editingNote.title || ''}
+                        onChange={e => setEditingNote(prev => ({ ...prev, title: e.target.value }))}
+                        placeholder="Insight headline (e.g. S7-1500 Firmware Curve25519 Implementation Analysis)"
+                        className="w-full px-3 py-2 bg-gray-950 border border-gray-800 text-white font-sans text-sm focus:border-cyan-500 rounded"
+                      />
+                    </div>
+
+                    {/* Content Type & Date */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-gray-400 mb-1">Classification Tag (Red Theme)</label>
+                        <label className="block text-gray-400 mb-1">Content Type</label>
                         <select
-                          value={editingNote.tag || '#VULN_ANALYSIS'}
-                          onChange={e => setEditingNote(prev => ({ ...prev, tag: e.target.value }))}
-                          className="w-full px-3 py-2 bg-gray-950 border border-gray-800 text-rose-400 font-bold focus:border-cyan-500 rounded"
+                          value={editingNote.contentType || getNoteContentType(editingNote as any)}
+                          onChange={e => setEditingNote(prev => ({ ...prev, contentType: e.target.value }))}
+                          className="w-full px-3 py-2 bg-gray-950 border border-gray-800 text-cyan-400 font-bold focus:border-cyan-500 rounded"
                         >
-                          {RESEARCH_TAGS.map(t => (
-                            <option key={t.value} value={t.value}>
-                              {t.value} ({t.label})
+                          {CONTENT_TYPES.map(c => (
+                            <option key={c.value} value={c.value}>
+                              {c.label}
                             </option>
                           ))}
                         </select>
                       </div>
 
                       <div>
-                        <label className="block text-gray-400 mb-1">Operator / Author (Blue/Cyan Theme)</label>
+                        <label className="block text-gray-400 mb-1">Date</label>
+                        <input
+                          type="date"
+                          value={editingNote.date || new Date().toISOString().split('T')[0]}
+                          onChange={e => setEditingNote(prev => ({ ...prev, date: e.target.value }))}
+                          className="w-full px-3 py-2 bg-gray-950 border border-gray-800 text-gray-200 focus:border-cyan-500 rounded"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Summary */}
+                    <div>
+                      <label className="block text-gray-400 mb-1">Summary</label>
+                      <textarea
+                        rows={2}
+                        value={editingNote.summary || ''}
+                        onChange={e => setEditingNote(prev => ({ ...prev, summary: e.target.value }))}
+                        placeholder="Short executive summary or key takeaway..."
+                        className="w-full px-3 py-2 bg-gray-950 border border-gray-800 text-gray-200 focus:border-cyan-500 rounded"
+                      />
+                    </div>
+
+                    {/* Content */}
+                    <div>
+                      <label className="block text-gray-400 mb-1">Content</label>
+                      <textarea
+                        rows={4}
+                        value={editingNote.content || ''}
+                        onChange={e => setEditingNote(prev => ({ ...prev, content: e.target.value }))}
+                        className="w-full px-3 py-2 bg-gray-950 border border-gray-800 text-gray-200 focus:border-cyan-500 rounded"
+                        placeholder="Technical breakdown, vulnerability reproduction steps, regulatory impact..."
+                      />
+                    </div>
+
+                    {/* Tags */}
+                    <div>
+                      <label className="block text-gray-400 mb-1">Tags (Technical topics, comma-separated)</label>
+                      <input
+                        type="text"
+                        value={editingNote.tag || (Array.isArray(editingNote.tags) ? editingNote.tags.join(', ') : '')}
+                        onChange={e => {
+                          const val = e.target.value;
+                          const parsed = val.split(',').map(s => s.trim().replace(/^#/, '')).filter(Boolean);
+                          setEditingNote(prev => ({ ...prev, tag: val, tags: parsed }));
+                        }}
+                        placeholder="e.g. IEC62443, SCADA, NERC_CIP, POWER_GRID"
+                        className="w-full px-3 py-2 bg-gray-950 border border-gray-800 text-emerald-400 font-bold focus:border-emerald-500 rounded"
+                      />
+                      <p className="text-[10px] text-gray-500 mt-1">
+                        Ex: NERC_CIP, IEC62443, IEC61850, IEC62351, POWER_GRID, SUBSTATION, FACTS, STATCOM, SCADA, OT_SECURITY, ICS, AI, LLM, CISA, DOE, NERC, FERC, NIST
+                      </p>
+                    </div>
+
+                    {/* Source Name & Source URL (Optional) */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 bg-gray-950/60 border border-gray-800/80 rounded">
+                      <div>
+                        <label className="block text-gray-400 mb-1">
+                          Source Name <span className="text-gray-500 font-normal">(Optional)</span>
+                        </label>
+                        <input
+                          type="text"
+                          value={editingNote.sourceName || ''}
+                          onChange={e => setEditingNote(prev => ({ ...prev, sourceName: e.target.value }))}
+                          placeholder="e.g. CISA Advisory, IEEE Xplore, BSI Report"
+                          className="w-full px-3 py-2 bg-gray-950 border border-gray-800 text-gray-200 focus:border-cyan-500 rounded"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-gray-400 mb-1">
+                          Source URL <span className="text-gray-500 font-normal">(Optional)</span>
+                        </label>
+                        <input
+                          type="url"
+                          value={editingNote.sourceUrl || ''}
+                          onChange={e => setEditingNote(prev => ({ ...prev, sourceUrl: e.target.value }))}
+                          placeholder="https://..."
+                          className="w-full px-3 py-2 bg-gray-950 border border-gray-800 text-gray-200 focus:border-cyan-500 rounded font-mono text-xs"
+                        />
+                      </div>
+                      <div className="col-span-full">
+                        <p className="text-[10px] text-gray-500">
+                          Use when the Insight comments on a paper, news, report, standard, advisory, or external tech.
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Author & Published */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
+                      <div>
+                        <label className="block text-gray-400 mb-1">Author</label>
                         <select
                           value={editingNote.author || 'SYS_ADMIN_01'}
                           onChange={e => setEditingNote(prev => ({ ...prev, author: e.target.value }))}
@@ -764,27 +926,20 @@ export function Admin() {
                           ))}
                         </select>
                       </div>
-                    </div>
 
-                    <div>
-                      <label className="block text-gray-400 mb-1">Publication Date</label>
-                      <input
-                        type="date"
-                        value={editingNote.date || new Date().toISOString().split('T')[0]}
-                        onChange={e => setEditingNote(prev => ({ ...prev, date: e.target.value }))}
-                        className="w-full px-3 py-2 bg-gray-950 border border-gray-800 text-gray-200 focus:border-cyan-500 rounded"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-gray-400 mb-1">Note Observation Text</label>
-                      <textarea
-                        rows={4}
-                        value={editingNote.content || ''}
-                        onChange={e => setEditingNote(prev => ({ ...prev, content: e.target.value }))}
-                        className="w-full px-3 py-2 bg-gray-950 border border-gray-800 text-gray-200 focus:border-cyan-500 rounded"
-                        placeholder="Log research finding, artifact analysis, or vulnerability detail..."
-                      />
+                      <div className="pt-2 sm:pt-4">
+                        <label className="flex items-center gap-2 cursor-pointer select-none">
+                          <input
+                            type="checkbox"
+                            checked={editingNote.published !== false}
+                            onChange={e => setEditingNote(prev => ({ ...prev, published: e.target.checked }))}
+                            className="w-4 h-4 rounded bg-gray-950 border-gray-700 text-cyan-500 focus:ring-cyan-500 focus:ring-offset-gray-950"
+                          />
+                          <span className="text-xs text-gray-300">
+                            Published <span className="text-gray-500">(Visible in public Insights)</span>
+                          </span>
+                        </label>
+                      </div>
                     </div>
                   </div>
 
@@ -799,17 +954,33 @@ export function Admin() {
                     <button
                       type="button"
                       onClick={() => {
-                        if (!editingNote.content) return;
+                        if (!editingNote.content && !editingNote.title) return;
+                        const noteToSave: any = {
+                          ...editingNote,
+                          title: editingNote.title?.trim() || '',
+                          summary: editingNote.summary?.trim() || '',
+                          content: editingNote.content || '',
+                          contentType: editingNote.contentType || 'Technology Watch',
+                          tag: editingNote.tag || (Array.isArray(editingNote.tags) ? editingNote.tags.join(', ') : 'ICS'),
+                          tags: Array.isArray(editingNote.tags) && editingNote.tags.length > 0
+                            ? editingNote.tags
+                            : (editingNote.tag || '').split(',').map(s => s.trim().replace(/^#/, '')).filter(Boolean),
+                          sourceName: editingNote.sourceName?.trim() || '',
+                          sourceUrl: editingNote.sourceUrl?.trim() || '',
+                          author: editingNote.author || 'SYS_ADMIN_01',
+                          published: editingNote.published !== false,
+                          date: editingNote.date || new Date().toISOString().split('T')[0]
+                        };
                         if (editingNote.id) {
-                          updateNote(editingNote.id, editingNote);
+                          updateNote(editingNote.id, noteToSave);
                         } else {
-                          addNote(editingNote as any);
+                          addNote(noteToSave);
                         }
                         setShowNoteForm(false);
                       }}
                       className="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-mono font-bold text-xs uppercase rounded"
                     >
-                      Save Note
+                      Save Insight
                     </button>
                   </div>
                 </SpotlightCard>

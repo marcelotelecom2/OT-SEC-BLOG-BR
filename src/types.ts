@@ -11,12 +11,27 @@ export interface Article {
   views?: number;
 }
 
+export type ContentType =
+  | 'Paper Review'
+  | 'News Analysis'
+  | 'Technology Watch'
+  | 'Regulation Update'
+  | 'Vulnerability Analysis'
+  | 'Industry Watch';
+
 export interface ResearchNote {
   id: string;
+  title?: string;
   date: string;
-  tag: string;
+  summary?: string;
   content: string;
+  contentType?: ContentType | string;
+  tag: string;
+  tags?: string[];
+  sourceName?: string;
+  sourceUrl?: string;
   author?: string;
+  published?: boolean;
 }
 
 export interface Project {

@@ -83,10 +83,10 @@ export function Home() {
             transition={{ delay: 2.2, duration: 0.5 }}
             className="flex flex-col sm:flex-row gap-4"
           >
-            <Link to="/research" className="hud-border relative overflow-hidden px-8 py-3 text-white font-mono text-sm tracking-widest uppercase bg-transparent group">
+            <Link to="/insights" className="hud-border relative overflow-hidden px-8 py-3 text-white font-mono text-sm tracking-widest uppercase bg-transparent group">
               <span className="absolute inset-0 bg-cyan-500/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"></span>
               <span className="relative z-10 flex items-center justify-center">
-                Explore Research
+                Explore Insights
                 <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
               </span>
             </Link>
@@ -181,7 +181,7 @@ export function Home() {
           </div>
         </motion.section>
 
-        {/* Research Notes */}
+        {/* Insights */}
         <motion.section 
           initial="hidden"
           whileInView="show"
@@ -191,9 +191,9 @@ export function Home() {
         >
           <motion.div variants={itemVariants} className="flex items-end justify-between mb-8 border-b border-gray-800 pb-4">
             <h2 className="text-2xl font-bold text-white tracking-tight font-sans cursor-crosshair">
-              <DecodeText text="Research Notes" delay={0} />
+              <DecodeText text="Insights" delay={0} />
             </h2>
-            <Link to="/research" className="text-cyan-400 font-mono text-xs hover:text-cyan-300">Archive</Link>
+            <Link to="/insights" className="text-cyan-400 font-mono text-xs hover:text-cyan-300">Archive</Link>
           </motion.div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

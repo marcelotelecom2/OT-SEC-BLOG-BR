@@ -1,9 +1,10 @@
-import { useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { motion } from "motion/react";
 
 interface SpotlightCardProps {
   children: React.ReactNode;
   className?: string;
+  key?: React.Key;
 }
 
 export function SpotlightCard({ children, className = "" }: SpotlightCardProps) {
