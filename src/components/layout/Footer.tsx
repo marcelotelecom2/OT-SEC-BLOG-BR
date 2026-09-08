@@ -12,7 +12,7 @@ export function Footer() {
               OT-SEC<span className="text-cyan-500">.</span>
             </span>
             <p className="mt-4 text-sm text-gray-500 font-sans max-w-xs">
-              Independent research on Industrial Cybersecurity, Artificial Intelligence and Critical Infrastructure.
+              Independent research on Industrial Cybersecurity, Power Grid Security, Artificial Intelligence and Critical Infrastructure.
             </p>
           </div>
           

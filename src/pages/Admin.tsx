@@ -11,7 +11,7 @@ import {
   BarChart3, FileText, FlaskConical, FolderGit2, Image as ImageIcon,
   Plus, Trash2, Edit3, Lock, Unlock, Eye, Upload, Copy, Check,
   ExternalLink, Search, RefreshCw, ShieldCheck, Activity, Globe,
-  ArrowUpRight, Users, Clock, Zap
+  ArrowUpRight, Users, Clock, Zap, KeyRound, ShieldAlert
 } from 'lucide-react';
 import { Article, ResearchNote, Project } from '../types';
 import { 
@@ -24,7 +24,7 @@ import {
 export function Admin() {
   const {
     articles, notes, projects, mediaLibrary, analytics,
-    isAdminLoggedIn, loginAdmin, logoutAdmin,
+    isAdminLoggedIn, loginAdmin, logoutAdmin, changePassword,
     addArticle, updateArticle, deleteArticle,
     addNote, updateNote, deleteNote,
     addProject, updateProject, deleteProject,
@@ -48,6 +48,13 @@ export function Admin() {
 
   const [editingProject, setEditingProject] = useState<Partial<Project> | null>(null);
   const [showProjectForm, setShowProjectForm] = useState(false);
+
+  // Change Password Modal State
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [currentPasswordInput, setCurrentPasswordInput] = useState('');
+  const [newPasswordInput, setNewPasswordInput] = useState('');
+  const [confirmPasswordInput, setConfirmPasswordInput] = useState('');
+  const [passwordStatus, setPasswordStatus] = useState<{ type: 'error' | 'success' | null; message: string }>({ type: null, message: '' });
 
   // Drag & drop upload state
   const [isDragging, setIsDragging] = useState(false);
@@ -182,6 +189,19 @@ export function Admin() {
         </div>
 
         <div className="flex items-center gap-3">
+          <button
+            onClick={() => {
+              setCurrentPasswordInput('');
+              setNewPasswordInput('');
+              setConfirmPasswordInput('');
+              setPasswordStatus({ type: null, message: '' });
+              setShowPasswordModal(true);
+            }}
+            className="px-3 py-1.5 text-xs font-mono text-cyan-400 border border-cyan-800/60 bg-cyan-950/30 hover:bg-cyan-900/40 rounded transition-colors flex items-center gap-1.5"
+            title="Update administrator passcode"
+          >
+            <KeyRound className="w-3.5 h-3.5" /> Change Password
+          </button>
           <button
             onClick={logoutAdmin}
             className="px-3 py-1.5 text-xs font-mono text-rose-400 border border-rose-900/60 bg-rose-950/20 hover:bg-rose-900/40 rounded transition-colors flex items-center gap-1.5"
@@ -1074,6 +1094,124 @@ export function Admin() {
               ))}
             </div>
           </div>
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* CHANGE PASSWORD MODAL */}
+      {/* ========================================================= */}
+      {showPasswordModal && (
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-md">
+            <SpotlightCard className="p-6 hud-border bg-[#090a0f] border-gray-800 space-y-4">
+              <div className="flex items-center justify-between border-b border-gray-800 pb-3">
+                <div className="flex items-center gap-2">
+                  <div className="p-1.5 bg-cyan-950/60 border border-cyan-800/60 rounded text-cyan-400">
+                    <KeyRound className="w-4 h-4" />
+                  </div>
+                  <h3 className="text-base font-bold text-white font-sans">
+                    Change Admin Passcode
+                  </h3>
+                </div>
+                <button
+                  onClick={() => setShowPasswordModal(false)}
+                  className="text-gray-500 hover:text-white"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <p className="text-xs font-mono text-gray-400">
+                Update your security credential for logging into the SYS_ADMIN panel.
+              </p>
+
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if (newPasswordInput !== confirmPasswordInput) {
+                    setPasswordStatus({ type: 'error', message: 'New passwords do not match.' });
+                    return;
+                  }
+                  const res = changePassword(currentPasswordInput, newPasswordInput);
+                  if (res.success) {
+                    setPasswordStatus({ type: 'success', message: res.message });
+                    setTimeout(() => {
+                      setShowPasswordModal(false);
+                    }, 1500);
+                  } else {
+                    setPasswordStatus({ type: 'error', message: res.message });
+                  }
+                }}
+                className="space-y-3 font-mono text-xs"
+              >
+                <div>
+                  <label className="block text-gray-400 mb-1">Current Passcode</label>
+                  <input
+                    type="password"
+                    required
+                    value={currentPasswordInput}
+                    onChange={(e) => setCurrentPasswordInput(e.target.value)}
+                    placeholder="Enter current password (e.g. sec2026)"
+                    className="w-full px-3 py-2 bg-gray-950 border border-gray-800 text-cyan-300 focus:border-cyan-500 rounded"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-gray-400 mb-1">New Passcode</label>
+                  <input
+                    type="password"
+                    required
+                    value={newPasswordInput}
+                    onChange={(e) => setNewPasswordInput(e.target.value)}
+                    placeholder="Enter new password (min. 4 characters)"
+                    className="w-full px-3 py-2 bg-gray-950 border border-gray-800 text-cyan-300 focus:border-cyan-500 rounded"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-gray-400 mb-1">Confirm New Passcode</label>
+                  <input
+                    type="password"
+                    required
+                    value={confirmPasswordInput}
+                    onChange={(e) => setConfirmPasswordInput(e.target.value)}
+                    placeholder="Re-type new password"
+                    className="w-full px-3 py-2 bg-gray-950 border border-gray-800 text-cyan-300 focus:border-cyan-500 rounded"
+                  />
+                </div>
+
+                {passwordStatus.type === 'error' && (
+                  <div className="p-2.5 bg-rose-950/40 border border-rose-800/80 rounded text-rose-400 text-xs flex items-center gap-2">
+                    <ShieldAlert className="w-4 h-4 flex-shrink-0" />
+                    <span>{passwordStatus.message}</span>
+                  </div>
+                )}
+
+                {passwordStatus.type === 'success' && (
+                  <div className="p-2.5 bg-emerald-950/40 border border-emerald-800/80 rounded text-emerald-400 text-xs flex items-center gap-2">
+                    <Check className="w-4 h-4 flex-shrink-0" />
+                    <span>{passwordStatus.message}</span>
+                  </div>
+                )}
+
+                <div className="flex justify-end gap-3 pt-4 border-t border-gray-800">
+                  <button
+                    type="button"
+                    onClick={() => setShowPasswordModal(false)}
+                    className="px-4 py-2 border border-gray-800 text-gray-400 hover:text-white rounded text-xs font-mono"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-mono font-bold text-xs uppercase rounded"
+                  >
+                    Save New Passcode
+                  </button>
+                </div>
+              </form>
+            </SpotlightCard>
+          </motion.div>
         </div>
       )}
     </div>

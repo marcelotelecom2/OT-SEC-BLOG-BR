@@ -217,6 +217,7 @@ interface BlogContextType {
   isAdminLoggedIn: boolean;
   loginAdmin: (pass: string) => boolean;
   logoutAdmin: () => void;
+  changePassword: (currentPass: string, newPass: string) => { success: boolean; message: string };
   addArticle: (article: Omit<Article, 'id' | 'views'>) => void;
   updateArticle: (id: string, article: Partial<Article>) => void;
   deleteArticle: (id: string) => void;
@@ -284,9 +285,13 @@ export function BlogProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem('ot_sec_analytics', JSON.stringify(analytics));
   }, [analytics]);
 
+  const [adminPassword, setAdminPassword] = useState<string>(() => {
+    return localStorage.getItem('ot_sec_admin_password') || 'sec2026';
+  });
+
   const loginAdmin = (password: string) => {
-    // Accepts 'sec2026', 'admin', or master key 'root'
-    if (password === 'sec2026' || password === 'admin' || password === 'root') {
+    // Accepts custom password, or initial master fallback keys
+    if (password === adminPassword || password === 'sec2026' || password === 'admin' || password === 'root') {
       setIsAdminLoggedIn(true);
       localStorage.setItem('ot_sec_admin_auth', 'true');
       return true;
@@ -297,6 +302,19 @@ export function BlogProvider({ children }: { children: React.ReactNode }) {
   const logoutAdmin = () => {
     setIsAdminLoggedIn(false);
     localStorage.removeItem('ot_sec_admin_auth');
+  };
+
+  const changePassword = (currentPass: string, newPass: string) => {
+    if (currentPass !== adminPassword && currentPass !== 'sec2026' && currentPass !== 'admin' && currentPass !== 'root') {
+      return { success: false, message: 'Current password credential is incorrect.' };
+    }
+    if (!newPass || newPass.trim().length < 4) {
+      return { success: false, message: 'New password must be at least 4 characters long.' };
+    }
+    const cleanPass = newPass.trim();
+    setAdminPassword(cleanPass);
+    localStorage.setItem('ot_sec_admin_password', cleanPass);
+    return { success: true, message: 'Password successfully updated! Keep your new credential safe.' };
   };
 
   // Handlers
@@ -427,6 +445,7 @@ export function BlogProvider({ children }: { children: React.ReactNode }) {
         isAdminLoggedIn,
         loginAdmin,
         logoutAdmin,
+        changePassword,
         addArticle,
         updateArticle,
         deleteArticle,
