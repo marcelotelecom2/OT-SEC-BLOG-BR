@@ -19,6 +19,11 @@ export function sanitizeExternalUrl(url?: string | null): string | null {
     return null;
   }
 
+  // Allow safe root-relative paths (e.g. /images/articles/...)
+  if (trimmed.startsWith('/') && !trimmed.startsWith('//')) {
+    return trimmed;
+  }
+
   try {
     const parsed = new URL(trimmed);
     if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {

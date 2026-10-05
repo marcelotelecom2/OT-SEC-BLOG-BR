@@ -1,27 +1,36 @@
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useBlog } from '../context/BlogContext';
 import { ArrowLeft, Clock, Calendar, Eye, Tag } from 'lucide-react';
 import { DecodeText } from '../components/ui/DecodeText';
 import { ArticleContent } from '../components/article/ArticleContent';
+import { ArticleSEO } from '../components/seo/ArticleSEO';
 
 export function ArticleDetail() {
-  const { id } = useParams<{ id: string }>();
+  const { slug, id } = useParams<{ slug?: string; id?: string }>();
+  const identifier = slug || id || '';
   const { articles, updateArticle, recordPageView } = useBlog();
 
-  const article = articles.find(a => a.id === id);
+  // Procurar primeiro por article.slug, depois por article.id
+  const article = articles.find(a => a.slug === identifier) || articles.find(a => a.id === identifier);
+
+  // Backward compatibility: se acessado pelo ID antigo, redireciona para a URL com slug usando replace
+  if (article && identifier === article.id && article.slug && identifier !== article.slug) {
+    return <Navigate to={`/articles/${article.slug}`} replace />;
+  }
 
   useEffect(() => {
     if (article) {
-      recordPageView(`/articles/${article.id}`);
+      recordPageView(`/articles/${article.slug}`);
       // Increment views count once
       updateArticle(article.id, { views: (article.views || 0) + 1 });
     }
-  }, [id]);
+  }, [article?.id]);
 
   if (!article) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-24 text-center font-mono">
+        <title>Article Not Found | OT-SEC</title>
         <h2 className="text-xl text-rose-400 mb-4">[404] ARTICLE_NOT_FOUND</h2>
         <p className="text-gray-500 mb-8">The requested publication identifier does not exist in the index.</p>
         <Link to="/articles" className="px-4 py-2 bg-cyan-500 text-black font-bold text-xs uppercase rounded">
@@ -33,6 +42,7 @@ export function ArticleDetail() {
 
   return (
     <article className="w-full px-4 sm:px-6 lg:px-8 py-10 sm:py-16 md:py-20">
+      <ArticleSEO article={article} />
       {/* Navigation & Header: Max-width ~1100px */}
       <div className="max-w-[1100px] mx-auto">
         <Link
@@ -57,7 +67,7 @@ export function ArticleDetail() {
             </span>
             <span className="text-gray-700 hidden sm:inline">•</span>
             <span className="flex items-center gap-1.5 text-cyan-300">
-              <Eye className="w-3.5 h-3.5 shrink-0" /> {(article.views || 1)} views
+              <Eye className="w-3.5 h-3.5 shrink-0" /> {(article.views ?? 0)} views
             </span>
           </div>
 

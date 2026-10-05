@@ -22,7 +22,7 @@ export default function App() {
           <Route path="/" element={<PageLayout />}>
             <Route index element={<Home />} />
             <Route path="articles" element={<Articles />} />
-            <Route path="articles/:id" element={<ArticleDetail />} />
+            <Route path="articles/:slug" element={<ArticleDetail />} />
             <Route path="insights" element={<Research />} />
             <Route path="research" element={<Navigate to="/insights" replace />} />
             <Route path="projects" element={<Projects />} />

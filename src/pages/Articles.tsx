@@ -68,7 +68,7 @@ export function Articles() {
                       )}
                     </div>
                     <h3 className="text-lg sm:text-xl font-semibold leading-snug text-gray-100 group-hover:text-cyan-400 transition-colors mb-3">
-                      <Link to={`/articles/${article.id}`}>
+                      <Link to={`/articles/${article.slug}`}>
                         <span className="absolute inset-0" />
                         {article.title}
                       </Link>

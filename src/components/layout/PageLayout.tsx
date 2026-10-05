@@ -1,18 +1,28 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
 import { NoiseOverlay } from '../ui/NoiseOverlay';
 import { CustomCursor } from '../ui/CustomCursor';
 import { Scanlines } from '../ui/Scanlines';
 import { motion, useScroll, useSpring } from 'motion/react';
+import { applyDefaultSEO } from '../../lib/seo';
 
 export function PageLayout() {
+  const location = useLocation();
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
     damping: 30,
     restDelta: 0.001
   });
+
+  useEffect(() => {
+    // Whenever current route is not an article detail page, ensure default institutional SEO
+    if (!location.pathname.startsWith('/articles/')) {
+      applyDefaultSEO();
+    }
+  }, [location.pathname]);
 
   return (
     <div className="min-h-screen w-full max-w-full overflow-x-clip flex flex-col font-sans selection:bg-cyan-900 selection:text-cyan-100">

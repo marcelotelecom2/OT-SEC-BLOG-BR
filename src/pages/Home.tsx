@@ -131,7 +131,7 @@ export function Home() {
                 </div>
                 <div className="group relative z-10">
                   <h3 className="mt-2 text-base sm:text-lg font-semibold leading-snug text-gray-100 group-hover:text-cyan-400 transition-colors">
-                    <Link to={`/articles/${article.id}`}>
+                    <Link to={`/articles/${article.slug}`}>
                       <span className="absolute inset-0" />
                       {article.title}
                     </Link>

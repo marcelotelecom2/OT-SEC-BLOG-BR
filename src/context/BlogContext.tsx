@@ -1,148 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Article, ResearchNote, Project, MediaItem, AnalyticsKPIs } from '../types';
-
-const INITIAL_ARTICLES: Article[] = [
-  {
-    id: '1',
-    title: 'The Role of AI in Detecting Anomalies in ICS Networks',
-    summary: 'An exploration of how machine learning models can be trained on Modbus and DNP3 traffic to identify novel attack vectors and misconfigurations in real-time.',
-    content: `## Abstract
-Industrial Control Systems (ICS) are increasingly target of cyber threats. Standard signature-based IDS struggle against zero-day exploits in SCADA environments.
-
-## Methodology
-Using an isolation forest combined with a lightweight LSTM autoencoder, we parsed raw pcap feeds from Modbus TCP and DNP3 networks...
-
-### Key Findings
-1. Anomaly detection accuracy reached 98.4% on PLC register manipulation.
-2. Latency impact was under 1.2ms per packet inspection.
-3. False positive rate remained under 0.05% during 72-hour stress testing.`,
-    date: '2026-07-10',
-    readTime: '12 min read',
-    area: 'Artificial Intelligence',
-    published: true,
-    views: 1420
-  },
-  {
-    id: '2',
-    title: 'Deconstructing the Stuxnet Payload: Lessons Still Unlearned',
-    summary: 'A retrospective analysis of the world\'s most famous cyberweapon, focusing on the specific Siemens Step7 DLL injections and how modern OT systems are still vulnerable to similar tactics.',
-    content: `## Retrospective Analysis
-16 years after Stuxnet, critical infrastructure continues to run unsupported legacy Siemens S7-300 and Step7 software components without kernel-level code integrity.
-
-### Attack Vector Walkthrough
-- Exploitation of LNK vulnerability (CVE-2010-2568)
-- Man-in-the-Middle on s7otbxdx.dll
-- PLC Frequency Drive speed manipulation (1418 Hz down to 2 Hz)`,
-    date: '2026-06-22',
-    readTime: '18 min read',
-    area: 'Vulnerability Analysis',
-    published: true,
-    views: 2150
-  },
-  {
-    id: '3',
-    title: 'Zero Trust Architecture in Legacy SCADA Environments',
-    summary: 'Implementing micro-segmentation and identity-based access controls in networks running 20-year-old PLCs that lack native authentication mechanisms.',
-    content: `## Purdue Model Level 2 Microsegmentation
-Legacy PLCs lack TLS and native encryption. To implement Zero Trust without hardware replacement, inline hardware proxies (Industrial Firewalls) must enforce strict 5-tuple filtering rules.`,
-    date: '2026-05-15',
-    readTime: '15 min read',
-    area: 'Network Engineering',
-    published: true,
-    views: 980
-  },
-  {
-    id: '4',
-    title: 'Analyzing the Impact of 5G on Smart Grid Security',
-    summary: 'With the rollout of 5G infrastructure in power grids, the attack surface expands. We look at the security implications of ultra-reliable low-latency communication (URLLC) in power distribution.',
-    content: `5G network slicing offers dedicated channels for power distribution automation. However, slice isolation vulnerabilities could expose synchrophasor streams to spoofing attacks.`,
-    date: '2026-04-02',
-    readTime: '10 min read',
-    area: 'Network Engineering',
-    published: true,
-    views: 650
-  },
-  {
-    id: '5',
-    title: 'Reverse Engineering Proprietary PLC Protocols',
-    summary: 'A technical guide on capturing, analyzing, and fuzzing undocumented industrial protocols using custom Wireshark dissectors and software-defined radios (SDR).',
-    content: `Step-by-step guide on analyzing proprietary backplane communication in modern automation controllers using Logic Analyzers and Lua dissector scripts.`,
-    date: '2026-03-18',
-    readTime: '22 min read',
-    area: 'Vulnerability Analysis',
-    published: true,
-    views: 1890
-  },
-  {
-    id: '6',
-    title: 'NERC CIP-002: How BES Cyber Systems Are Classified by Impact',
-    summary: 'A deep technical breakdown of NERC CIP-002 criteria, explaining how Bulk Electric System (BES) cyber assets and systems are categorized into High, Medium, and Low impact ratings.',
-    content: `## What does CIP-002 actually classify?
-
-CIP-002 does not classify devices simply because they are PLCs, HMIs, servers, firewalls, or protection systems.
-
-**The process starts by understanding the role of the asset.**
-
-In the North American bulk electric power grid, reliability is governed by North American Electric Reliability Corporation (NERC) Critical Infrastructure Protection (CIP) standards. Standard CIP-002-5.1a (and subsequent revisions) establishes the fundamental methodology for identifying and categorizing assets.
-
-### Core Classification Hierarchy
-
-To properly scope security controls, engineers must step through five foundational concepts:
-
-- **Responsible Entity**: The registered organization (Generator Owner, Transmission Operator, Balancing Authority) responsible for compliance.
-- **BES (Bulk Electric System)**: All transmission elements operating at 100 kV or higher, and real-power generation facilities exceeding regional MVA thresholds.
-- **BES Cyber Asset (BCA)**: A programmable electronic device that, if compromised or rendered unavailable, would affect the 15-minute real-time reliability operation of the BES.
-- **BES Cyber System (BCS)**: One or more BES Cyber Assets logically or physically grouped together to perform one or more reliability functions.
-- **Impact Rating**: The final tier (High, Medium, or Low) assigned to the system based on quantitative criteria defined in Attachment 1 of the standard.
-
-> Equipment type alone does not determine the Impact Rating. The fundamental question is always: *what is the consequence to the Interconnection if this system fails or is subverted in real time?*
-
----
-
-## Impact Categorization Matrix
-
-Attachment 1 of CIP-002 provides explicit quantitative thresholds to prevent subjective determinations:
-
-| Impact Level | Typical Facilities & Systems | Threshold Criteria |
-| :--- | :--- | :--- |
-| **High Impact** | Control Centers for large Balancing Authorities and Reliability Coordinators | Large Interconnection reliability impact (e.g. >3,000 MW generation dispatch control) |
-| **Medium Impact** | Generation plants, large transmission substations | Generation >1,500 MW aggregate capacity, or transmission substations >=500 kV or >=3,000 MVA |
-| **Low Impact** | Distribution substations, small solar/wind farms | All other BES Cyber Systems not categorized as High or Medium |
-
----
-
-## Substation Architecture & Electronic Security Perimeter
-
-A critical mistake in OT audit preparations is failing to distinguish between the **Physical Security Perimeter (PSP)** and the **Electronic Security Perimeter (ESP)**:
-
-\`\`\`
-+--------------------------------------------------------------+
-| Physical Security Perimeter (PSP)                            |
-|  +--------------------------------------------------------+  |
-|  | Electronic Security Perimeter (ESP)                    |  |
-|  |   [RTU / Gateway] <---> [Substation LAN / IEC 61850]   |  |
-|  |          ^                         ^                   |  |
-|  |          |                         |                   |  |
-|  |   [Protection Relays]     [Bay Controllers]            |  |
-|  +--------------------------------------------------------+  |
-|         | Electronic Access Control or Monitoring (EACM)     |
-|   [Firewall / Dial-up Encryptor]                             |
-+--------------------------------------------------------------+
-\`\`\`
-
-### Key Takeaways for Industrial Security Engineers
-
-1. **The 15-Minute Rule**: If an asset can fail without affecting the reliability functions of the BES within a 15-minute window, it is generally not a BES Cyber Asset.
-2. **Transient Cyber Assets (TCAs)**: Laptops, test sets, and USB maintenance drives are subject to CIP-010 controls whenever they cross the ESP barrier.
-3. **Low-Impact Obligations**: Never assume Low Impact means "no security." CIP-003 Attachment 1 mandates cyber security awareness, physical access controls, electronic access controls, and incident response planning for all Low Impact assets.`,
-    date: '2026-08-04',
-    readTime: '14 min read',
-    area: 'Regulation Update',
-    published: true,
-    views: 890,
-    coverImage: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&auto=format&fit=crop&q=80'
-  }
-];
+import { PUBLISHED_ARTICLES } from '../content/articles';
 
 const INITIAL_NOTES: ResearchNote[] = [
   {
@@ -297,7 +155,7 @@ interface BlogContextType {
   loginAdmin: (pass: string) => boolean;
   logoutAdmin: () => void;
   changePassword: (currentPass: string, newPass: string) => { success: boolean; message: string };
-  addArticle: (article: Omit<Article, 'id' | 'views'>) => void;
+  addArticle: (article: Omit<Article, 'id' | 'views' | 'slug'> & { slug?: string }) => void;
   updateArticle: (id: string, article: Partial<Article>) => void;
   deleteArticle: (id: string) => void;
   addNote: (note: Omit<ResearchNote, 'id'>) => void;
@@ -313,23 +171,130 @@ interface BlogContextType {
 
 const BlogContext = createContext<BlogContextType | undefined>(undefined);
 
-export function BlogProvider({ children }: { children: React.ReactNode }) {
-  const [articles, setArticles] = useState<Article[]>(() => {
-    const saved = localStorage.getItem('ot_sec_articles');
-    if (saved) {
-      try {
-        const parsed: Article[] = JSON.parse(saved);
-        const missing = INITIAL_ARTICLES.filter(init => !parsed.some(p => p.id === init.id));
-        if (missing.length > 0) {
-          return [...parsed, ...missing];
+const generateSlug = (title: string, fallbackId: string): string => {
+  const base = title
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+  return base || `article-${fallbackId}`;
+};
+
+/**
+ * Migration Key & One-Time LocalStorage Migration:
+ * Removes legacy demo view values (e.g. 1420, 2150) stored in localStorage.
+ * Runs only once when a new CONTENT_VERSION is detected, ensuring views start at 0
+ * and do not get overwritten to 0 on subsequent application reloads.
+ */
+export const CONTENT_VERSION_KEY = 'ot_sec_content_version';
+export const CURRENT_CONTENT_VERSION = '2.2.0-phase-2c-zero-views';
+
+const runViewsMigrationIfNeeded = () => {
+  if (typeof window === 'undefined' || !window.localStorage) return;
+  try {
+    const currentVersion = localStorage.getItem(CONTENT_VERSION_KEY);
+    if (currentVersion !== CURRENT_CONTENT_VERSION) {
+      // 1. Wipe previous mock/demo view values from local storage
+      localStorage.removeItem('ot_sec_article_views');
+      localStorage.removeItem('ot_sec_articles');
+
+      // 2. Reset views to 0 for any local/draft articles created previously with mock counts
+      const localSaved = localStorage.getItem('ot_sec_local_articles');
+      if (localSaved) {
+        try {
+          const parsed: Article[] = JSON.parse(localSaved);
+          const reset = parsed.map(item => ({ ...item, views: 0 }));
+          localStorage.setItem('ot_sec_local_articles', JSON.stringify(reset));
+        } catch {
+          // ignore parsing error
         }
-        return parsed;
+      }
+
+      // 3. Mark migration as finished so this executes only once
+      localStorage.setItem(CONTENT_VERSION_KEY, CURRENT_CONTENT_VERSION);
+    }
+  } catch {
+    // ignore storage access issues
+  }
+};
+
+export function BlogProvider({ children }: { children: React.ReactNode }) {
+  // Execute migration once before reading stored state
+  runViewsMigrationIfNeeded();
+
+  // Canonical published articles are always sourced from src/content/articles
+  // Local articles / drafts created via Admin are stored in localStorage
+  const [localArticles, setLocalArticles] = useState<Article[]>(() => {
+    const localSaved = localStorage.getItem('ot_sec_local_articles');
+    if (localSaved) {
+      try {
+        const parsed: Article[] = JSON.parse(localSaved);
+        return parsed.map(item => ({
+          ...item,
+          views: item.views ?? 0,
+          slug: item.slug || generateSlug(item.title, item.id)
+        }));
       } catch {
-        return INITIAL_ARTICLES;
+        return [];
       }
     }
-    return INITIAL_ARTICLES;
+    // Migration: recover any non-canonical custom articles or drafts from old ot_sec_articles
+    const legacySaved = localStorage.getItem('ot_sec_articles');
+    if (legacySaved) {
+      try {
+        const parsed: Article[] = JSON.parse(legacySaved);
+        return parsed
+          .filter(item => !PUBLISHED_ARTICLES.some(pub => pub.id === item.id))
+          .map(item => ({
+            ...item,
+            views: 0,
+            slug: item.slug || generateSlug(item.title, item.id)
+          }));
+      } catch {
+        return [];
+      }
+    }
+    return [];
   });
+
+  const [articleViews, setArticleViews] = useState<Record<string, number>>(() => {
+    const saved = localStorage.getItem('ot_sec_article_views');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch {
+        return {};
+      }
+    }
+    return {};
+  });
+
+  // Canonical published articles are always served from src/content/articles,
+  // merged with live views and local articles / drafts.
+  const articles: Article[] = [
+    ...PUBLISHED_ARTICLES.map(pub => ({
+      ...pub,
+      views: articleViews[pub.id] !== undefined ? articleViews[pub.id] : pub.views
+    })),
+    ...localArticles
+  ];
+
+  // Save local articles / drafts and views to localStorage
+  useEffect(() => {
+    localStorage.setItem('ot_sec_local_articles', JSON.stringify(localArticles));
+  }, [localArticles]);
+
+  useEffect(() => {
+    localStorage.setItem('ot_sec_article_views', JSON.stringify(articleViews));
+  }, [articleViews]);
+
+  // Clean legacy ot_sec_articles so it never overrides canonical published articles
+  useEffect(() => {
+    if (localStorage.getItem('ot_sec_articles')) {
+      localStorage.removeItem('ot_sec_articles');
+    }
+  }, []);
 
   const [notes, setNotes] = useState<ResearchNote[]>(() => {
     const saved = localStorage.getItem('ot_sec_notes');
@@ -375,10 +340,6 @@ export function BlogProvider({ children }: { children: React.ReactNode }) {
   });
 
   // Save changes to localStorage
-  useEffect(() => {
-    localStorage.setItem('ot_sec_articles', JSON.stringify(articles));
-  }, [articles]);
-
   useEffect(() => {
     localStorage.setItem('ot_sec_notes', JSON.stringify(notes));
   }, [notes]);
@@ -428,21 +389,30 @@ export function BlogProvider({ children }: { children: React.ReactNode }) {
   };
 
   // Handlers
-  const addArticle = (data: Omit<Article, 'id' | 'views'>) => {
+  const addArticle = (data: Omit<Article, 'id' | 'views' | 'slug'> & { slug?: string }) => {
+    const id = Date.now().toString();
+    const slug = data.slug || generateSlug(data.title, id);
     const newArticle: Article = {
       ...data,
-      id: Date.now().toString(),
-      views: 1
+      id,
+      slug,
+      views: 0
     };
-    setArticles(prev => [newArticle, ...prev]);
+    setLocalArticles(prev => [newArticle, ...prev]);
   };
 
   const updateArticle = (id: string, updated: Partial<Article>) => {
-    setArticles(prev => prev.map(item => item.id === id ? { ...item, ...updated } : item));
+    if (updated.views !== undefined) {
+      setArticleViews(prev => ({
+        ...prev,
+        [id]: updated.views!
+      }));
+    }
+    setLocalArticles(prev => prev.map(item => item.id === id ? { ...item, ...updated } : item));
   };
 
   const deleteArticle = (id: string) => {
-    setArticles(prev => prev.filter(item => item.id !== id));
+    setLocalArticles(prev => prev.filter(item => item.id !== id));
   };
 
   const addNote = (data: Omit<ResearchNote, 'id'>) => {
@@ -519,6 +489,13 @@ export function BlogProvider({ children }: { children: React.ReactNode }) {
     setMediaLibrary(prev => prev.filter(item => item.id !== id));
   };
 
+  /**
+   * Browser-Local Telemetry:
+   * In this client-side single page app (no database, no remote analytics backend),
+   * recordPageView operates strictly as a local counter stored in the client's localStorage.
+   * It reflects only interactions performed within the current browser instance and is NOT
+   * a global or server-wide visitor metric.
+   */
   const recordPageView = (path: string) => {
     setAnalytics(prev => {
       const pageViews = prev.pageViews + 1;
