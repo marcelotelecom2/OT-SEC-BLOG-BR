@@ -10,6 +10,9 @@ export interface Article {
   coverImage?: string;
   published: boolean;
   views?: number;
+  author?: string;
+  updatedAt?: string;
+  tags?: string[];
 }
 
 export type ContentType =

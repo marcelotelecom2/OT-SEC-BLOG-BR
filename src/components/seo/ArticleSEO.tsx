@@ -17,7 +17,17 @@ export function ArticleSEO({ article }: ArticleSEOProps) {
     return () => {
       applyDefaultSEO();
     };
-  }, [article.id, article.slug, article.title, article.summary, article.coverImage]);
+  }, [
+    article.id,
+    article.slug,
+    article.title,
+    article.summary,
+    article.coverImage,
+    article.date,
+    article.updatedAt,
+    article.author,
+    article.tags,
+  ]);
 
   return (
     <title>{`${article.title} | OT-SEC`}</title>

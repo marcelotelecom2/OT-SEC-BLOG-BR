@@ -128,6 +128,87 @@ export function setCanonicalTag(href: string | null): void {
 }
 
 /**
+ * Builds Schema.org Article structured data (JSON-LD) for an article.
+ */
+export function buildArticleStructuredData(article: Article): Record<string, unknown> {
+  const canonicalUrl = getArticleCanonicalUrl(article.slug);
+  const imageUrl = resolveImageUrl(article.coverImage);
+
+  const schema: Record<string, unknown> = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: article.title,
+    description: article.summary,
+    datePublished: article.date,
+    dateModified: article.updatedAt && article.updatedAt.trim() ? article.updatedAt.trim() : article.date,
+    mainEntityOfPage: canonicalUrl,
+    url: canonicalUrl,
+    publisher: {
+      '@type': 'Organization',
+      name: 'OT-SEC',
+    },
+  };
+
+  if (article.author && article.author.trim()) {
+    schema.author = {
+      '@type': 'Person',
+      name: article.author.trim(),
+    };
+  }
+
+  if (imageUrl) {
+    schema.image = [imageUrl];
+  }
+
+  if (Array.isArray(article.tags) && article.tags.length > 0) {
+    const validTags = article.tags
+      .map((t) => (typeof t === 'string' ? t.trim() : ''))
+      .filter((t) => t.length > 0);
+    if (validTags.length > 0) {
+      schema.keywords = validTags.join(', ');
+    }
+  }
+
+  return schema;
+}
+
+/**
+ * Injects or updates the JSON-LD script for an article in document.head.
+ */
+export function setArticleStructuredData(article: Article): void {
+  if (typeof document === 'undefined') return;
+
+  const schema = buildArticleStructuredData(article);
+  const jsonString = JSON.stringify(schema, null, 2);
+
+  let script = document.head.querySelector<HTMLScriptElement>('script#article-jsonld');
+  if (script) {
+    script.textContent = jsonString;
+  } else {
+    // Remove any untagged existing structured data scripts
+    const existing = document.head.querySelectorAll<HTMLScriptElement>('script[type="application/ld+json"]');
+    existing.forEach((el) => el.remove());
+
+    script = document.createElement('script');
+    script.id = 'article-jsonld';
+    script.type = 'application/ld+json';
+    script.textContent = jsonString;
+    document.head.appendChild(script);
+  }
+}
+
+/**
+ * Removes any Article structured data script from document.head.
+ */
+export function removeArticleStructuredData(): void {
+  if (typeof document === 'undefined') return;
+  const scripts = document.head.querySelectorAll<HTMLScriptElement>(
+    'script#article-jsonld, script[type="application/ld+json"]'
+  );
+  scripts.forEach((el) => el.remove());
+}
+
+/**
  * Applies dynamic SEO metadata for an article.
  */
 export function applyArticleSEO(article: Article): void {
@@ -158,6 +239,9 @@ export function applyArticleSEO(article: Article): void {
   setMetaTag('name', 'twitter:title', article.title);
   setMetaTag('name', 'twitter:description', description);
   setMetaTag('name', 'twitter:image', imageUrl);
+
+  // Structured Data (JSON-LD)
+  setArticleStructuredData(article);
 }
 
 /**
@@ -187,4 +271,7 @@ export function applyDefaultSEO(): void {
   setMetaTag('name', 'twitter:description', DEFAULT_SEO.twitterDescription);
   // Remove twitter:image if it exists
   setMetaTag('name', 'twitter:image', null);
+
+  // Remove Article Structured Data (JSON-LD)
+  removeArticleStructuredData();
 }
