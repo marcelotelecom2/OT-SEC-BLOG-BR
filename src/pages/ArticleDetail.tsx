@@ -6,6 +6,7 @@ import { ArrowLeft, Clock, Calendar, Eye, Tag } from 'lucide-react';
 import { DecodeText } from '../components/ui/DecodeText';
 import { ArticleContent } from '../components/article/ArticleContent';
 import { ArticleSEO } from '../components/seo/ArticleSEO';
+import { findPublicArticle } from '../lib/articleState';
 
 export function ArticleDetail() {
   const { slug, id } = useParams<{ slug?: string; id?: string }>();
@@ -14,25 +15,26 @@ export function ArticleDetail() {
   const { language, t } = useLanguage();
 
   // Procurar primeiro por article.slug, depois por article.id
-  const rawArticle = articles.find(a => a.slug === identifier) || articles.find(a => a.id === identifier);
-
-  // Backward compatibility: se acessado pelo ID antigo, redireciona para a URL com slug usando replace
-  if (rawArticle && identifier === rawArticle.id && rawArticle.slug && identifier !== rawArticle.slug) {
-    return <Navigate to={`/articles/${rawArticle.slug}`} replace />;
-  }
+  const rawArticle = findPublicArticle(articles, identifier);
 
   useEffect(() => {
-    if (rawArticle) {
+    if (rawArticle && identifier === rawArticle.slug) {
       recordPageView(`/articles/${rawArticle.slug}`);
       // Increment views count once
       updateArticle(rawArticle.id, { views: (rawArticle.views || 0) + 1 });
     }
-  }, [rawArticle?.id]);
+  }, [rawArticle?.id, identifier]);
+
+  // Keep hooks unconditional when navigating between legacy IDs and public slugs.
+  if (rawArticle && identifier === rawArticle.id && rawArticle.slug && identifier !== rawArticle.slug) {
+    return <Navigate to={`/articles/${rawArticle.slug}`} replace />;
+  }
 
   if (!rawArticle) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-24 text-center font-mono">
         <title>Article Not Found | OT-SEC</title>
+        <meta name="robots" content="noindex, follow" />
         <h2 className="text-xl text-rose-400 mb-4">{t.articleDetail.notFoundTitle}</h2>
         <p className="text-gray-500 mb-8">{t.articleDetail.notFoundDesc}</p>
         <Link to="/articles" className="px-4 py-2 bg-cyan-500 text-black font-bold text-xs uppercase rounded">

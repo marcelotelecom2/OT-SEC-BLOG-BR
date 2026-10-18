@@ -6,6 +6,7 @@ import { TerminalLoader } from '../components/ui/TerminalLoader';
 import { useBlog } from '../context/BlogContext';
 import { useLanguage } from '../context/LanguageContext';
 import { sanitizeExternalUrl } from '../lib/sanitizeUrl';
+import { publicNotes } from '../lib/articleState';
 import { 
   CONTENT_TYPES, 
   getNoteContentType, 
@@ -33,6 +34,7 @@ export function Research() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [selectedType, setSelectedType] = useState<string>('All');
   const [selectedTag, setSelectedTag] = useState<string>('All');
+  const publishedNotes = useMemo(() => publicNotes(notes), [notes]);
 
   useEffect(() => {
     recordPageView('/insights');
@@ -41,15 +43,13 @@ export function Research() {
   // Dynamically extract unique technical tags from the actual notes content
   const availableTags = useMemo(() => {
     const set = new Set<string>();
-    notes.forEach((note) => {
+    publishedNotes.forEach((note) => {
       getNoteTags(note).forEach((t) => set.add(t));
     });
     return Array.from(set).sort();
-  }, [notes]);
+  }, [publishedNotes]);
 
-  const filteredNotes = notes.filter((note) => {
-    if (note.published === false) return false;
-
+  const filteredNotes = publishedNotes.filter((note) => {
     const noteType = getNoteContentType(note);
     const matchesType = selectedType === 'All' || noteType.toLowerCase() === selectedType.toLowerCase();
 

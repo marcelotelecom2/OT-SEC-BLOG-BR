@@ -144,6 +144,12 @@ export function main() {
 
   // Filter only published articles
   const publishedArticles = ARTICLES_METADATA.filter((article) => article.published === true);
+  for (const article of publishedArticles) {
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(article.slug)) {
+      throw new Error(`Invalid article slug: ${article.slug}`);
+    }
+  }
+  const expectedFiles = new Set(publishedArticles.map(article => `${article.slug}.html`));
 
   console.log(`[Prerender] Found ${publishedArticles.length} published articles to prerender.`);
 
@@ -157,6 +163,9 @@ export function main() {
       if (item.isDirectory()) {
         const itemDir = path.resolve(articlesDir, item.name);
         fs.rmSync(itemDir, { recursive: true, force: true });
+      } else if (item.isFile() && item.name.endsWith('.html') && !expectedFiles.has(item.name)) {
+        // Standalone prerenders must not retain pages for articles that were unpublished or removed.
+        fs.unlinkSync(path.resolve(articlesDir, item.name));
       }
     }
   }

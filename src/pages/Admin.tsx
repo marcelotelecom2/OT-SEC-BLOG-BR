@@ -28,7 +28,7 @@ import { downloadArticleExport } from '../lib/articleExport';
 
 export function Admin() {
   const {
-    adminArticles: articles, notes, projects, mediaLibrary, analytics,
+    adminArticles: articles, adminNotes: notes, projects, mediaLibrary, analytics,
     isAdminLoggedIn, loginAdmin, logoutAdmin, changePassword,
     addArticle, updateArticle, deleteArticle,
     addNote, updateNote, deleteNote,

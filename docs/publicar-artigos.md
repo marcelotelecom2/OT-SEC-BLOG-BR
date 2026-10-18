@@ -36,6 +36,19 @@ preservado e a importação atualiza a entrada existente. Um slug ocupado por ou
 artigo é recusado. A exportação preserva autor, tags, datas e conteúdo; contadores
 do navegador não são publicados.
 
+Somente artigos com `published: true` entram no JavaScript público. Os demais
+Markdown, metadados e traduções não são incluídos. Notas com `published: false`
+também ficam fora das páginas, dos filtros e dos dados públicos gerados.
+As notas antigas sem esse campo mantêm sua visibilidade por compatibilidade.
+Rascunhos locais continuam disponíveis no editor. Não guarde documentos ou imagens
+confidenciais em `public/`: essa pasta é copiada integralmente para o site.
+Este repositório é público: qualquer arquivo enviado ao GitHub pode ser consultado,
+mesmo que não entre no build. Mantenha material confidencial fora do repositório,
+por exemplo no editor local e em arquivos exportados guardados de forma privada.
+
+Para verificar o isolamento de rascunhos, execute `npm run test:drafts`. O teste
+monta uma cópia temporária, gera um build e verifica conteúdo, rotas e filtros.
+
 Ocultar um artigo na lista do painel só afeta esse navegador. Para retirá-lo do
 site, remova a entrada correspondente dos metadados e o Markdown no projeto e
 publique essa alteração pelo GitHub.

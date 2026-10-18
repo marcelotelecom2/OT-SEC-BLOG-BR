@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import type { Article } from '../types';
-import { mergeArticles, updateLocalArticle } from './articleState';
+import { findPublicArticle, mergeArticles, publicNotes, updateLocalArticle } from './articleState';
 
 const article: Article = {
   id: '1', slug: 'published-article', title: 'Version A', summary: 'Original summary',
@@ -87,4 +87,36 @@ test('empty or unknown updates do not create phantom local articles', () => {
   const local: Article[] = [];
   assert.strictEqual(updateLocalArticle(local, [article], '1', {}), local);
   assert.strictEqual(updateLocalArticle(local, [article], 'missing', { content: 'Text' }), local);
+});
+
+test('repository drafts are excluded publicly while local drafts remain available to the editor', () => {
+  const draft = { ...article, id: 'draft', slug: 'private-draft', published: false };
+  assert.deepEqual(mergeArticles([article, draft], [], [], {}), [article]);
+  assert.deepEqual(mergeArticles([article], [draft], [], {}, true), [draft, article]);
+  assert.equal(findPublicArticle([draft], draft.slug), undefined);
+  assert.equal(findPublicArticle([draft], draft.id), undefined);
+});
+
+test('public article lookup fails closed for missing status and supports published legacy IDs', () => {
+  const unknown = { ...article, published: undefined };
+  assert.equal(findPublicArticle([unknown], article.slug), undefined);
+  assert.deepEqual(mergeArticles([unknown], [], [], {}), []);
+  assert.strictEqual(findPublicArticle([article], article.slug), article);
+  assert.strictEqual(findPublicArticle([article], article.id), article);
+});
+
+test('a draft cannot hide a public article sharing its slug', () => {
+  const draft = { ...article, id: 'draft', published: false };
+  assert.strictEqual(findPublicArticle([draft, article], article.slug), article);
+});
+
+test('notes are filtered before selecting Home cards or extracting public filter tags', () => {
+  const draft = { id: 'draft', date: '2026-10-18', content: 'Private note', tag: '#PRIVATE', published: false };
+  const legacy = { id: 'legacy', date: '2026-10-18', content: 'Existing note', tag: '#ICS' };
+  const ready = { ...legacy, id: 'ready', published: true };
+  const notes = [draft, legacy, ready];
+  assert.deepEqual(publicNotes(notes).slice(0, 3), [legacy, ready]);
+  assert.deepEqual(publicNotes(notes).map(note => note.tag), ['#ICS', '#ICS']);
+  assert.equal(notes[0].content, 'Private note');
+  assert.deepEqual(publicNotes([{ ...draft, published: 'false' } as any, { ...draft, published: null } as any]), []);
 });

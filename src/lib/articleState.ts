@@ -1,4 +1,14 @@
-import type { Article } from '../types';
+import type { Article, ResearchNote } from '../types';
+
+export function publicNotes(notes: ResearchNote[]): ResearchNote[] {
+  // Existing notes without a status predate draft support and remain published.
+  return notes.filter(note => note.published === true || note.published === undefined);
+}
+
+export function findPublicArticle(articles: Article[], identifier: string): Article | undefined {
+  return articles.find(article => article.published === true && article.slug === identifier)
+    ?? articles.find(article => article.published === true && article.id === identifier);
+}
 
 /** Published files always win on public pages. Local edits remain available in Admin. */
 export function mergeArticles(
@@ -15,7 +25,7 @@ export function mergeArticles(
     ...visibleLocal,
     ...published.filter(article => !localIds.has(article.id)),
   ]
-    .filter(article => !includeLocalEdits || !deletedIds.includes(article.id))
+    .filter(article => includeLocalEdits ? !deletedIds.includes(article.id) : article.published === true)
     .map(article => ({ ...article, views: views[article.id] ?? article.views ?? 0 }));
 }
 

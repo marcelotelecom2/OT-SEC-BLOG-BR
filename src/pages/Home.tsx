@@ -8,6 +8,7 @@ import { SpotlightCard } from '../components/ui/SpotlightCard';
 import { useBlog } from '../context/BlogContext';
 import { useLanguage, getLocalizedArticle } from '../context/LanguageContext';
 import { getTagBadgeStyle, getAuthorBadgeStyle } from '../constants/researchClassification';
+import { publicNotes } from '../lib/articleState';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -37,7 +38,7 @@ export function Home() {
     .slice(0, 3)
     .map(a => getLocalizedArticle(a, language));
 
-  const latestNotes = notes.slice(0, 3);
+  const latestNotes = publicNotes(notes).slice(0, 3);
 
   const researchAreas = [
     { id: '1', title: t.home.area1Title, icon: Shield, desc: t.home.area1Desc },
