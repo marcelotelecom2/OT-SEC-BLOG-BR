@@ -4,6 +4,25 @@ export type ArticleMetadata = Omit<Article, 'content'> & { contentFile: string }
 
 export const ARTICLES_METADATA: ArticleMetadata[] = [
 {
+  "id": "9",
+  "contentFile": "iec-62351-ameacas-nao-intencionais.md",
+  "slug": "iec-62351-ameacas-nao-intencionais-seguranca-ot",
+  "title": "IEC 62351: ameaças não intencionais também fazem parte da segurança OT",
+  "summary": "A IEC 62351-1 amplia a segurança OT ao considerar falhas humanas, equipamentos, safety e desastres naturais como ameaças aos sistemas elétricos.",
+  "date": "2026-10-18",
+  "readTime": "4 min de leitura",
+  "area": "Regulation Update",
+  "author": "Walter Rodrigues",
+  "published": true,
+  "views": 0,
+  "tags": [
+    "IEC 62351",
+    "OT Security",
+    "Sistemas elétricos"
+  ],
+  "coverImage": "/images/articles/iec-62351-ameacas-nao-intencionais.jpg"
+},
+{
   "id": "8",
   contentFile: 'iec-62351-entendendo-ameacas-deliberadas.md',
   "slug": "iec-62351-entendendo-ameacas-deliberadas-sistemas-eletricos",
