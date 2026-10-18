@@ -9,9 +9,12 @@ import nercCipContent from './nerc-cip-002-bes-classification.md?raw';
 
 import deliberateThreatsContent from './iec-62351-ameacas-deliberadas.md?raw';
 
+import understandingThreatsContent from './iec-62351-entendendo-ameacas-deliberadas.md?raw';
+
 export { ARTICLES_METADATA };
 
 const contentMap: Record<string, string> = {
+  '8': understandingThreatsContent,
   '7': deliberateThreatsContent,
   '1': aiContent,
   '2': stuxnetContent,
