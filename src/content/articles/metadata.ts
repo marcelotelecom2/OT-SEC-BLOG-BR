@@ -4,6 +4,25 @@ export type ArticleMetadata = Omit<Article, 'content'> & { contentFile: string }
 
 export const ARTICLES_METADATA: ArticleMetadata[] = [
 {
+  "id": "11",
+  "contentFile": "iec-62351-requisitos-ameacas-vulnerabilidades.md",
+  "slug": "iec-62351-requisitos-ameacas-vulnerabilidades-seguranca",
+  "title": "IEC 62351: requisitos, ameaças e vulnerabilidades de segurança",
+  "summary": "Uma síntese comentada das seções 5.3.1 a 5.3.3 da IEC 62351-1: requisitos de segurança, ameaças e vulnerabilidades nos sistemas elétricos.",
+  "date": "2026-10-18",
+  "readTime": "3 min de leitura",
+  "area": "Regulation Update",
+  "author": "Walter Rodrigues",
+  "published": true,
+  "views": 0,
+  "tags": [
+    "IEC 62351",
+    "OT Security",
+    "Sistemas elétricos"
+  ],
+  "coverImage": "/images/articles/iec-62351-requisitos-ameacas-vulnerabilidades.jpg"
+},
+{
   "id": "10",
   "contentFile": "iec-62351-ameacas-deliberadas-sistemas-eletricos.md",
   "slug": "iec-62351-ameacas-deliberadas-sistemas-eletricos",
