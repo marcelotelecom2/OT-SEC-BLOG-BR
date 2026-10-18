@@ -7,9 +7,12 @@ import fiveGContent from './5g-smart-grid-security.md?raw';
 import reverseEngContent from './reverse-engineering-plc-protocols.md?raw';
 import nercCipContent from './nerc-cip-002-bes-classification.md?raw';
 
+import deliberateThreatsContent from './iec-62351-ameacas-deliberadas.md?raw';
+
 export { ARTICLES_METADATA };
 
 const contentMap: Record<string, string> = {
+  '7': deliberateThreatsContent,
   '1': aiContent,
   '2': stuxnetContent,
   '3': zeroTrustContent,
