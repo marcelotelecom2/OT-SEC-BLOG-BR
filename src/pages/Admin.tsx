@@ -27,7 +27,7 @@ import { ArticleEditorModal } from '../components/admin/ArticleEditorModal';
 
 export function Admin() {
   const {
-    articles, notes, projects, mediaLibrary, analytics,
+    adminArticles: articles, notes, projects, mediaLibrary, analytics,
     isAdminLoggedIn, loginAdmin, logoutAdmin, changePassword,
     addArticle, updateArticle, deleteArticle,
     addNote, updateNote, deleteNote,
@@ -567,6 +567,10 @@ export function Admin() {
       {/* ========================================================= */}
       {activeTab === 'articles' && (
         <div className="space-y-6">
+          <p className="text-xs text-amber-300 border border-amber-900/60 bg-amber-950/20 p-3 rounded">
+            Artigos, rascunhos e edições locais ficam disponíveis neste painel e no preview do editor.
+            As páginas públicas usam a versão dos arquivos publicada pelo GitHub e Cloudflare Pages.
+          </p>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-gray-950/60 p-4 border border-gray-800 rounded">
             <div className="relative flex-1 max-w-md">
               <Search className="w-4 h-4 absolute left-3 top-3 text-gray-500" />

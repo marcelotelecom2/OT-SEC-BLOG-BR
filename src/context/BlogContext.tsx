@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Article, ResearchNote, Project, MediaItem, AnalyticsKPIs } from '../types';
 import { PUBLISHED_ARTICLES } from '../content/articles';
+import { mergeArticles, updateLocalArticle } from '../lib/articleState';
 
 const INITIAL_NOTES: ResearchNote[] = [
   {
@@ -135,6 +136,7 @@ const INITIAL_ANALYTICS: AnalyticsKPIs = {
 
 interface BlogContextType {
   articles: Article[];
+  adminArticles: Article[];
   notes: ResearchNote[];
   projects: Project[];
   mediaLibrary: MediaItem[];
@@ -272,22 +274,9 @@ export function BlogProvider({ children }: { children: React.ReactNode }) {
     return {};
   });
 
-  // Canonical published articles are merged with local articles (which take precedence if edited)
-  // and filtered if deleted.
-  const articles: Article[] = [
-    ...localArticles
-      .filter(loc => !deletedArticleIds.includes(loc.id))
-      .map(loc => ({
-        ...loc,
-        views: articleViews[loc.id] !== undefined ? articleViews[loc.id] : (loc.views ?? 0)
-      })),
-    ...PUBLISHED_ARTICLES
-      .filter(pub => !deletedArticleIds.includes(pub.id) && !localArticles.some(loc => loc.id === pub.id))
-      .map(pub => ({
-        ...pub,
-        views: articleViews[pub.id] !== undefined ? articleViews[pub.id] : pub.views
-      }))
-  ];
+  // Ignore old reading snapshots on public pages without deleting local editorial work.
+  const articles = mergeArticles(PUBLISHED_ARTICLES, localArticles, deletedArticleIds, articleViews);
+  const adminArticles = mergeArticles(PUBLISHED_ARTICLES, localArticles, deletedArticleIds, articleViews, true);
 
   // Save local articles / drafts and views to localStorage
   useEffect(() => {
@@ -417,18 +406,7 @@ export function BlogProvider({ children }: { children: React.ReactNode }) {
         [id]: updated.views!
       }));
     }
-    setLocalArticles(prev => {
-      const exists = prev.some(item => item.id === id);
-      if (exists) {
-        return prev.map(item => item.id === id ? { ...item, ...updated } : item);
-      }
-      // If it's an existing canonical article being edited for the first time, clone it into localArticles
-      const canonical = PUBLISHED_ARTICLES.find(item => item.id === id);
-      if (canonical) {
-        return [{ ...canonical, ...updated }, ...prev];
-      }
-      return prev;
-    });
+    setLocalArticles(prev => updateLocalArticle(prev, PUBLISHED_ARTICLES, id, updated));
   };
 
   const deleteArticle = (id: string) => {
@@ -597,6 +575,7 @@ export function BlogProvider({ children }: { children: React.ReactNode }) {
     <BlogContext.Provider
       value={{
         articles,
+        adminArticles,
         notes,
         projects,
         mediaLibrary,

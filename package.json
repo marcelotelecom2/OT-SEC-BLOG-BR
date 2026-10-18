@@ -11,7 +11,8 @@
     "prerender": "tsx scripts/prerender-articles.ts",
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "test:articles": "tsx --test src/lib/articleState.test.ts"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",

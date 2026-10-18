@@ -1007,7 +1007,7 @@ export function ArticleEditorModal({
                   className="accent-cyan-500 w-4 h-4 cursor-pointer"
                 />
                 <label htmlFor="modal_published_check" className="text-gray-300 cursor-pointer font-sans text-xs">
-                  Publicar imediatamente no site (Status: <span className={published ? 'text-emerald-400 font-bold' : 'text-amber-400 font-bold'}>{published ? 'PUBLISHED' : 'DRAFT'}</span>)
+                  Marcar como publicado na prévia local (Status: <span className={published ? 'text-emerald-400 font-bold' : 'text-amber-400 font-bold'}>{published ? 'PUBLISHED' : 'DRAFT'}</span>)
                 </label>
               </div>
             </div>
