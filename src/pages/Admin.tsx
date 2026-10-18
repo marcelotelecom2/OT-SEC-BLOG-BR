@@ -11,7 +11,7 @@ import {
   BarChart3, FileText, FlaskConical, FolderGit2, Image as ImageIcon,
   Plus, Trash2, Edit3, Lock, Unlock, Eye, Upload, Copy, Check,
   ExternalLink, Search, RefreshCw, ShieldCheck, Activity, Globe,
-  ArrowUpRight, Users, Clock, Zap, KeyRound, ShieldAlert
+  ArrowUpRight, Users, Clock, Zap, KeyRound, ShieldAlert, RotateCcw
 } from 'lucide-react';
 import { Article, ResearchNote, Project } from '../types';
 import { 
@@ -31,7 +31,7 @@ export function Admin() {
     addArticle, updateArticle, deleteArticle,
     addNote, updateNote, deleteNote,
     addProject, updateProject, deleteProject,
-    uploadImage, deleteMedia
+    uploadImage, deleteMedia, resetCounters
   } = useBlog();
 
   const [password, setPassword] = useState('');
@@ -58,6 +58,10 @@ export function Admin() {
   const [newPasswordInput, setNewPasswordInput] = useState('');
   const [confirmPasswordInput, setConfirmPasswordInput] = useState('');
   const [passwordStatus, setPasswordStatus] = useState<{ type: 'error' | 'success' | null; message: string }>({ type: null, message: '' });
+
+  // Reset Counters Modal State
+  const [showResetModal, setShowResetModal] = useState(false);
+  const [resetSuccessMessage, setResetSuccessMessage] = useState<string | null>(null);
 
   // Drag & drop upload state
   const [isDragging, setIsDragging] = useState(false);
@@ -101,6 +105,13 @@ export function Admin() {
       size: '1.4 MB',
       type: 'image/png'
     });
+  };
+
+  const handleResetCounters = () => {
+    resetCounters();
+    setShowResetModal(false);
+    setResetSuccessMessage('Todos os contadores foram zerados com sucesso (artigos e analítica em 0).');
+    setTimeout(() => setResetSuccessMessage(null), 4000);
   };
 
   // -------------------------------------------------------------
@@ -206,6 +217,13 @@ export function Admin() {
             <KeyRound className="w-3.5 h-3.5 shrink-0" /> Change Password
           </button>
           <button
+            onClick={() => setShowResetModal(true)}
+            className="px-3 py-1.5 text-xs font-mono text-amber-400 border border-amber-800/60 bg-amber-950/30 hover:bg-amber-900/40 rounded transition-colors flex items-center gap-1.5 min-h-[36px]"
+            title="Zerar todos os contadores de visualizações e acessos do sistema"
+          >
+            <RotateCcw className="w-3.5 h-3.5 shrink-0" /> Zerar Contadores
+          </button>
+          <button
             onClick={logoutAdmin}
             className="px-3 py-1.5 text-xs font-mono text-rose-400 border border-rose-900/60 bg-rose-950/20 hover:bg-rose-900/40 rounded transition-colors flex items-center gap-1.5 min-h-[36px]"
           >
@@ -247,6 +265,26 @@ export function Admin() {
         })}
       </div>
 
+      {/* Reset Success Feedback */}
+      {resetSuccessMessage && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-6 p-4 bg-emerald-950/40 border border-emerald-800/80 rounded text-emerald-300 font-mono text-xs flex items-center justify-between"
+        >
+          <div className="flex items-center gap-2">
+            <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+            <span>{resetSuccessMessage}</span>
+          </div>
+          <button
+            onClick={() => setResetSuccessMessage(null)}
+            className="text-gray-400 hover:text-white ml-4 text-xs font-mono"
+          >
+            ✕
+          </button>
+        </motion.div>
+      )}
+
       {/* TAB CONTENT */}
 
       {/* ========================================================= */}
@@ -254,6 +292,26 @@ export function Admin() {
       {/* ========================================================= */}
       {activeTab === 'kpis' && (
         <div className="space-y-8">
+          {/* Action Header for KPIs */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-gray-950/60 p-4 border border-gray-800 rounded">
+            <div>
+              <h2 className="text-sm font-bold text-white font-mono flex items-center gap-2">
+                <Activity className="w-4 h-4 text-cyan-400" />
+                MÉTRICAS &amp; CONTADORES DO SISTEMA
+              </h2>
+              <p className="text-xs font-mono text-gray-500">
+                Acompanhamento em tempo real de acessos, tráfego e visualizações
+              </p>
+            </div>
+            <button
+              onClick={() => setShowResetModal(true)}
+              className="px-3 py-1.5 text-xs font-mono text-amber-400 border border-amber-800/60 bg-amber-950/30 hover:bg-amber-900/40 rounded transition-colors flex items-center gap-1.5 self-start sm:self-auto min-h-[36px]"
+              title="Zerar todos os contadores do sistema"
+            >
+              <RotateCcw className="w-3.5 h-3.5 shrink-0" /> Zerar Contadores
+            </button>
+          </div>
+
           {/* Top KPI Metric Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <SpotlightCard className="p-5 border border-gray-800/80 bg-gray-900/20">
@@ -262,8 +320,14 @@ export function Admin() {
                 <Users className="w-4 h-4 text-cyan-400" />
               </div>
               <div className="text-2xl font-bold text-white font-mono">{analytics.totalVisitors.toLocaleString()}</div>
-              <div className="flex items-center gap-1 text-xs text-emerald-400 font-mono mt-2">
-                <ArrowUpRight className="w-3.5 h-3.5" /> +14.2% vs last week
+              <div className="flex items-center gap-1 text-xs text-gray-500 font-mono mt-2">
+                {analytics.totalVisitors > 0 ? (
+                  <span className="text-emerald-400 flex items-center gap-1">
+                    <ArrowUpRight className="w-3.5 h-3.5" /> Atividade ativa
+                  </span>
+                ) : (
+                  <span>Contador zerado</span>
+                )}
               </div>
             </SpotlightCard>
 
@@ -273,8 +337,14 @@ export function Admin() {
                 <Eye className="w-4 h-4 text-cyan-400" />
               </div>
               <div className="text-2xl font-bold text-white font-mono">{analytics.pageViews.toLocaleString()}</div>
-              <div className="flex items-center gap-1 text-xs text-emerald-400 font-mono mt-2">
-                <ArrowUpRight className="w-3.5 h-3.5" /> +22.8% vs last week
+              <div className="flex items-center gap-1 text-xs text-gray-500 font-mono mt-2">
+                {analytics.pageViews > 0 ? (
+                  <span className="text-emerald-400 flex items-center gap-1">
+                    <ArrowUpRight className="w-3.5 h-3.5" /> Visualizações ativas
+                  </span>
+                ) : (
+                  <span>Contador zerado</span>
+                )}
               </div>
             </SpotlightCard>
 
@@ -284,8 +354,8 @@ export function Admin() {
                 <Clock className="w-4 h-4 text-cyan-400" />
               </div>
               <div className="text-2xl font-bold text-white font-mono">{analytics.avgTimeOnSite}</div>
-              <div className="text-xs text-cyan-400/80 font-mono mt-2">
-                High engagement in technical articles
+              <div className="text-xs text-gray-500 font-mono mt-2">
+                {analytics.pageViews > 0 ? 'Duração média de sessão' : 'Sem sessões ativas'}
               </div>
             </SpotlightCard>
 
@@ -295,8 +365,8 @@ export function Admin() {
                 <Zap className="w-4 h-4 text-cyan-400" />
               </div>
               <div className="text-2xl font-bold text-white font-mono">{analytics.bounceRate}</div>
-              <div className="text-xs text-emerald-400 font-mono mt-2">
-                -3.1% (Optimal retention)
+              <div className="text-xs text-gray-500 font-mono mt-2">
+                {analytics.pageViews > 0 ? 'Taxa de retenção' : 'Sem rejeição registrada'}
               </div>
             </SpotlightCard>
           </div>
@@ -353,26 +423,34 @@ export function Admin() {
                 <p className="text-xs font-mono text-gray-500 mb-4">Origin of lab visitors</p>
 
                 <div className="h-48 w-full">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={analytics.trafficSources}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={45}
-                        outerRadius={70}
-                        paddingAngle={5}
-                        dataKey="value"
-                      >
-                        {analytics.trafficSources.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
-                      </Pie>
-                      <Tooltip
-                        contentStyle={{ backgroundColor: '#090a0f', borderColor: '#1f2937', color: '#fff', fontSize: '11px', fontFamily: 'monospace' }}
-                      />
-                    </PieChart>
-                  </ResponsiveContainer>
+                  {analytics.trafficSources.some(s => s.value > 0) ? (
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={analytics.trafficSources}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={45}
+                          outerRadius={70}
+                          paddingAngle={5}
+                          dataKey="value"
+                        >
+                          {analytics.trafficSources.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.color} />
+                          ))}
+                        </Pie>
+                        <Tooltip
+                          contentStyle={{ backgroundColor: '#090a0f', borderColor: '#1f2937', color: '#fff', fontSize: '11px', fontFamily: 'monospace' }}
+                        />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <div className="h-full w-full flex flex-col items-center justify-center border border-dashed border-gray-800/80 rounded bg-gray-950/40 text-center p-4">
+                      <Globe className="w-5 h-5 text-cyan-500/40 mb-1.5" />
+                      <span className="text-xs font-mono text-gray-400">Contadores zerados</span>
+                      <span className="text-[10px] font-mono text-gray-600 mt-0.5">Sem tráfego registrado</span>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -396,12 +474,18 @@ export function Admin() {
             <SpotlightCard className="p-6 border border-gray-800/80">
               <h3 className="text-base font-bold text-white font-sans mb-4">Top Viewed Routes</h3>
               <div className="space-y-3">
-                {Object.entries(analytics.pageViewCounts).map(([route, count]) => (
-                  <div key={route} className="flex items-center justify-between p-3 bg-gray-950/60 border border-gray-800/50 rounded font-mono text-xs">
-                    <span className="text-cyan-400">{route}</span>
-                    <span className="text-gray-300 font-bold">{count.toLocaleString()} views</span>
+                {Object.keys(analytics.pageViewCounts).length === 0 ? (
+                  <div className="p-4 bg-gray-950/60 border border-dashed border-gray-800/80 rounded font-mono text-xs text-gray-500 text-center">
+                    Nenhuma rota visualizada ainda (contadores zerados).
                   </div>
-                ))}
+                ) : (
+                  Object.entries(analytics.pageViewCounts).map(([route, count]) => (
+                    <div key={route} className="flex items-center justify-between p-3 bg-gray-950/60 border border-gray-800/50 rounded font-mono text-xs">
+                      <span className="text-cyan-400">{route}</span>
+                      <span className="text-gray-300 font-bold">{count.toLocaleString()} views</span>
+                    </div>
+                  ))
+                )}
               </div>
             </SpotlightCard>
 
@@ -415,18 +499,24 @@ export function Admin() {
                 <span className="text-xs font-mono text-gray-500">Auto-refreshing</span>
               </div>
               <div className="space-y-2.5">
-                {analytics.recentEvents.map((ev) => (
-                  <div key={ev.id} className="p-2.5 bg-gray-950/80 border border-gray-800/60 rounded font-mono text-xs flex items-center justify-between">
-                    <div className="flex items-center gap-2 overflow-hidden">
-                      <span className="text-gray-500 text-[10px] shrink-0">{ev.time}</span>
-                      <span className="text-gray-200 truncate">{ev.event}</span>
-                    </div>
-                    <div className="text-right shrink-0">
-                      <span className="text-cyan-400/80 text-[10px] block">{ev.ip}</span>
-                      <span className="text-gray-500 text-[9px] block">{ev.location}</span>
-                    </div>
+                {analytics.recentEvents.length === 0 ? (
+                  <div className="p-4 bg-gray-950/80 border border-dashed border-gray-800/60 rounded font-mono text-xs text-gray-500 text-center">
+                    Nenhum evento registrado no momento (log zerado).
                   </div>
-                ))}
+                ) : (
+                  analytics.recentEvents.map((ev) => (
+                    <div key={ev.id} className="p-2.5 bg-gray-950/80 border border-gray-800/60 rounded font-mono text-xs flex items-center justify-between">
+                      <div className="flex items-center gap-2 overflow-hidden">
+                        <span className="text-gray-500 text-[10px] shrink-0">{ev.time}</span>
+                        <span className="text-gray-200 truncate">{ev.event}</span>
+                      </div>
+                      <div className="text-right shrink-0">
+                        <span className="text-cyan-400/80 text-[10px] block">{ev.ip}</span>
+                        <span className="text-gray-500 text-[9px] block">{ev.location}</span>
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
             </SpotlightCard>
           </div>
@@ -449,23 +539,32 @@ export function Admin() {
                 className="w-full pl-9 pr-4 py-2 bg-gray-900 border border-gray-800 text-xs font-mono text-gray-200 focus:outline-none focus:border-cyan-500 rounded"
               />
             </div>
-            <button
-              onClick={() => {
-                setEditingArticle({
-                  title: '',
-                  summary: '',
-                  content: '',
-                  area: 'ICS Security',
-                  readTime: '10 min read',
-                  date: new Date().toISOString().split('T')[0],
-                  published: true
-                });
-                setShowArticleForm(true);
-              }}
-              className="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-mono font-bold text-xs uppercase rounded transition-colors flex items-center gap-2 justify-center"
-            >
-              <Plus className="w-4 h-4" /> New Article Post
-            </button>
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                onClick={() => setShowResetModal(true)}
+                className="px-3 py-2 border border-amber-800/60 bg-amber-950/30 hover:bg-amber-900/40 text-amber-400 font-mono text-xs uppercase rounded transition-colors flex items-center gap-1.5"
+                title="Zerar todos os contadores de visualizações"
+              >
+                <RotateCcw className="w-3.5 h-3.5" /> Zerar Contadores
+              </button>
+              <button
+                onClick={() => {
+                  setEditingArticle({
+                    title: '',
+                    summary: '',
+                    content: '',
+                    area: 'ICS Security',
+                    readTime: '10 min read',
+                    date: new Date().toISOString().split('T')[0],
+                    published: true
+                  });
+                  setShowArticleForm(true);
+                }}
+                className="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-mono font-bold text-xs uppercase rounded transition-colors flex items-center gap-2 justify-center"
+              >
+                <Plus className="w-4 h-4" /> New Article Post
+              </button>
+            </div>
           </div>
 
           {/* Article List Table */}
@@ -1381,6 +1480,65 @@ export function Admin() {
                   </button>
                 </div>
               </form>
+            </SpotlightCard>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Reset Counters Confirmation Modal */}
+      {showResetModal && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="w-full max-w-md"
+          >
+            <SpotlightCard className="p-6 hud-border bg-[#090a0f] border-amber-900/50 space-y-4">
+              <div className="flex items-center justify-between border-b border-gray-800 pb-3">
+                <div className="flex items-center gap-2 text-amber-400">
+                  <ShieldAlert className="w-5 h-5 shrink-0" />
+                  <h3 className="text-base font-bold font-sans uppercase tracking-wider text-white">
+                    Zerar Contadores
+                  </h3>
+                </div>
+                <button
+                  onClick={() => setShowResetModal(false)}
+                  className="text-gray-500 hover:text-white font-mono text-sm"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div className="space-y-3 font-mono text-xs text-gray-300">
+                <p>
+                  Esta operação irá redefinir imediatamente todos os contadores do sistema para <span className="text-cyan-400 font-bold">0</span>:
+                </p>
+                <ul className="list-disc list-inside space-y-1 text-gray-400 pl-1">
+                  <li>Visualizações de todos os artigos publicados</li>
+                  <li>Contadores de visitantes (Total Visitors, Page Views)</li>
+                  <li>Histórico de acessos por rota e telemetria de rede</li>
+                </ul>
+                <p className="text-amber-400/90 text-[11px] pt-1">
+                  ⚠ Os contadores serão zerados na memória do site e no armazenamento local persistente.
+                </p>
+              </div>
+
+              <div className="flex justify-end gap-3 pt-4 border-t border-gray-800">
+                <button
+                  type="button"
+                  onClick={() => setShowResetModal(false)}
+                  className="px-4 py-2 border border-gray-800 text-gray-400 hover:text-white rounded text-xs font-mono"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  onClick={handleResetCounters}
+                  className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-black font-mono font-bold text-xs uppercase rounded flex items-center gap-1.5 shadow-[0_0_12px_rgba(245,158,11,0.3)] transition-colors"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" /> Confirmar e Zerar
+                </button>
+              </div>
             </SpotlightCard>
           </motion.div>
         </div>

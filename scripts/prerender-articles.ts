@@ -147,6 +147,20 @@ export function main() {
 
   console.log(`[Prerender] Found ${publishedArticles.length} published articles to prerender.`);
 
+  const articlesDir = path.resolve(distDir, 'articles');
+  if (!fs.existsSync(articlesDir)) {
+    fs.mkdirSync(articlesDir, { recursive: true });
+  } else {
+    // Clean up any legacy directory versions inside dist/articles (e.g. dist/articles/{slug}/)
+    const items = fs.readdirSync(articlesDir, { withFileTypes: true });
+    for (const item of items) {
+      if (item.isDirectory()) {
+        const itemDir = path.resolve(articlesDir, item.name);
+        fs.rmSync(itemDir, { recursive: true, force: true });
+      }
+    }
+  }
+
   let count = 0;
   for (const articleMeta of publishedArticles) {
     const article: Article = {
@@ -154,13 +168,14 @@ export function main() {
     };
 
     const articleHtml = prerenderArticleHtml(templateHtml, article);
-    const articleDir = path.resolve(distDir, 'articles', article.slug);
 
-    if (!fs.existsSync(articleDir)) {
-      fs.mkdirSync(articleDir, { recursive: true });
+    // Remove legacy directory if it still exists
+    const legacyArticleDir = path.resolve(articlesDir, article.slug);
+    if (fs.existsSync(legacyArticleDir) && fs.statSync(legacyArticleDir).isDirectory()) {
+      fs.rmSync(legacyArticleDir, { recursive: true, force: true });
     }
 
-    const outputFilePath = path.resolve(articleDir, 'index.html');
+    const outputFilePath = path.resolve(articlesDir, `${article.slug}.html`);
     fs.writeFileSync(outputFilePath, articleHtml, 'utf-8');
     count++;
     console.log(`[Prerender] Generated static HTML for: /articles/${article.slug} (${outputFilePath})`);

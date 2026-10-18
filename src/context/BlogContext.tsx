@@ -110,39 +110,27 @@ const INITIAL_MEDIA: MediaItem[] = [
 ];
 
 const INITIAL_ANALYTICS: AnalyticsKPIs = {
-  totalVisitors: 18420,
-  pageViews: 42190,
-  uniqueIPs: 12890,
-  avgTimeOnSite: '4m 12s',
-  bounceRate: '28.4%',
+  totalVisitors: 0,
+  pageViews: 0,
+  uniqueIPs: 0,
+  avgTimeOnSite: '0m 00s',
+  bounceRate: '0.0%',
   trafficSources: [
-    { name: 'Direct (IP/Bookmark)', value: 42, color: '#06b6d4' },
-    { name: 'Threat Intel Feeds', value: 28, color: '#3b82f6' },
-    { name: 'Search Engines', value: 18, color: '#10b981' },
-    { name: 'Academic Networks', value: 12, color: '#f43f5e' }
+    { name: 'Direct (IP/Bookmark)', value: 0, color: '#06b6d4' },
+    { name: 'Threat Intel Feeds', value: 0, color: '#3b82f6' },
+    { name: 'Search Engines', value: 0, color: '#10b981' },
+    { name: 'Academic Networks', value: 0, color: '#f43f5e' }
   ],
   hourlyTraffic: [
-    { hour: '00:00', views: 420, visitors: 180 },
-    { hour: '04:00', views: 210, visitors: 90 },
-    { hour: '08:00', views: 890, visitors: 410 },
-    { hour: '12:00', views: 1650, visitors: 780 },
-    { hour: '16:00', views: 1890, visitors: 910 },
-    { hour: '20:00', views: 1120, visitors: 540 }
+    { hour: '00:00', views: 0, visitors: 0 },
+    { hour: '04:00', views: 0, visitors: 0 },
+    { hour: '08:00', views: 0, visitors: 0 },
+    { hour: '12:00', views: 0, visitors: 0 },
+    { hour: '16:00', views: 0, visitors: 0 },
+    { hour: '20:00', views: 0, visitors: 0 }
   ],
-  pageViewCounts: {
-    '/': 14200,
-    '/articles': 12400,
-    '/research': 8900,
-    '/projects': 4500,
-    '/about': 2190
-  },
-  recentEvents: [
-    { id: 'ev1', time: 'Just now', event: 'PAGE_VIEW: /articles', ip: '187.32.102.14', location: 'São Paulo, BR' },
-    { id: 'ev2', time: '2m ago', event: 'DOWNLOAD: s7_fuzzer_v1.2.zip', ip: '82.165.197.1', location: 'Frankfurt, DE' },
-    { id: 'ev3', time: '5m ago', event: 'PAGE_VIEW: /research', ip: '198.51.100.42', location: 'Virginia, US' },
-    { id: 'ev4', time: '12m ago', event: 'SEARCH_QUERY: "Siemens S7-1500"', ip: '203.0.113.88', location: 'Tokyo, JP' },
-    { id: 'ev5', time: '18m ago', event: 'PAGE_VIEW: /projects', ip: '194.28.172.9', location: 'Amsterdam, NL' }
-  ]
+  pageViewCounts: {},
+  recentEvents: []
 };
 
 interface BlogContextType {
@@ -167,6 +155,7 @@ interface BlogContextType {
   uploadImage: (file: File | { name: string; url: string; size: string; type: string }) => Promise<MediaItem>;
   deleteMedia: (id: string) => void;
   recordPageView: (path: string) => void;
+  resetCounters: () => void;
 }
 
 const BlogContext = createContext<BlogContextType | undefined>(undefined);
@@ -183,21 +172,22 @@ const generateSlug = (title: string, fallbackId: string): string => {
 
 /**
  * Migration Key & One-Time LocalStorage Migration:
- * Removes legacy demo view values (e.g. 1420, 2150) stored in localStorage.
- * Runs only once when a new CONTENT_VERSION is detected, ensuring views start at 0
+ * Removes legacy demo view values (e.g. 1420, 2150) and analytics metrics stored in localStorage.
+ * Runs only once when a new CONTENT_VERSION is detected, ensuring views and counters start at 0
  * and do not get overwritten to 0 on subsequent application reloads.
  */
 export const CONTENT_VERSION_KEY = 'ot_sec_content_version';
-export const CURRENT_CONTENT_VERSION = '2.2.0-phase-2c-zero-views';
+export const CURRENT_CONTENT_VERSION = '2.3.0-phase-zero-all-counters';
 
 const runViewsMigrationIfNeeded = () => {
   if (typeof window === 'undefined' || !window.localStorage) return;
   try {
     const currentVersion = localStorage.getItem(CONTENT_VERSION_KEY);
     if (currentVersion !== CURRENT_CONTENT_VERSION) {
-      // 1. Wipe previous mock/demo view values from local storage
+      // 1. Wipe previous mock/demo view and analytics values from local storage
       localStorage.removeItem('ot_sec_article_views');
       localStorage.removeItem('ot_sec_articles');
+      localStorage.removeItem('ot_sec_analytics');
 
       // 2. Reset views to 0 for any local/draft articles created previously with mock counts
       const localSaved = localStorage.getItem('ot_sec_local_articles');
@@ -521,6 +511,51 @@ export function BlogProvider({ children }: { children: React.ReactNode }) {
     });
   };
 
+  const resetCounters = () => {
+    // 1. Reset article views in state and localStorage
+    const zeroViews: Record<string, number> = {};
+    for (const article of PUBLISHED_ARTICLES) {
+      zeroViews[article.id] = 0;
+    }
+    setArticleViews(zeroViews);
+    localStorage.setItem('ot_sec_article_views', JSON.stringify(zeroViews));
+
+    // Reset views on any local/custom articles
+    setLocalArticles(prev => {
+      const reset = prev.map(item => ({ ...item, views: 0 }));
+      localStorage.setItem('ot_sec_local_articles', JSON.stringify(reset));
+      return reset;
+    });
+
+    // 2. Reset analytics and telemetry counters in state and localStorage
+    const zeroAnalytics: AnalyticsKPIs = {
+      totalVisitors: 0,
+      pageViews: 0,
+      uniqueIPs: 0,
+      avgTimeOnSite: '0m 00s',
+      bounceRate: '0.0%',
+      trafficSources: [
+        { name: 'Direct (IP/Bookmark)', value: 0, color: '#06b6d4' },
+        { name: 'Threat Intel Feeds', value: 0, color: '#3b82f6' },
+        { name: 'Search Engines', value: 0, color: '#10b981' },
+        { name: 'Academic Networks', value: 0, color: '#f43f5e' }
+      ],
+      hourlyTraffic: [
+        { hour: '00:00', views: 0, visitors: 0 },
+        { hour: '04:00', views: 0, visitors: 0 },
+        { hour: '08:00', views: 0, visitors: 0 },
+        { hour: '12:00', views: 0, visitors: 0 },
+        { hour: '16:00', views: 0, visitors: 0 },
+        { hour: '20:00', views: 0, visitors: 0 }
+      ],
+      pageViewCounts: {},
+      recentEvents: []
+    };
+
+    setAnalytics(zeroAnalytics);
+    localStorage.setItem('ot_sec_analytics', JSON.stringify(zeroAnalytics));
+  };
+
   return (
     <BlogContext.Provider
       value={{
@@ -544,7 +579,8 @@ export function BlogProvider({ children }: { children: React.ReactNode }) {
         deleteProject,
         uploadImage,
         deleteMedia,
-        recordPageView
+        recordPageView,
+        resetCounters
       }}
     >
       {children}
