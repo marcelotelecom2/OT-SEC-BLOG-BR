@@ -124,6 +124,17 @@ export function Home() {
             {latestArticles.map((article) => (
               <SpotlightCard key={article.id} className="group relative flex flex-col items-start justify-between bg-transparent border border-gray-800/50 p-5 sm:p-6 transition-all duration-300 hud-border">
                 <div className="absolute top-0 right-0 w-8 h-8 bg-gradient-to-bl from-gray-800/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                {article.coverImage && (
+                  <div className="w-full h-40 mb-4 rounded overflow-hidden border border-gray-800/80 bg-gray-950/80 relative z-10">
+                    <img
+                      src={article.coverImage}
+                      alt={article.title}
+                      loading="lazy"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#050505]/50 via-transparent to-transparent pointer-events-none" />
+                  </div>
+                )}
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-mono text-gray-500 mb-4 z-10">
                   <time dateTime={article.date}>{article.date}</time>
                   <span className="text-cyan-500/50">•</span>

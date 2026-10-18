@@ -13,7 +13,7 @@ import {
   ExternalLink, Search, RefreshCw, ShieldCheck, Activity, Globe,
   ArrowUpRight, Users, Clock, Zap, KeyRound, ShieldAlert, RotateCcw
 } from 'lucide-react';
-import { Article, ResearchNote, Project } from '../types';
+import { Article, ResearchNote, Project, MediaItem } from '../types';
 import { 
   RESEARCH_AUTHORS, 
   getTagBadgeStyle, 
@@ -62,6 +62,9 @@ export function Admin() {
   // Reset Counters Modal State
   const [showResetModal, setShowResetModal] = useState(false);
   const [resetSuccessMessage, setResetSuccessMessage] = useState<string | null>(null);
+
+  // Media picker modal for article cover / content
+  const [showMediaPickerFor, setShowMediaPickerFor] = useState<'cover' | 'content' | null>(null);
 
   // Drag & drop upload state
   const [isDragging, setIsDragging] = useState(false);
@@ -112,6 +115,41 @@ export function Admin() {
     setShowResetModal(false);
     setResetSuccessMessage('Todos os contadores foram zerados com sucesso (artigos e analítica em 0).');
     setTimeout(() => setResetSuccessMessage(null), 4000);
+  };
+
+  const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files[0]) {
+      const item = await uploadImage(files[0]);
+      setEditingArticle(prev => ({ ...prev, coverImage: item.url }));
+    }
+  };
+
+  const handleContentImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files[0]) {
+      const item = await uploadImage(files[0]);
+      const cleanName = files[0].name.replace(/\.[^/.]+$/, '');
+      const markdownImage = `\n\n![${cleanName}](${item.url})\n\n`;
+      setEditingArticle(prev => ({
+        ...prev,
+        content: (prev?.content || '') + markdownImage
+      }));
+    }
+  };
+
+  const handleSelectMediaForArticle = (item: MediaItem) => {
+    if (showMediaPickerFor === 'cover') {
+      setEditingArticle(prev => ({ ...prev, coverImage: item.url }));
+    } else if (showMediaPickerFor === 'content') {
+      const cleanName = item.name.replace(/\.[^/.]+$/, '');
+      const markdownImage = `\n\n![${cleanName}](${item.url})\n\n`;
+      setEditingArticle(prev => ({
+        ...prev,
+        content: (prev?.content || '') + markdownImage
+      }));
+    }
+    setShowMediaPickerFor(null);
   };
 
   // -------------------------------------------------------------
@@ -694,6 +732,73 @@ export function Admin() {
                       </div>
                     </div>
 
+                    {/* Cover Image Section */}
+                    <div className="p-3 bg-gray-950/70 border border-gray-800/80 rounded-lg space-y-3">
+                      <div className="flex items-center justify-between">
+                        <label className="block text-gray-300 font-semibold flex items-center gap-1.5">
+                          <ImageIcon className="w-4 h-4 text-cyan-400" />
+                          Imagem de Capa / Destaque (JPG, GIF, PNG, WebP)
+                        </label>
+                        {editingArticle.coverImage && (
+                          <button
+                            type="button"
+                            onClick={() => setEditingArticle(prev => ({ ...prev, coverImage: '' }))}
+                            className="text-[11px] font-mono text-rose-400 hover:text-rose-300 underline"
+                          >
+                            Remover Imagem
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Cover Image Preview */}
+                      {editingArticle.coverImage ? (
+                        <div className="relative rounded overflow-hidden border border-cyan-800/60 bg-gray-900 max-h-48 group">
+                          <img
+                            src={editingArticle.coverImage}
+                            alt="Cover Preview"
+                            className="w-full h-36 object-cover"
+                          />
+                          <div className="absolute bottom-2 left-2 px-2 py-0.5 bg-black/80 text-cyan-300 rounded text-[10px] font-mono border border-cyan-900/50">
+                            Preview da Capa Ativa
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="border border-dashed border-gray-800 rounded p-4 text-center bg-gray-900/20">
+                          <p className="text-gray-500 text-xs font-mono">Nenhuma imagem de capa selecionada. Insira um link ou envie um arquivo (JPG, GIF, PNG).</p>
+                        </div>
+                      )}
+
+                      <div className="flex flex-col sm:flex-row gap-2">
+                        <input
+                          type="text"
+                          value={editingArticle.coverImage || ''}
+                          onChange={e => setEditingArticle(prev => ({ ...prev, coverImage: e.target.value }))}
+                          className="flex-1 px-3 py-2 bg-gray-900 border border-gray-800 text-cyan-300 focus:border-cyan-500 rounded text-xs font-mono"
+                          placeholder="Cole a URL da imagem (https://... ou data:...)"
+                        />
+                        <div className="flex items-center gap-2 shrink-0">
+                          <label className="px-3 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded text-xs font-mono cursor-pointer transition-colors flex items-center gap-1.5 border border-gray-700">
+                            <Upload className="w-3.5 h-3.5 text-cyan-400" />
+                            Upload JPG/GIF
+                            <input
+                              type="file"
+                              accept="image/jpeg,image/png,image/gif,image/webp,image/svg+xml"
+                              onChange={handleCoverUpload}
+                              className="hidden"
+                            />
+                          </label>
+                          <button
+                            type="button"
+                            onClick={() => setShowMediaPickerFor('cover')}
+                            className="px-3 py-2 bg-cyan-950/40 hover:bg-cyan-900/50 text-cyan-300 border border-cyan-800/60 rounded text-xs font-mono transition-colors flex items-center gap-1.5"
+                          >
+                            <ImageIcon className="w-3.5 h-3.5" />
+                            Biblioteca
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
                     <div>
                       <label className="block text-gray-400 mb-1">Summary / Abstract</label>
                       <textarea
@@ -706,14 +811,40 @@ export function Admin() {
                     </div>
 
                     <div>
-                      <label className="block text-gray-400 mb-1">Full Content (Markdown supported)</label>
+                      <div className="flex flex-wrap items-center justify-between gap-2 mb-1.5">
+                        <label className="block text-gray-400">Conteúdo do Artigo (Markdown suportado)</label>
+                        <div className="flex items-center gap-2">
+                          <label className="px-2.5 py-1 bg-gray-900 hover:bg-gray-800 text-cyan-300 border border-cyan-900/60 rounded text-[11px] font-mono cursor-pointer transition-colors flex items-center gap-1">
+                            <Upload className="w-3 h-3 text-cyan-400" />
+                            Inserir Imagem (JPG/GIF)
+                            <input
+                              type="file"
+                              accept="image/jpeg,image/png,image/gif,image/webp,image/svg+xml"
+                              onChange={handleContentImageUpload}
+                              className="hidden"
+                            />
+                          </label>
+                          <button
+                            type="button"
+                            onClick={() => setShowMediaPickerFor('content')}
+                            className="px-2.5 py-1 bg-gray-900 hover:bg-gray-800 text-gray-300 hover:text-white border border-gray-800 rounded text-[11px] font-mono transition-colors flex items-center gap-1"
+                          >
+                            <ImageIcon className="w-3 h-3 text-cyan-400" />
+                            Biblioteca de Imagens
+                          </button>
+                        </div>
+                      </div>
+
                       <textarea
-                        rows={6}
+                        rows={7}
                         value={editingArticle.content || ''}
                         onChange={e => setEditingArticle(prev => ({ ...prev, content: e.target.value }))}
-                        className="w-full px-3 py-2 bg-gray-950 border border-gray-800 text-gray-200 focus:border-cyan-500 rounded"
-                        placeholder="## Section Heading&#10;Write technical breakdown here..."
+                        className="w-full px-3 py-2 bg-gray-950 border border-gray-800 text-gray-200 focus:border-cyan-500 rounded font-mono text-xs leading-relaxed"
+                        placeholder="## Subtítulo&#10;Escreva o artigo técnico aqui...&#10;&#10;![Diagrama de rede](https://url-ou-imagem.gif)"
                       />
+                      <p className="text-[11px] text-gray-500 font-mono mt-1">
+                        💡 Suporte completo a imagens e GIFs animados: utilize <code className="text-cyan-400 bg-gray-900 px-1 py-0.5 rounded">![Legenda](url)</code> ou use os botões acima para upload instantâneo.
+                      </p>
                     </div>
 
                     <div className="flex items-center gap-2 pt-2">
@@ -1540,6 +1671,99 @@ export function Admin() {
                 </button>
               </div>
             </SpotlightCard>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Media Picker Modal for Article Cover / Content */}
+      {showMediaPickerFor && (
+        <div className="fixed inset-0 z-[60] bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="w-full max-w-3xl max-h-[85vh] flex flex-col bg-[#090a0f] border border-cyan-800/80 rounded-lg overflow-hidden shadow-2xl"
+          >
+            <div className="flex items-center justify-between p-4 border-b border-gray-800 bg-gray-950">
+              <div className="flex items-center gap-2">
+                <ImageIcon className="w-5 h-5 text-cyan-400" />
+                <h3 className="text-sm font-bold font-mono text-white uppercase tracking-wider">
+                  {showMediaPickerFor === 'cover' ? 'Selecionar Imagem de Capa' : 'Inserir Imagem no Conteúdo'}
+                </h3>
+              </div>
+              <button
+                onClick={() => setShowMediaPickerFor(null)}
+                className="text-gray-400 hover:text-white font-mono text-sm"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="p-4 overflow-y-auto flex-1 space-y-4">
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-mono text-gray-400">
+                  Clique em qualquer imagem (JPG, GIF, PNG) para {showMediaPickerFor === 'cover' ? 'definir como capa' : 'inserir no artigo'}:
+                </p>
+                <label className="px-3 py-1.5 bg-cyan-500 hover:bg-cyan-400 text-black font-mono font-bold text-xs uppercase rounded cursor-pointer transition-colors inline-flex items-center gap-1.5">
+                  <Upload className="w-3.5 h-3.5" /> Enviar Nova Imagem
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/gif,image/webp,image/svg+xml"
+                    onChange={async (e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        const item = await uploadImage(e.target.files[0]);
+                        handleSelectMediaForArticle(item);
+                      }
+                    }}
+                    className="hidden"
+                  />
+                </label>
+              </div>
+
+              {mediaLibrary.length === 0 ? (
+                <div className="p-8 border border-dashed border-gray-800 rounded text-center text-gray-500 font-mono text-xs">
+                  Nenhuma imagem encontrada na biblioteca. Faça upload de arquivos JPG, GIF ou PNG acima.
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                  {mediaLibrary.map((item) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => handleSelectMediaForArticle(item)}
+                      className="group border border-gray-800 hover:border-cyan-500 rounded p-2 bg-gray-950/60 text-left transition-all hover:scale-[1.02] flex flex-col justify-between"
+                    >
+                      <div className="h-28 w-full rounded overflow-hidden bg-gray-900 mb-2 border border-gray-800/80 relative">
+                        <img
+                          src={item.url}
+                          alt={item.name}
+                          className="w-full h-full object-cover group-hover:opacity-90"
+                        />
+                        <span className="absolute bottom-1 right-1 text-[9px] font-mono px-1 py-0.5 bg-black/80 text-cyan-300 rounded border border-gray-800">
+                          {item.type.split('/')[1]?.toUpperCase() || 'IMG'}
+                        </span>
+                      </div>
+                      <p className="text-[11px] font-mono text-gray-300 truncate w-full" title={item.name}>
+                        {item.name}
+                      </p>
+                      <div className="flex items-center justify-between text-[10px] font-mono text-cyan-500/80 mt-1">
+                        <span>{item.size}</span>
+                        <span className="text-gray-500">{item.uploadDate}</span>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="p-3 border-t border-gray-800 bg-gray-950 flex justify-end">
+              <button
+                type="button"
+                onClick={() => setShowMediaPickerFor(null)}
+                className="px-4 py-1.5 border border-gray-800 text-gray-400 hover:text-white rounded text-xs font-mono"
+              >
+                Fechar
+              </button>
+            </div>
           </motion.div>
         </div>
       )}

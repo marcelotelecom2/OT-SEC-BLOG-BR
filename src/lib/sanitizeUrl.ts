@@ -36,3 +36,20 @@ export function sanitizeExternalUrl(url?: string | null): string | null {
 
   return null;
 }
+
+/**
+ * Sanitizes image URLs specifically, allowing safe http/https URLs, safe root-relative paths,
+ * and safe base64 image data URIs (e.g. data:image/jpeg;base64,..., data:image/gif;base64,..., data:image/png;base64,...).
+ */
+export function sanitizeImageUrl(url?: string | null): string | null {
+  if (!url) return null;
+  const trimmed = url.trim();
+  if (!trimmed) return null;
+
+  // Allow safe inline image data URLs (jpg, png, gif, webp, svg)
+  if (/^data:image\/(jpeg|jpg|png|gif|webp|svg\+xml);base64,[A-Za-z0-9+/=]+$/i.test(trimmed)) {
+    return trimmed;
+  }
+
+  return sanitizeExternalUrl(trimmed);
+}

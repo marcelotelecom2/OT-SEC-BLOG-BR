@@ -54,32 +54,48 @@ export function Articles() {
           ) : (
             publishedArticles.map((article) => (
               <motion.div key={article.id} variants={itemVariants}>
-                <SpotlightCard className="group relative flex flex-col md:flex-row items-start justify-between bg-transparent border border-gray-800/50 p-5 sm:p-6 md:p-8 transition-all duration-300 hud-border gap-5 sm:gap-6">
-                  <div className="flex-1 z-10 relative">
-                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-mono text-gray-500 mb-3">
-                      <time dateTime={article.date}>{article.date}</time>
-                      <span className="text-cyan-500/50">•</span>
-                      <span>{article.readTime}</span>
-                      {article.views !== undefined && article.views > 0 && (
-                        <>
-                          <span className="text-cyan-500/50">•</span>
-                          <span className="text-cyan-400">{article.views} views</span>
-                        </>
-                      )}
+                <SpotlightCard className="group relative flex flex-col md:flex-row items-stretch bg-transparent border border-gray-800/50 p-5 sm:p-6 md:p-7 transition-all duration-300 hud-border gap-5 sm:gap-6">
+                  {article.coverImage && (
+                    <div className="w-full md:w-56 lg:w-64 h-48 md:h-auto min-h-[140px] shrink-0 rounded overflow-hidden border border-gray-800/80 bg-gray-950/80 relative group-hover:border-cyan-500/50 transition-colors shadow-lg">
+                      <img
+                        src={article.coverImage}
+                        alt={article.title}
+                        loading="lazy"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#050505]/60 via-transparent to-transparent pointer-events-none" />
                     </div>
-                    <h3 className="text-lg sm:text-xl font-semibold leading-snug text-gray-100 group-hover:text-cyan-400 transition-colors mb-3">
-                      <Link to={`/articles/${article.slug}`}>
-                        <span className="absolute inset-0" />
-                        {article.title}
-                      </Link>
-                    </h3>
-                    <p className="line-clamp-3 text-xs sm:text-sm leading-relaxed text-gray-400 group-hover:text-gray-300 transition-colors">
-                      {article.summary}
-                    </p>
-                  </div>
-                  <div className="relative md:mt-0 flex items-center z-10 shrink-0">
-                    <div className="text-xs font-mono px-2.5 py-1 rounded bg-gray-900 border border-gray-800 text-cyan-500/70 group-hover:border-cyan-900/50 transition-colors">
-                      {article.area}
+                  )}
+
+                  <div className="flex-1 z-10 relative flex flex-col justify-between">
+                    <div>
+                      <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-mono text-gray-500">
+                          <time dateTime={article.date}>{article.date}</time>
+                          <span className="text-cyan-500/50">•</span>
+                          <span>{article.readTime}</span>
+                          {article.views !== undefined && article.views > 0 && (
+                            <>
+                              <span className="text-cyan-500/50">•</span>
+                              <span className="text-cyan-400">{article.views} views</span>
+                            </>
+                          )}
+                        </div>
+                        <div className="text-[11px] font-mono px-2 py-0.5 rounded bg-gray-900 border border-gray-800 text-cyan-500/70 group-hover:border-cyan-900/50 transition-colors">
+                          {article.area}
+                        </div>
+                      </div>
+
+                      <h3 className="text-lg sm:text-xl font-semibold leading-snug text-gray-100 group-hover:text-cyan-400 transition-colors mb-3">
+                        <Link to={`/articles/${article.slug}`}>
+                          <span className="absolute inset-0" />
+                          {article.title}
+                        </Link>
+                      </h3>
+
+                      <p className="line-clamp-3 text-xs sm:text-sm leading-relaxed text-gray-400 group-hover:text-gray-300 transition-colors">
+                        {article.summary}
+                      </p>
                     </div>
                   </div>
                 </SpotlightCard>

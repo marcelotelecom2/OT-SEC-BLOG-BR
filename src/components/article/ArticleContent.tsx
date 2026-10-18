@@ -1,7 +1,7 @@
 import React from 'react';
 import Markdown, { Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { sanitizeExternalUrl } from '../../lib/sanitizeUrl';
+import { sanitizeExternalUrl, sanitizeImageUrl } from '../../lib/sanitizeUrl';
 
 interface ArticleContentProps {
   content: string;
@@ -166,13 +166,13 @@ const markdownComponents: Components = {
     );
   },
   img: ({ src, alt, ...props }) => {
-    const safeSrc = sanitizeExternalUrl(src) || src || '';
+    const safeSrc = sanitizeImageUrl(src) || src || '';
     return (
       <figure className="my-8 sm:my-10 w-full">
         <img
           src={safeSrc}
           alt={alt || ''}
-          className="w-full h-auto rounded-lg border border-gray-800 shadow-xl object-cover"
+          className="w-full h-auto rounded-lg border border-gray-800 shadow-xl object-cover max-h-[650px]"
           loading="lazy"
           {...props}
         />

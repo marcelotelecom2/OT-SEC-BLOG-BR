@@ -12,7 +12,8 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
     readTime: '12 min read',
     area: 'Artificial Intelligence',
     published: true,
-    views: 0
+    views: 0,
+    coverImage: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1200&auto=format&fit=crop&q=80'
   },
   {
     id: '2',
@@ -23,7 +24,8 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
     readTime: '18 min read',
     area: 'Vulnerability Analysis',
     published: true,
-    views: 0
+    views: 0,
+    coverImage: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=1200&auto=format&fit=crop&q=80'
   },
   {
     id: '3',
@@ -34,7 +36,8 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
     readTime: '15 min read',
     area: 'Network Engineering',
     published: true,
-    views: 0
+    views: 0,
+    coverImage: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=1200&auto=format&fit=crop&q=80'
   },
   {
     id: '4',
@@ -45,7 +48,8 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
     readTime: '10 min read',
     area: 'Network Engineering',
     published: true,
-    views: 0
+    views: 0,
+    coverImage: 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=1200&auto=format&fit=crop&q=80'
   },
   {
     id: '5',
@@ -56,7 +60,8 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
     readTime: '22 min read',
     area: 'Vulnerability Analysis',
     published: true,
-    views: 0
+    views: 0,
+    coverImage: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1200&auto=format&fit=crop&q=80'
   },
   {
     id: '6',
