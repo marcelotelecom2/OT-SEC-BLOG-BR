@@ -4,6 +4,25 @@ export type ArticleMetadata = Omit<Article, 'content'> & { contentFile: string }
 
 export const ARTICLES_METADATA: ArticleMetadata[] = [
 {
+  "id": "10",
+  "contentFile": "iec-62351-ameacas-deliberadas-sistemas-eletricos.md",
+  "slug": "iec-62351-ameacas-deliberadas-sistemas-eletricos",
+  "title": "IEC 62351: ameaças deliberadas aos sistemas elétricos",
+  "summary": "Um resumo comentado da IEC 62351-1 sobre ameaças deliberadas: pessoas, acessos, equipamentos e informações que precisam ser considerados na segurança OT.",
+  "date": "2026-10-18",
+  "readTime": "4 min de leitura",
+  "area": "Regulation Update",
+  "author": "Walter Rodrigues",
+  "published": true,
+  "views": 0,
+  "tags": [
+    "IEC 62351",
+    "OT Security",
+    "Sistemas elétricos"
+  ],
+  "coverImage": "/images/articles/iec-62351-ameacas-deliberadas-sistemas-eletricos.jpg"
+},
+{
   "id": "9",
   "contentFile": "iec-62351-ameacas-nao-intencionais.md",
   "slug": "iec-62351-ameacas-nao-intencionais-seguranca-ot",
