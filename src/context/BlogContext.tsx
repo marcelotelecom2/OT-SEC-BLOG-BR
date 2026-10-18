@@ -145,7 +145,7 @@ interface BlogContextType {
   loginAdmin: (pass: string) => boolean;
   logoutAdmin: () => void;
   changePassword: (currentPass: string, newPass: string) => { success: boolean; message: string };
-  addArticle: (article: Omit<Article, 'id' | 'views' | 'slug'> & { slug?: string }) => void;
+  addArticle: (article: Omit<Article, 'id' | 'views' | 'slug'> & { id?: string; slug?: string }) => Article;
   updateArticle: (id: string, article: Partial<Article>) => void;
   deleteArticle: (id: string) => void;
   addNote: (note: Omit<ResearchNote, 'id'>) => void;
@@ -387,8 +387,8 @@ export function BlogProvider({ children }: { children: React.ReactNode }) {
   };
 
   // Handlers
-  const addArticle = (data: Omit<Article, 'id' | 'views' | 'slug'> & { slug?: string }) => {
-    const id = Date.now().toString();
+  const addArticle = (data: Omit<Article, 'id' | 'views' | 'slug'> & { id?: string; slug?: string }) => {
+    const id = data.id || Date.now().toString();
     const slug = data.slug || generateSlug(data.title, id);
     const newArticle: Article = {
       ...data,
@@ -397,6 +397,7 @@ export function BlogProvider({ children }: { children: React.ReactNode }) {
       views: 0
     };
     setLocalArticles(prev => [newArticle, ...prev]);
+    return newArticle;
   };
 
   const updateArticle = (id: string, updated: Partial<Article>) => {

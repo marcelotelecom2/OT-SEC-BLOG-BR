@@ -24,6 +24,7 @@ import {
   getNoteTags 
 } from '../constants/researchClassification';
 import { ArticleEditorModal } from '../components/admin/ArticleEditorModal';
+import { downloadArticleExport } from '../lib/articleExport';
 
 export function Admin() {
   const {
@@ -42,6 +43,7 @@ export function Admin() {
   // Search & Filter States
   const [searchTerm, setSearchTerm] = useState('');
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [exportFeedback, setExportFeedback] = useState('');
 
   // Modals / Form States
   const [editingArticle, setEditingArticle] = useState<Partial<Article> | null>(null);
@@ -567,10 +569,13 @@ export function Admin() {
       {/* ========================================================= */}
       {activeTab === 'articles' && (
         <div className="space-y-6">
-          <p className="text-xs text-amber-300 border border-amber-900/60 bg-amber-950/20 p-3 rounded">
-            Artigos, rascunhos e edições locais ficam disponíveis neste painel e no preview do editor.
-            As páginas públicas usam a versão dos arquivos publicada pelo GitHub e Cloudflare Pages.
-          </p>
+          <div className="text-xs text-amber-300 border border-amber-900/60 bg-amber-950/20 p-3 rounded space-y-2">
+            <p>Este painel é um editor local. Salvar mantém a edição neste navegador; publicar exige enviar os arquivos ao GitHub.</p>
+            <p>Para publicar: edite o artigo, marque “Pronto para publicar” e clique em “Exportar artigo”. No projeto, execute:</p>
+            <code className="block break-all">npm run import:article -- "/caminho/artigo.ot-sec.json"</code>
+            <p>Depois revise os arquivos, valide o build e envie ao GitHub. O Cloudflare Pages publica o deploy.</p>
+          </div>
+          {exportFeedback && <p role="status" className="text-xs text-cyan-300">{exportFeedback}</p>}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-gray-950/60 p-4 border border-gray-800 rounded">
             <div className="relative flex-1 max-w-md">
               <Search className="w-4 h-4 absolute left-3 top-3 text-gray-500" />
@@ -621,7 +626,7 @@ export function Admin() {
                     <th className="p-4">Date</th>
                     <th className="p-4">Read Time</th>
                     <th className="p-4">Views</th>
-                    <th className="p-4">Status</th>
+                    <th className="p-4">Status editorial</th>
                     <th className="p-4 text-right">Actions</th>
                   </tr>
                 </thead>
@@ -638,18 +643,32 @@ export function Admin() {
                             {article.area}
                           </span>
                         </td>
-                        <td className="p-4 text-gray-400">{article.date}</td>
+                        <td className="p-4 text-gray-400 whitespace-nowrap">{article.date}</td>
                         <td className="p-4 text-gray-400">{article.readTime}</td>
                         <td className="p-4 text-cyan-300">{article.views || 0}</td>
                         <td className="p-4">
                           <span className={`px-2 py-0.5 rounded text-[10px] ${
                             article.published ? 'bg-emerald-950 border border-emerald-800 text-emerald-400' : 'bg-amber-950 border border-amber-800 text-amber-400'
                           }`}>
-                            {article.published ? 'PUBLISHED' : 'DRAFT'}
+                            {article.published ? 'PRONTO PARA PUBLICAR' : 'RASCUNHO LOCAL'}
                           </span>
                         </td>
                         <td className="p-4 text-right">
                           <div className="flex items-center justify-end gap-2">
+                            <button
+                              onClick={() => {
+                                try {
+                                  downloadArticleExport(article);
+                                  setExportFeedback(`Exportado: ${article.title}. Importe o arquivo no projeto para preparar a publicação.`);
+                                } catch (error) {
+                                  setExportFeedback(error instanceof Error ? error.message : 'Não foi possível exportar o artigo.');
+                                }
+                              }}
+                              className="px-2 py-1.5 hover:bg-gray-800 text-cyan-400 rounded transition-colors"
+                              title="Baixar conteúdo e metadados para importar no projeto"
+                            >
+                              Exportar artigo
+                            </button>
                             <button
                               onClick={() => {
                                 setEditingArticle(article);
@@ -663,7 +682,7 @@ export function Admin() {
                             <button
                               onClick={() => deleteArticle(article.id)}
                               className="p-1.5 hover:bg-rose-950 text-gray-400 hover:text-rose-400 rounded transition-colors"
-                              title="Delete"
+                              title="Ocultar neste navegador; não remove o artigo do site"
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
@@ -688,10 +707,10 @@ export function Admin() {
               onSave={(savedArticle) => {
                 if (savedArticle.id && articles.some(a => a.id === savedArticle.id)) {
                   updateArticle(savedArticle.id, savedArticle);
+                  setEditingArticle(savedArticle);
                 } else {
-                  addArticle(savedArticle as any);
+                  setEditingArticle(addArticle(savedArticle));
                 }
-                setEditingArticle(savedArticle);
               }}
               uploadImage={uploadImage}
               onOpenMediaPicker={(mode) => setShowMediaPickerFor(mode)}

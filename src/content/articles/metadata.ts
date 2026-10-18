@@ -1,10 +1,11 @@
 import { Article } from '../../types';
 
-export type ArticleMetadata = Omit<Article, 'content'>;
+export type ArticleMetadata = Omit<Article, 'content'> & { contentFile: string };
 
 export const ARTICLES_METADATA: ArticleMetadata[] = [
 {
   "id": "8",
+  contentFile: 'iec-62351-entendendo-ameacas-deliberadas.md',
   "slug": "iec-62351-entendendo-ameacas-deliberadas-sistemas-eletricos",
   "title": "IEC 62351: Entendendo as ameaças deliberadas aos sistemas elétricos",
   "summary": "Entenda as ameaças deliberadas aos sistemas elétricos na IEC 62351-1: insiders, espionagem, vandalismo, hackers, malware, furto e terrorismo.",
@@ -23,6 +24,7 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
 },
   {
   "id": "7",
+  contentFile: 'iec-62351-ameacas-deliberadas.md',
   "slug": "iec-62351-ameacas-deliberadas-alem-de-hackers",
   "title": "IEC 62351: ameaças deliberadas vão muito além de hackers",
   "summary": "Ameaças deliberadas em sistemas elétricos vão além de hackers. Conheça a visão da IEC 62351-1 sobre insiders, malware, espionagem e impactos em OT.",
@@ -41,6 +43,7 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
 },
   {
     id: '1',
+    contentFile: 'ai-detecting-anomalies-ics-networks.md',
     slug: 'the-role-of-ai-in-detecting-anomalies-in-ics-networks',
     title: 'The Role of AI in Detecting Anomalies in ICS Networks',
     summary: 'An exploration of how machine learning models can be trained on Modbus and DNP3 traffic to identify novel attack vectors and misconfigurations in real-time.',
@@ -53,6 +56,7 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
   },
   {
     id: '2',
+    contentFile: 'stuxnet-payload-retrospective.md',
     slug: 'deconstructing-the-stuxnet-payload-lessons-still-unlearned',
     title: 'Deconstructing the Stuxnet Payload: Lessons Still Unlearned',
     summary: 'A retrospective analysis of the world\'s most famous cyberweapon, focusing on the specific Siemens Step7 DLL injections and how modern OT systems are still vulnerable to similar tactics.',
@@ -65,6 +69,7 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
   },
   {
     id: '3',
+    contentFile: 'zero-trust-legacy-scada.md',
     slug: 'zero-trust-architecture-in-legacy-scada-environments',
     title: 'Zero Trust Architecture in Legacy SCADA Environments',
     summary: 'Implementing micro-segmentation and identity-based access controls in networks running 20-year-old PLCs that lack native authentication mechanisms.',
@@ -77,6 +82,7 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
   },
   {
     id: '4',
+    contentFile: '5g-smart-grid-security.md',
     slug: 'analyzing-the-impact-of-5g-on-smart-grid-security',
     title: 'Analyzing the Impact of 5G on Smart Grid Security',
     summary: 'With the rollout of 5G infrastructure in power grids, the attack surface expands. We look at the security implications of ultra-reliable low-latency communication (URLLC) in power distribution.',
@@ -89,6 +95,7 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
   },
   {
     id: '5',
+    contentFile: 'reverse-engineering-plc-protocols.md',
     slug: 'reverse-engineering-proprietary-plc-protocols',
     title: 'Reverse Engineering Proprietary PLC Protocols',
     summary: 'A technical guide on capturing, analyzing, and fuzzing undocumented industrial protocols using custom Wireshark dissectors and software-defined radios (SDR).',
@@ -101,6 +108,7 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
   },
   {
     id: '6',
+    contentFile: 'nerc-cip-002-bes-classification.md',
     slug: 'nerc-cip-002-how-bes-cyber-systems-are-classified-by-impact',
     title: 'NERC CIP-002: How BES Cyber Systems Are Classified by Impact',
     summary: 'A deep technical breakdown of NERC CIP-002 criteria, explaining how Bulk Electric System (BES) cyber assets and systems are categorized into High, Medium, and Low impact ratings.',

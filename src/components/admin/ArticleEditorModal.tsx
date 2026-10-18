@@ -9,6 +9,7 @@ import {
 import { Article, MediaItem } from '../../types';
 import { ArticleContent } from '../article/ArticleContent';
 import { DecodeText } from '../ui/DecodeText';
+import { downloadArticleExport } from '../../lib/articleExport';
 
 // Error Boundary for Live Preview
 interface ErrorBoundaryProps {
@@ -93,6 +94,7 @@ export function ArticleEditorModal({
   onOpenMediaPicker
 }: ArticleEditorModalProps) {
   // Form State
+  const [editorId] = useState(() => article.id || Date.now().toString());
   const [title, setTitle] = useState(article.title || '');
   const [slug, setSlug] = useState(article.slug || '');
   const [area, setArea] = useState(article.area || 'ICS Security');
@@ -399,6 +401,26 @@ export function ArticleEditorModal({
 
   const hasCriticalBugs = errors.length > 0;
 
+  const getEditedArticle = (): Article => ({
+    ...article,
+    id: article.id || editorId,
+    slug: slug.trim() || generateSlugFromTitle(title) || `article-${Date.now()}`,
+    title: title.trim(), summary: summary.trim(), content: content.trim(), area,
+    readTime: readTime.trim() || autoReadTime, date,
+    coverImage: coverImage.trim() || undefined, published, views: article.views ?? 0,
+  });
+
+  const handleExport = () => {
+    try {
+      downloadArticleExport(getEditedArticle());
+      setSaveState('idle');
+      setSaveFeedbackMessage('Arquivo exportado com as alterações atuais. Importe-o no projeto e envie ao GitHub para publicar.');
+    } catch (error) {
+      setSaveState('error');
+      setSaveFeedbackMessage(error instanceof Error ? error.message : 'Falha ao exportar.');
+    }
+  };
+
   // Save changes handler
   const handleSaveChanges = (closeModalAfter = false) => {
     // If there are critical bugs preventing safe rendering
@@ -410,28 +432,13 @@ export function ArticleEditorModal({
     }
 
     setSaveState('saving');
-    const finalSlug = slug.trim() || generateSlugFromTitle(title) || `article-${Date.now()}`;
-    const finalReadTime = readTime.trim() || autoReadTime;
-
-    const updatedArticle: Article = {
-      id: article.id || Date.now().toString(),
-      slug: finalSlug,
-      title: title.trim(),
-      summary: summary.trim(),
-      content: content.trim(),
-      area,
-      readTime: finalReadTime,
-      date,
-      coverImage: coverImage.trim() || undefined,
-      published,
-      views: article.views ?? 0
-    };
+    const updatedArticle = getEditedArticle();
 
     try {
       onSave(updatedArticle);
       setIsDirty(false);
       setSaveState('saved');
-      setSaveFeedbackMessage('Alterações salvas com sucesso! O artigo foi atualizado no sistema.');
+      setSaveFeedbackMessage('Edição salva neste navegador. Exporte o artigo e importe no projeto para preparar a publicação.');
 
       if (closeModalAfter) {
         setTimeout(() => {
@@ -458,7 +465,7 @@ export function ArticleEditorModal({
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [hasCriticalBugs, title, slug, summary, content, area, readTime, date, coverImage, published]);
+  }, [hasCriticalBugs, title, slug, summary, content, area, readTime, date, coverImage, published, article, onSave]);
 
   // Upload Handlers
   const handleCoverUploadFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -554,7 +561,7 @@ export function ArticleEditorModal({
               ) : (
                 <>
                   <Save className="w-3.5 h-3.5" />
-                  <span>Salvar Alterações</span>
+                  <span>Salvar neste navegador</span>
                 </>
               )}
             </button>
@@ -781,6 +788,9 @@ export function ArticleEditorModal({
                     className="w-full px-3 py-2 bg-gray-950 border border-gray-800 text-cyan-300 focus:border-cyan-500 rounded text-xs"
                   >
                     <option value="ICS Security">ICS Security</option>
+                    {!['ICS Security', 'Artificial Intelligence', 'Network Engineering', 'Power Grid Security', 'Vulnerability Analysis', 'Threat Intelligence'].includes(area) && (
+                      <option value={area}>{area}</option>
+                    )}
                     <option value="Artificial Intelligence">Artificial Intelligence</option>
                     <option value="Network Engineering">Network Engineering</option>
                     <option value="Power Grid Security">Power Grid Security</option>
@@ -1007,7 +1017,7 @@ export function ArticleEditorModal({
                   className="accent-cyan-500 w-4 h-4 cursor-pointer"
                 />
                 <label htmlFor="modal_published_check" className="text-gray-300 cursor-pointer font-sans text-xs">
-                  Marcar como publicado na prévia local (Status: <span className={published ? 'text-emerald-400 font-bold' : 'text-amber-400 font-bold'}>{published ? 'PUBLISHED' : 'DRAFT'}</span>)
+                  Pronto para publicar ao importar no projeto (Status: <span className={published ? 'text-emerald-400 font-bold' : 'text-amber-400 font-bold'}>{published ? 'PRONTO PARA PUBLICAR' : 'RASCUNHO LOCAL'}</span>)
                 </label>
               </div>
             </div>
@@ -1202,12 +1212,20 @@ export function ArticleEditorModal({
             ) : (
               <span className="text-emerald-400 flex items-center gap-1">
                 <Check className="w-3.5 h-3.5" />
-                Tudo atualizado e salvo.
+                Edição local salva. A publicação depende do envio ao GitHub.
               </span>
             )}
           </div>
 
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex flex-wrap items-center justify-end gap-2 sm:gap-3">
+            <button
+              type="button"
+              onClick={handleExport}
+              disabled={saveState === 'saving' || hasCriticalBugs}
+              className="px-4 py-2 border border-cyan-800 text-cyan-300 rounded text-xs font-mono disabled:opacity-50"
+            >
+              Exportar artigo
+            </button>
             <button
               type="button"
               onClick={() => {
@@ -1262,7 +1280,7 @@ export function ArticleEditorModal({
               ) : (
                 <>
                   <Save className="w-4 h-4" />
-                  <span>Salvar Alterações</span>
+                  <span>Salvar neste navegador</span>
                 </>
               )}
             </button>
