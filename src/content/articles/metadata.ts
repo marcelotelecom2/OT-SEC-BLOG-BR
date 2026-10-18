@@ -4,6 +4,24 @@ export type ArticleMetadata = Omit<Article, 'content'>;
 
 export const ARTICLES_METADATA: ArticleMetadata[] = [
   {
+  "id": "7",
+  "slug": "iec-62351-ameacas-deliberadas-alem-de-hackers",
+  "title": "IEC 62351: ameaças deliberadas vão muito além de hackers",
+  "summary": "Ameaças deliberadas em sistemas elétricos vão além de hackers. Conheça a visão da IEC 62351-1 sobre insiders, malware, espionagem e impactos em OT.",
+  "date": "2026-10-18",
+  "readTime": "5 min de leitura",
+  "area": "Regulation Update",
+  "author": "Walter Rodrigues",
+  "published": true,
+  "views": 0,
+  "tags": [
+    "IEC 62351",
+    "OT Security",
+    "Sistemas elétricos"
+  ],
+  "coverImage": "/images/articles/iec-62351-ameacas-deliberadas.jpg"
+},
+  {
     id: '1',
     slug: 'the-role-of-ai-in-detecting-anomalies-in-ics-networks',
     title: 'The Role of AI in Detecting Anomalies in ICS Networks',
