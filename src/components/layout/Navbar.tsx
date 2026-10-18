@@ -2,18 +2,21 @@ import { Link, useLocation } from 'react-router-dom';
 import { Search, Menu, X } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { useState } from 'react';
-
-const navLinks = [
-  { name: 'Home', path: '/' },
-  { name: 'Articles', path: '/articles' },
-  { name: 'Insights', path: '/insights' },
-  { name: 'Projects', path: '/projects' },
-  { name: 'About', path: '/about' },
-];
+import { useLanguage } from '../../context/LanguageContext';
+import { LanguageSelector } from '../ui/LanguageSelector';
 
 export function Navbar() {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
+  const { t } = useLanguage();
+
+  const navLinks = [
+    { name: t.nav.home, path: '/' },
+    { name: t.nav.articles, path: '/articles' },
+    { name: t.nav.insights, path: '/insights' },
+    { name: t.nav.projects, path: '/projects' },
+    { name: t.nav.about, path: '/about' },
+  ];
 
   return (
     <nav className="sticky top-0 z-40 w-full bg-[#050505]/40 backdrop-blur-2xl border-b border-gray-800/30 supports-[backdrop-filter]:bg-[#050505]/20">
@@ -32,7 +35,7 @@ export function Navbar() {
           </div>
 
           {/* Desktop Nav */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-6 lg:space-x-8">
             {navLinks.map((link) => {
               const isActive = link.path === '/' 
                 ? location.pathname === '/' 
@@ -56,17 +59,23 @@ export function Navbar() {
                 </Link>
               );
             })}
+
+            {/* Language Selector Dropdown in Navbar */}
+            <LanguageSelector />
+
             <Link 
               to="/articles" 
               className="text-gray-400 hover:text-cyan-400 transition-colors p-2 hover:bg-gray-800/50 rounded-full inline-flex items-center justify-center"
-              aria-label="Search articles"
+              aria-label={t.nav.search}
+              title={t.nav.search}
             >
               <Search className="w-4 h-4" />
             </Link>
           </div>
 
-          {/* Mobile Menu Button - min 44x44px touch target */}
-          <div className="md:hidden flex items-center">
+          {/* Mobile Right Controls: Language Dropdown + Menu Button */}
+          <div className="md:hidden flex items-center gap-2">
+            <LanguageSelector />
             <button 
               onClick={() => setIsOpen(!isOpen)}
               className="w-11 h-11 flex items-center justify-center text-gray-400 hover:text-white rounded-md hover:bg-gray-900/50 transition-colors focus:outline-none focus:ring-1 focus:ring-cyan-400"

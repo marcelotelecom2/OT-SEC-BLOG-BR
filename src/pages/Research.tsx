@@ -4,6 +4,7 @@ import { Filter, Tag, Hash, ShieldAlert, X, ExternalLink } from 'lucide-react';
 import { DecodeText } from '../components/ui/DecodeText';
 import { TerminalLoader } from '../components/ui/TerminalLoader';
 import { useBlog } from '../context/BlogContext';
+import { useLanguage } from '../context/LanguageContext';
 import { sanitizeExternalUrl } from '../lib/sanitizeUrl';
 import { 
   CONTENT_TYPES, 
@@ -28,6 +29,7 @@ const itemVariants = {
 
 export function Research() {
   const { notes, recordPageView } = useBlog();
+  const { t } = useLanguage();
   const [isLoaded, setIsLoaded] = useState(false);
   const [selectedType, setSelectedType] = useState<string>('All');
   const [selectedTag, setSelectedTag] = useState<string>('All');
@@ -64,10 +66,10 @@ export function Research() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
             <h1 className="text-3xl sm:text-4xl font-bold text-white tracking-tight mb-2 sm:mb-3 cursor-crosshair">
-              <DecodeText text="Insights" delay={100} />
+              <DecodeText text={t.insights.title} delay={100} />
             </h1>
             <p className="text-gray-400 font-mono text-xs sm:text-sm">
-              Standardized lab observation logs, vulnerability disclosures, and incident notes.
+              {t.insights.subtitle}
             </p>
           </div>
           <div className="font-mono text-xs text-gray-500 flex flex-wrap items-center gap-2 sm:gap-3">
@@ -99,7 +101,7 @@ export function Research() {
               }}
               className="text-gray-400 hover:text-white flex items-center gap-1 text-[11px] underline min-h-[32px]"
             >
-              <X className="w-3 h-3 text-rose-400" /> Reset Filters
+              <X className="w-3 h-3 text-rose-400" /> {t.insights.resetFilters}
             </button>
           )}
         </div>
@@ -107,7 +109,7 @@ export function Research() {
         {/* Content Type Filters */}
         <div className="flex flex-wrap items-center gap-2 pt-1">
           <span className="text-gray-500 mr-1 flex items-center gap-1 text-xs shrink-0">
-            <Tag className="w-3 h-3 text-cyan-400" /> Content Type:
+            <Tag className="w-3 h-3 text-cyan-400" /> {t.insights.filterType}
           </span>
           <button
             onClick={() => setSelectedType('All')}
@@ -117,7 +119,7 @@ export function Research() {
                 : 'text-gray-400 border-gray-800 hover:border-gray-700 bg-gray-900/40'
             }`}
           >
-            All
+            {t.insights.all}
           </button>
           {CONTENT_TYPES.map((t) => {
             const isSelected = selectedType === t.value;
@@ -141,7 +143,7 @@ export function Research() {
         {availableTags.length > 0 && (
           <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-gray-900">
             <span className="text-gray-500 mr-1 flex items-center gap-1 text-xs shrink-0">
-              <Hash className="w-3 h-3 text-emerald-400" /> Technical Tags:
+              <Hash className="w-3 h-3 text-emerald-400" /> {t.insights.filterTags}
             </span>
             <button
               onClick={() => setSelectedTag('All')}
@@ -151,7 +153,7 @@ export function Research() {
                   : 'text-gray-400 border-gray-800 hover:border-gray-700 bg-gray-900/40'
               }`}
             >
-              All Tags
+              {t.insights.allTags}
             </button>
             {availableTags.map((tag) => {
               const isSelected = selectedTag.toLowerCase() === tag.toLowerCase();
@@ -174,7 +176,7 @@ export function Research() {
       </div>
       
       {!isLoaded ? (
-        <TerminalLoader onComplete={() => setIsLoaded(true)} text="ACCESSING LOGS..." />
+        <TerminalLoader onComplete={() => setIsLoaded(true)} text={t.insights.loader} />
       ) : (
         <motion.div 
           variants={containerVariants}
@@ -185,7 +187,7 @@ export function Research() {
           {filteredNotes.length === 0 ? (
             <div className="text-gray-500 font-mono text-center py-16 border border-dashed border-gray-800 rounded">
               <ShieldAlert className="w-8 h-8 text-gray-600 mx-auto mb-3" />
-              <p>No insights match the selected classification filters.</p>
+              <p>{t.insights.noNotes}</p>
               {(selectedType !== 'All' || selectedTag !== 'All') && (
                 <button
                   onClick={() => {
@@ -194,7 +196,7 @@ export function Research() {
                   }}
                   className="mt-3 px-3 py-1 bg-gray-900 border border-gray-700 text-cyan-400 hover:text-white rounded text-xs transition-colors"
                 >
-                  Reset Filters
+                  {t.insights.resetFilters}
                 </button>
               )}
             </div>

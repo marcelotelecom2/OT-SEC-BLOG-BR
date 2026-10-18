@@ -23,6 +23,7 @@ import {
   getContentTypeBadgeStyle,
   getNoteTags 
 } from '../constants/researchClassification';
+import { ArticleEditorModal } from '../components/admin/ArticleEditorModal';
 
 export function Admin() {
   const {
@@ -671,221 +672,26 @@ export function Admin() {
             </div>
           </div>
 
-          {/* Article Form Modal */}
+          {/* Article Form Modal with Real-Time Bug Validator, Markdown Linting & Live Preview */}
           {showArticleForm && editingArticle && (
-            <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-2xl max-h-[90vh] overflow-y-auto my-auto">
-                <SpotlightCard className="p-6 hud-border bg-[#090a0f] border-gray-800 space-y-4">
-                  <div className="flex items-center justify-between border-b border-gray-800 pb-3">
-                    <h3 className="text-lg font-bold text-white font-sans">
-                      {editingArticle.id ? 'Edit Article' : 'Create New Article'}
-                    </h3>
-                    <button onClick={() => setShowArticleForm(false)} className="text-gray-500 hover:text-white">✕</button>
-                  </div>
-
-                  <div className="space-y-4 font-mono text-xs">
-                    <div>
-                      <label className="block text-gray-400 mb-1">Article Title</label>
-                      <input
-                        type="text"
-                        value={editingArticle.title || ''}
-                        onChange={e => setEditingArticle(prev => ({ ...prev, title: e.target.value }))}
-                        className="w-full px-3 py-2 bg-gray-950 border border-gray-800 text-gray-200 focus:border-cyan-500 rounded"
-                        placeholder="e.g. Exploiting Modbus TCP Register Overflows"
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                      <div>
-                        <label className="block text-gray-400 mb-1">Research Area</label>
-                        <select
-                          value={editingArticle.area || 'ICS Security'}
-                          onChange={e => setEditingArticle(prev => ({ ...prev, area: e.target.value }))}
-                          className="w-full px-3 py-2 bg-gray-950 border border-gray-800 text-cyan-300 focus:border-cyan-500 rounded"
-                        >
-                          <option value="ICS Security">ICS Security</option>
-                          <option value="Artificial Intelligence">Artificial Intelligence</option>
-                          <option value="Network Engineering">Network Engineering</option>
-                          <option value="Vulnerability Analysis">Vulnerability Analysis</option>
-                          <option value="Threat Intelligence">Threat Intelligence</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="block text-gray-400 mb-1">Estimated Read Time</label>
-                        <input
-                          type="text"
-                          value={editingArticle.readTime || '10 min read'}
-                          onChange={e => setEditingArticle(prev => ({ ...prev, readTime: e.target.value }))}
-                          className="w-full px-3 py-2 bg-gray-950 border border-gray-800 text-gray-200 focus:border-cyan-500 rounded"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-gray-400 mb-1">Publication Date</label>
-                        <input
-                          type="date"
-                          value={editingArticle.date || new Date().toISOString().split('T')[0]}
-                          onChange={e => setEditingArticle(prev => ({ ...prev, date: e.target.value }))}
-                          className="w-full px-3 py-2 bg-gray-950 border border-gray-800 text-gray-200 focus:border-cyan-500 rounded"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Cover Image Section */}
-                    <div className="p-3 bg-gray-950/70 border border-gray-800/80 rounded-lg space-y-3">
-                      <div className="flex items-center justify-between">
-                        <label className="block text-gray-300 font-semibold flex items-center gap-1.5">
-                          <ImageIcon className="w-4 h-4 text-cyan-400" />
-                          Imagem de Capa / Destaque (JPG, GIF, PNG, WebP)
-                        </label>
-                        {editingArticle.coverImage && (
-                          <button
-                            type="button"
-                            onClick={() => setEditingArticle(prev => ({ ...prev, coverImage: '' }))}
-                            className="text-[11px] font-mono text-rose-400 hover:text-rose-300 underline"
-                          >
-                            Remover Imagem
-                          </button>
-                        )}
-                      </div>
-
-                      {/* Cover Image Preview */}
-                      {editingArticle.coverImage ? (
-                        <div className="relative rounded overflow-hidden border border-cyan-800/60 bg-gray-900 max-h-48 group">
-                          <img
-                            src={editingArticle.coverImage}
-                            alt="Cover Preview"
-                            className="w-full h-36 object-cover"
-                          />
-                          <div className="absolute bottom-2 left-2 px-2 py-0.5 bg-black/80 text-cyan-300 rounded text-[10px] font-mono border border-cyan-900/50">
-                            Preview da Capa Ativa
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="border border-dashed border-gray-800 rounded p-4 text-center bg-gray-900/20">
-                          <p className="text-gray-500 text-xs font-mono">Nenhuma imagem de capa selecionada. Insira um link ou envie um arquivo (JPG, GIF, PNG).</p>
-                        </div>
-                      )}
-
-                      <div className="flex flex-col sm:flex-row gap-2">
-                        <input
-                          type="text"
-                          value={editingArticle.coverImage || ''}
-                          onChange={e => setEditingArticle(prev => ({ ...prev, coverImage: e.target.value }))}
-                          className="flex-1 px-3 py-2 bg-gray-900 border border-gray-800 text-cyan-300 focus:border-cyan-500 rounded text-xs font-mono"
-                          placeholder="Cole a URL da imagem (https://... ou data:...)"
-                        />
-                        <div className="flex items-center gap-2 shrink-0">
-                          <label className="px-3 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded text-xs font-mono cursor-pointer transition-colors flex items-center gap-1.5 border border-gray-700">
-                            <Upload className="w-3.5 h-3.5 text-cyan-400" />
-                            Upload JPG/GIF
-                            <input
-                              type="file"
-                              accept="image/jpeg,image/png,image/gif,image/webp,image/svg+xml"
-                              onChange={handleCoverUpload}
-                              className="hidden"
-                            />
-                          </label>
-                          <button
-                            type="button"
-                            onClick={() => setShowMediaPickerFor('cover')}
-                            className="px-3 py-2 bg-cyan-950/40 hover:bg-cyan-900/50 text-cyan-300 border border-cyan-800/60 rounded text-xs font-mono transition-colors flex items-center gap-1.5"
-                          >
-                            <ImageIcon className="w-3.5 h-3.5" />
-                            Biblioteca
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-gray-400 mb-1">Summary / Abstract</label>
-                      <textarea
-                        rows={2}
-                        value={editingArticle.summary || ''}
-                        onChange={e => setEditingArticle(prev => ({ ...prev, summary: e.target.value }))}
-                        className="w-full px-3 py-2 bg-gray-950 border border-gray-800 text-gray-200 focus:border-cyan-500 rounded"
-                        placeholder="Brief 2-3 sentence overview..."
-                      />
-                    </div>
-
-                    <div>
-                      <div className="flex flex-wrap items-center justify-between gap-2 mb-1.5">
-                        <label className="block text-gray-400">Conteúdo do Artigo (Markdown suportado)</label>
-                        <div className="flex items-center gap-2">
-                          <label className="px-2.5 py-1 bg-gray-900 hover:bg-gray-800 text-cyan-300 border border-cyan-900/60 rounded text-[11px] font-mono cursor-pointer transition-colors flex items-center gap-1">
-                            <Upload className="w-3 h-3 text-cyan-400" />
-                            Inserir Imagem (JPG/GIF)
-                            <input
-                              type="file"
-                              accept="image/jpeg,image/png,image/gif,image/webp,image/svg+xml"
-                              onChange={handleContentImageUpload}
-                              className="hidden"
-                            />
-                          </label>
-                          <button
-                            type="button"
-                            onClick={() => setShowMediaPickerFor('content')}
-                            className="px-2.5 py-1 bg-gray-900 hover:bg-gray-800 text-gray-300 hover:text-white border border-gray-800 rounded text-[11px] font-mono transition-colors flex items-center gap-1"
-                          >
-                            <ImageIcon className="w-3 h-3 text-cyan-400" />
-                            Biblioteca de Imagens
-                          </button>
-                        </div>
-                      </div>
-
-                      <textarea
-                        rows={7}
-                        value={editingArticle.content || ''}
-                        onChange={e => setEditingArticle(prev => ({ ...prev, content: e.target.value }))}
-                        className="w-full px-3 py-2 bg-gray-950 border border-gray-800 text-gray-200 focus:border-cyan-500 rounded font-mono text-xs leading-relaxed"
-                        placeholder="## Subtítulo&#10;Escreva o artigo técnico aqui...&#10;&#10;![Diagrama de rede](https://url-ou-imagem.gif)"
-                      />
-                      <p className="text-[11px] text-gray-500 font-mono mt-1">
-                        💡 Suporte completo a imagens e GIFs animados: utilize <code className="text-cyan-400 bg-gray-900 px-1 py-0.5 rounded">![Legenda](url)</code> ou use os botões acima para upload instantâneo.
-                      </p>
-                    </div>
-
-                    <div className="flex items-center gap-2 pt-2">
-                      <input
-                        type="checkbox"
-                        id="published_check"
-                        checked={editingArticle.published ?? true}
-                        onChange={e => setEditingArticle(prev => ({ ...prev, published: e.target.checked }))}
-                        className="accent-cyan-500 w-4 h-4"
-                      />
-                      <label htmlFor="published_check" className="text-gray-300">Publish immediately to live blog</label>
-                    </div>
-                  </div>
-
-                  <div className="flex justify-end gap-3 pt-4 border-t border-gray-800">
-                    <button
-                      type="button"
-                      onClick={() => setShowArticleForm(false)}
-                      className="px-4 py-2 border border-gray-800 text-gray-400 hover:text-white rounded text-xs font-mono"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (!editingArticle.title || !editingArticle.summary) return;
-                        if (editingArticle.id) {
-                          updateArticle(editingArticle.id, editingArticle);
-                        } else {
-                          addArticle(editingArticle as any);
-                        }
-                        setShowArticleForm(false);
-                      }}
-                      className="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-mono font-bold text-xs uppercase rounded"
-                    >
-                      Save Article
-                    </button>
-                  </div>
-                </SpotlightCard>
-              </motion.div>
-            </div>
+            <ArticleEditorModal
+              article={editingArticle}
+              existingArticles={articles}
+              onClose={() => {
+                setShowArticleForm(false);
+                setEditingArticle(null);
+              }}
+              onSave={(savedArticle) => {
+                if (savedArticle.id && articles.some(a => a.id === savedArticle.id)) {
+                  updateArticle(savedArticle.id, savedArticle);
+                } else {
+                  addArticle(savedArticle as any);
+                }
+                setEditingArticle(savedArticle);
+              }}
+              uploadImage={uploadImage}
+              onOpenMediaPicker={(mode) => setShowMediaPickerFor(mode)}
+            />
           )}
         </div>
       )}

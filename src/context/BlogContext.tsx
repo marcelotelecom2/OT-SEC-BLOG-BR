@@ -248,6 +248,18 @@ export function BlogProvider({ children }: { children: React.ReactNode }) {
     return [];
   });
 
+  const [deletedArticleIds, setDeletedArticleIds] = useState<string[]>(() => {
+    const saved = localStorage.getItem('ot_sec_deleted_article_ids');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch {
+        return [];
+      }
+    }
+    return [];
+  });
+
   const [articleViews, setArticleViews] = useState<Record<string, number>>(() => {
     const saved = localStorage.getItem('ot_sec_article_views');
     if (saved) {
@@ -260,14 +272,21 @@ export function BlogProvider({ children }: { children: React.ReactNode }) {
     return {};
   });
 
-  // Canonical published articles are always served from src/content/articles,
-  // merged with live views and local articles / drafts.
+  // Canonical published articles are merged with local articles (which take precedence if edited)
+  // and filtered if deleted.
   const articles: Article[] = [
-    ...PUBLISHED_ARTICLES.map(pub => ({
-      ...pub,
-      views: articleViews[pub.id] !== undefined ? articleViews[pub.id] : pub.views
-    })),
     ...localArticles
+      .filter(loc => !deletedArticleIds.includes(loc.id))
+      .map(loc => ({
+        ...loc,
+        views: articleViews[loc.id] !== undefined ? articleViews[loc.id] : (loc.views ?? 0)
+      })),
+    ...PUBLISHED_ARTICLES
+      .filter(pub => !deletedArticleIds.includes(pub.id) && !localArticles.some(loc => loc.id === pub.id))
+      .map(pub => ({
+        ...pub,
+        views: articleViews[pub.id] !== undefined ? articleViews[pub.id] : pub.views
+      }))
   ];
 
   // Save local articles / drafts and views to localStorage
@@ -398,11 +417,29 @@ export function BlogProvider({ children }: { children: React.ReactNode }) {
         [id]: updated.views!
       }));
     }
-    setLocalArticles(prev => prev.map(item => item.id === id ? { ...item, ...updated } : item));
+    setLocalArticles(prev => {
+      const exists = prev.some(item => item.id === id);
+      if (exists) {
+        return prev.map(item => item.id === id ? { ...item, ...updated } : item);
+      }
+      // If it's an existing canonical article being edited for the first time, clone it into localArticles
+      const canonical = PUBLISHED_ARTICLES.find(item => item.id === id);
+      if (canonical) {
+        return [{ ...canonical, ...updated }, ...prev];
+      }
+      return prev;
+    });
   };
 
   const deleteArticle = (id: string) => {
     setLocalArticles(prev => prev.filter(item => item.id !== id));
+    if (PUBLISHED_ARTICLES.some(pub => pub.id === id)) {
+      setDeletedArticleIds(prev => {
+        const next = prev.includes(id) ? prev : [...prev, id];
+        localStorage.setItem('ot_sec_deleted_article_ids', JSON.stringify(next));
+        return next;
+      });
+    }
   };
 
   const addNote = (data: Omit<ResearchNote, 'id'>) => {

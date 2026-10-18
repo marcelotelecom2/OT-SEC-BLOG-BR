@@ -5,6 +5,7 @@ import { DecodeText } from '../components/ui/DecodeText';
 import { SpotlightCard } from '../components/ui/SpotlightCard';
 import { TerminalLoader } from '../components/ui/TerminalLoader';
 import { useBlog } from '../context/BlogContext';
+import { useLanguage, getLocalizedArticle } from '../context/LanguageContext';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -21,25 +22,28 @@ const itemVariants = {
 
 export function Articles() {
   const { articles, recordPageView } = useBlog();
+  const { language, t } = useLanguage();
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     recordPageView('/articles');
   }, []);
 
-  const publishedArticles = articles.filter(a => a.published !== false);
+  const publishedArticles = articles
+    .filter(a => a.published !== false)
+    .map(a => getLocalizedArticle(a, language));
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-24 min-h-[80vh]">
       <div className="border-b border-gray-800 pb-6 sm:pb-8 mb-8 sm:mb-12">
         <h1 className="text-3xl sm:text-4xl font-bold text-white tracking-tight mb-3 sm:mb-4 cursor-crosshair">
-          <DecodeText text="Articles" delay={100} />
+          <DecodeText text={t.articles.title} delay={100} />
         </h1>
-        <p className="text-gray-400 font-mono text-xs sm:text-sm">Long-form publications and technical deep dives.</p>
+        <p className="text-gray-400 font-mono text-xs sm:text-sm">{t.articles.subtitle}</p>
       </div>
       
       {!isLoaded ? (
-        <TerminalLoader onComplete={() => setIsLoaded(true)} text="FETCHING ARTICLE INDEX..." />
+        <TerminalLoader onComplete={() => setIsLoaded(true)} text={t.articles.loader} />
       ) : (
         <motion.div 
           variants={containerVariants}
@@ -49,7 +53,7 @@ export function Articles() {
         >
           {publishedArticles.length === 0 ? (
             <div className="text-gray-500 font-mono text-center py-12 border border-dashed border-gray-800 rounded">
-              No published articles found. Log into Admin Panel to create new articles.
+              {t.articles.empty}
             </div>
           ) : (
             publishedArticles.map((article) => (
@@ -77,7 +81,7 @@ export function Articles() {
                           {article.views !== undefined && article.views > 0 && (
                             <>
                               <span className="text-cyan-500/50">•</span>
-                              <span className="text-cyan-400">{article.views} views</span>
+                              <span className="text-cyan-400">{article.views} {t.articles.views}</span>
                             </>
                           )}
                         </div>

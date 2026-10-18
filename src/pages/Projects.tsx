@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { DecodeText } from '../components/ui/DecodeText';
@@ -6,6 +5,7 @@ import { SpotlightCard } from '../components/ui/SpotlightCard';
 import { TerminalLoader } from '../components/ui/TerminalLoader';
 import { ArrowRight, Github, ExternalLink } from 'lucide-react';
 import { useBlog } from '../context/BlogContext';
+import { useLanguage } from '../context/LanguageContext';
 import { sanitizeExternalUrl } from '../lib/sanitizeUrl';
 
 const containerVariants = {
@@ -23,6 +23,7 @@ const itemVariants = {
 
 export function Projects() {
   const { projects, recordPageView } = useBlog();
+  const { t } = useLanguage();
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
@@ -33,13 +34,13 @@ export function Projects() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-24 min-h-[80vh]">
       <div className="border-b border-gray-800 pb-6 sm:pb-8 mb-8 sm:mb-12">
         <h1 className="text-3xl sm:text-4xl font-bold text-white tracking-tight mb-2 sm:mb-4 cursor-crosshair">
-          <DecodeText text="Projects & Tools" delay={100} />
+          <DecodeText text={t.projects.title} delay={100} />
         </h1>
-        <p className="text-gray-400 font-mono text-xs sm:text-sm">Applied research, open-source tools, and platforms.</p>
+        <p className="text-gray-400 font-mono text-xs sm:text-sm">{t.projects.subtitle}</p>
       </div>
       
       {!isLoaded ? (
-        <TerminalLoader onComplete={() => setIsLoaded(true)} text="LOADING REPOSITORIES..." />
+        <TerminalLoader onComplete={() => setIsLoaded(true)} text={t.projects.loader} />
       ) : (
         <motion.div 
           variants={containerVariants}
@@ -76,8 +77,8 @@ export function Projects() {
                       target="_blank" 
                       rel="noopener noreferrer" 
                       className="text-gray-400 hover:text-white transition-colors w-10 h-10 rounded-full hover:bg-gray-800 inline-flex items-center justify-center"
-                      title="GitHub Repository"
-                      aria-label="GitHub Repository"
+                      title={t.projects.viewGithub}
+                      aria-label={t.projects.viewGithub}
                     >
                       <Github className="w-5 h-5" />
                     </a>
@@ -88,8 +89,8 @@ export function Projects() {
                       target="_blank" 
                       rel="noopener noreferrer" 
                       className="text-gray-400 hover:text-white transition-colors w-10 h-10 rounded-full hover:bg-gray-800 inline-flex items-center justify-center"
-                      title="Documentation & Live Demo"
-                      aria-label="Documentation & Live Demo"
+                      title={t.projects.liveDemo}
+                      aria-label={t.projects.liveDemo}
                     >
                       <ExternalLink className="w-5 h-5" />
                     </a>
@@ -104,7 +105,7 @@ export function Projects() {
                         rel="noopener noreferrer"
                         className="ml-auto inline-flex items-center text-xs sm:text-sm font-mono text-cyan-500 hover:text-cyan-300 transition-colors group/link py-2"
                       >
-                        View Docs <ArrowRight className="w-4 h-4 ml-1.5 group-hover/link:translate-x-1 transition-transform" />
+                        {t.projects.liveDemo} <ArrowRight className="w-4 h-4 ml-1.5 group-hover/link:translate-x-1 transition-transform" />
                       </a>
                     );
                   })()}

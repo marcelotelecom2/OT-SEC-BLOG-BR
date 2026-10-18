@@ -1,6 +1,7 @@
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useBlog } from '../context/BlogContext';
+import { useLanguage, getLocalizedArticle } from '../context/LanguageContext';
 import { ArrowLeft, Clock, Calendar, Eye, Tag } from 'lucide-react';
 import { DecodeText } from '../components/ui/DecodeText';
 import { ArticleContent } from '../components/article/ArticleContent';
@@ -10,35 +11,38 @@ export function ArticleDetail() {
   const { slug, id } = useParams<{ slug?: string; id?: string }>();
   const identifier = slug || id || '';
   const { articles, updateArticle, recordPageView } = useBlog();
+  const { language, t } = useLanguage();
 
   // Procurar primeiro por article.slug, depois por article.id
-  const article = articles.find(a => a.slug === identifier) || articles.find(a => a.id === identifier);
+  const rawArticle = articles.find(a => a.slug === identifier) || articles.find(a => a.id === identifier);
 
   // Backward compatibility: se acessado pelo ID antigo, redireciona para a URL com slug usando replace
-  if (article && identifier === article.id && article.slug && identifier !== article.slug) {
-    return <Navigate to={`/articles/${article.slug}`} replace />;
+  if (rawArticle && identifier === rawArticle.id && rawArticle.slug && identifier !== rawArticle.slug) {
+    return <Navigate to={`/articles/${rawArticle.slug}`} replace />;
   }
 
   useEffect(() => {
-    if (article) {
-      recordPageView(`/articles/${article.slug}`);
+    if (rawArticle) {
+      recordPageView(`/articles/${rawArticle.slug}`);
       // Increment views count once
-      updateArticle(article.id, { views: (article.views || 0) + 1 });
+      updateArticle(rawArticle.id, { views: (rawArticle.views || 0) + 1 });
     }
-  }, [article?.id]);
+  }, [rawArticle?.id]);
 
-  if (!article) {
+  if (!rawArticle) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-24 text-center font-mono">
         <title>Article Not Found | OT-SEC</title>
-        <h2 className="text-xl text-rose-400 mb-4">[404] ARTICLE_NOT_FOUND</h2>
-        <p className="text-gray-500 mb-8">The requested publication identifier does not exist in the index.</p>
+        <h2 className="text-xl text-rose-400 mb-4">{t.articleDetail.notFoundTitle}</h2>
+        <p className="text-gray-500 mb-8">{t.articleDetail.notFoundDesc}</p>
         <Link to="/articles" className="px-4 py-2 bg-cyan-500 text-black font-bold text-xs uppercase rounded">
-          Return to Articles
+          {t.articleDetail.returnBtn}
         </Link>
       </div>
     );
   }
+
+  const article = getLocalizedArticle(rawArticle, language);
 
   return (
     <article className="w-full px-4 sm:px-6 lg:px-8 py-10 sm:py-16 md:py-20">
@@ -49,7 +53,7 @@ export function ArticleDetail() {
           to="/articles"
           className="inline-flex items-center text-xs font-mono text-cyan-400 hover:text-cyan-300 mb-6 sm:mb-8 transition-colors min-h-[44px] py-1"
         >
-          <ArrowLeft className="w-4 h-4 mr-2 shrink-0" /> Back to Articles Index
+          <ArrowLeft className="w-4 h-4 mr-2 shrink-0" /> {t.articleDetail.backBtn}
         </Link>
 
         <header className="border-b border-gray-800 pb-8 sm:pb-10 mb-8 sm:mb-12">
@@ -67,7 +71,7 @@ export function ArticleDetail() {
             </span>
             <span className="text-gray-700 hidden sm:inline">•</span>
             <span className="flex items-center gap-1.5 text-cyan-300">
-              <Eye className="w-3.5 h-3.5 shrink-0" /> {(article.views ?? 0)} views
+              <Eye className="w-3.5 h-3.5 shrink-0" /> {(article.views ?? 0)} {t.articleDetail.views}
             </span>
           </div>
 

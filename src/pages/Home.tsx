@@ -6,13 +6,8 @@ import { motion } from 'motion/react';
 import { DecodeText } from '../components/ui/DecodeText';
 import { SpotlightCard } from '../components/ui/SpotlightCard';
 import { useBlog } from '../context/BlogContext';
+import { useLanguage, getLocalizedArticle } from '../context/LanguageContext';
 import { getTagBadgeStyle, getAuthorBadgeStyle } from '../constants/researchClassification';
-
-const researchAreas = [
-  { id: '1', title: 'Industrial Cybersecurity', icon: Shield, desc: 'Securing critical manufacturing and energy infrastructure.' },
-  { id: '2', title: 'Artificial Intelligence', icon: Cpu, desc: 'Applied AI for anomaly detection and automated triage.' },
-  { id: '3', title: 'Network Engineering', icon: Network, desc: 'Resilient architectures for converged IT/OT networks.' },
-];
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -31,18 +26,29 @@ const itemVariants = {
 
 export function Home() {
   const { articles, notes, recordPageView } = useBlog();
+  const { language, t } = useLanguage();
 
   useEffect(() => {
     recordPageView('/');
   }, []);
 
-  const latestArticles = articles.filter(a => a.published !== false).slice(0, 3);
+  const latestArticles = articles
+    .filter(a => a.published !== false)
+    .slice(0, 3)
+    .map(a => getLocalizedArticle(a, language));
+
   const latestNotes = notes.slice(0, 3);
+
+  const researchAreas = [
+    { id: '1', title: t.home.area1Title, icon: Shield, desc: t.home.area1Desc },
+    { id: '2', title: t.home.area2Title, icon: Cpu, desc: t.home.area2Desc },
+    { id: '3', title: t.home.area3Title, icon: Network, desc: t.home.area3Desc },
+  ];
 
   return (
     <div className="flex flex-col w-full relative">
       {/* Hero Section */}
-      <section className="relative h-[80vh] min-h-[600px] flex items-center justify-center overflow-hidden border-b border-gray-800">
+      <section className="relative min-h-[580px] lg:min-h-[640px] py-16 sm:py-20 flex items-center justify-center overflow-hidden border-b border-gray-800">
         <CyberHero />
         
         <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center">
@@ -50,21 +56,21 @@ export function Home() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
-            className="inline-flex items-center px-3 py-1 mb-8 rounded-full border border-cyan-500/30 bg-cyan-500/10 backdrop-blur-sm cursor-crosshair group"
+            className="inline-flex items-center px-3 py-1 mb-6 rounded-full border border-cyan-500/30 bg-cyan-500/10 backdrop-blur-sm cursor-crosshair group"
           >
             <span className="flex w-2 h-2 rounded-full bg-cyan-400 mr-2 group-hover:animate-ping transition-all duration-300"></span>
-            <DecodeText text="SYSTEM.INITIALIZED" className="text-xs font-mono text-cyan-300 tracking-wider" delay={500} />
+            <DecodeText text={t.hero.badge} className="text-xs font-mono text-cyan-300 tracking-wider" delay={500} />
           </motion.div>
           
           <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-sans font-bold tracking-tight text-white mb-6">
-            <DecodeText text="OT-SEC Digital" delay={800} /> <br />
+            <DecodeText text={t.hero.title1} delay={800} /> <br />
             <motion.span 
               initial={{ opacity: 0, filter: 'blur(10px)' }}
               animate={{ opacity: 1, filter: 'blur(0px)' }}
               transition={{ delay: 1.5, duration: 0.8 }}
               className="text-transparent bg-clip-text bg-gradient-to-r from-gray-200 to-gray-500 inline-block"
             >
-              Research Lab
+              {t.hero.title2}
             </motion.span>
           </h1>
           
@@ -74,24 +80,24 @@ export function Home() {
             transition={{ delay: 1.8, duration: 0.5 }}
             className="max-w-2xl text-base sm:text-lg md:text-xl text-gray-400 font-sans mb-8 sm:mb-10 leading-relaxed"
           >
-            Independent research on Industrial Cybersecurity, Artificial Intelligence and Critical Infrastructure.
+            {t.hero.subtitle}
           </motion.p>
           
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 2.2, duration: 0.5 }}
-            className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto"
+            transition={{ delay: 2.1, duration: 0.5 }}
+            className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto items-center justify-center"
           >
             <Link to="/insights" className="hud-border relative overflow-hidden px-6 sm:px-8 py-3.5 text-white font-mono text-sm tracking-widest uppercase bg-transparent group min-h-[44px] flex items-center justify-center">
               <span className="absolute inset-0 bg-cyan-500/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"></span>
               <span className="relative z-10 flex items-center justify-center">
-                Explore Insights
+                {t.hero.btnInsights}
                 <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
               </span>
             </Link>
             <Link to="/articles" className="px-6 sm:px-8 py-3.5 text-gray-300 font-mono text-sm tracking-widest uppercase hover:text-white transition-colors flex items-center justify-center border border-gray-800 hover:border-gray-600 bg-gray-900/50 min-h-[44px]">
-              Latest Articles
+              {t.hero.btnArticles}
             </Link>
           </motion.div>
         </div>
@@ -111,12 +117,12 @@ export function Home() {
           <motion.div variants={itemVariants} className="flex items-end justify-between mb-8 sm:mb-12 border-b border-gray-800 pb-4">
             <div>
               <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight font-sans mb-1.5 cursor-crosshair">
-                <DecodeText text="Latest Research" delay={0} />
+                <DecodeText text={t.home.latestTitle} delay={0} />
               </h2>
-              <p className="text-gray-500 font-mono text-xs sm:text-sm">Recent publications and technical notes</p>
+              <p className="text-gray-500 font-mono text-xs sm:text-sm">{t.home.latestSubtitle}</p>
             </div>
             <Link to="/articles" className="inline-flex items-center text-cyan-400 font-mono text-xs sm:text-sm hover:text-cyan-300 transition-colors py-1">
-              View All <ArrowRight className="w-4 h-4 ml-1" />
+              {t.home.viewAll} <ArrowRight className="w-4 h-4 ml-1" />
             </Link>
           </motion.div>
           
@@ -172,9 +178,9 @@ export function Home() {
           <motion.div variants={itemVariants} className="flex items-end justify-between mb-8 sm:mb-12 border-b border-gray-800 pb-4">
             <div>
               <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight font-sans mb-1.5 cursor-crosshair">
-                <DecodeText text="Research Areas" delay={0} />
+                <DecodeText text={t.home.areasTitle} delay={0} />
               </h2>
-              <p className="text-gray-500 font-mono text-xs sm:text-sm">Core domains of investigation</p>
+              <p className="text-gray-500 font-mono text-xs sm:text-sm">{t.home.areasSubtitle}</p>
             </div>
           </motion.div>
           
@@ -201,10 +207,15 @@ export function Home() {
           className="mb-14 sm:mb-20 md:mb-24"
         >
           <motion.div variants={itemVariants} className="flex items-end justify-between mb-6 sm:mb-8 border-b border-gray-800 pb-4">
-            <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight font-sans cursor-crosshair">
-              <DecodeText text="Insights" delay={0} />
-            </h2>
-            <Link to="/insights" className="text-cyan-400 font-mono text-xs sm:text-sm hover:text-cyan-300 py-1">Archive</Link>
+            <div>
+              <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight font-sans cursor-crosshair mb-1.5">
+                <DecodeText text={t.home.notesTitle} delay={0} />
+              </h2>
+              <p className="text-gray-500 font-mono text-xs sm:text-sm">{t.home.notesSubtitle}</p>
+            </div>
+            <Link to="/insights" className="text-cyan-400 font-mono text-xs sm:text-sm hover:text-cyan-300 py-1 flex items-center gap-1">
+              {t.home.btnGoInsights} <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
           </motion.div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
