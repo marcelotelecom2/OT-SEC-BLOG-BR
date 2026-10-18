@@ -3,6 +3,24 @@ import { Article } from '../../types';
 export type ArticleMetadata = Omit<Article, 'content'>;
 
 export const ARTICLES_METADATA: ArticleMetadata[] = [
+{
+  "id": "8",
+  "slug": "iec-62351-entendendo-ameacas-deliberadas-sistemas-eletricos",
+  "title": "IEC 62351: Entendendo as ameaças deliberadas aos sistemas elétricos",
+  "summary": "Entenda as ameaças deliberadas aos sistemas elétricos na IEC 62351-1: insiders, espionagem, vandalismo, hackers, malware, furto e terrorismo.",
+  "date": "2026-10-18",
+  "readTime": "5 min de leitura",
+  "area": "Regulation Update",
+  "author": "Walter Rodrigues",
+  "published": true,
+  "views": 0,
+  "tags": [
+    "IEC 62351",
+    "OT Security",
+    "Sistemas elétricos"
+  ],
+  "coverImage": "/images/articles/iec-62351-entendendo-ameacas-deliberadas.jpg"
+},
   {
   "id": "7",
   "slug": "iec-62351-ameacas-deliberadas-alem-de-hackers",
