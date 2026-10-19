@@ -1,12 +1,12 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Article, ResearchNote, Project, MediaItem, AnalyticsKPIs } from '../types';
 import { PUBLISHED_ARTICLES } from '../content/articles';
 import { PUBLISHED_NOTES as INITIAL_NOTES } from 'virtual:published-articles';
 import { mergeArticles, publicNotes, updateLocalArticle } from '../lib/articleState';
 import { usePersistentState } from '../lib/usePersistentState';
 import { generateSlug, loadLocalArticles, LOCAL_ARTICLES_KEY } from '../lib/articleStorage';
-import { safeGetItem, safeSetItem, safeRemoveItem, writeVerifiedItem } from '../lib/persistence';
 import { compressImageFile } from '../lib/storage';
+import { adminApi } from '../lib/adminApi';
 import { isArticleArray, isStringArray, isViewCounts, isNoteArray, isProjectArray, isMediaArray, isAnalytics } from '../lib/storageSchemas';
 export { CONTENT_VERSION_KEY, CURRENT_CONTENT_VERSION } from '../lib/articleStorage';
 
@@ -103,12 +103,12 @@ interface BlogContextType {
   analytics: AnalyticsKPIs;
   storageError: string | null;
   isAdminLoggedIn: boolean;
-  loginAdmin: (pass: string) => boolean;
-  logoutAdmin: () => void;
+  loginAdmin: (pass: string) => Promise<boolean>;
+  logoutAdmin: () => Promise<void>;
   changePassword: (currentPass: string, newPass: string) => { success: boolean; message: string };
-  addArticle: (article: Omit<Article, 'id' | 'views' | 'slug'> & { id?: string; slug?: string }) => Article;
   updateArticle: (id: string, article: Partial<Article>) => void;
-  deleteArticle: (id: string) => void;
+  saveArticle: (article: Article) => Promise<Article>;
+  deleteArticle: (id: string) => Promise<void>;
   addNote: (note: Omit<ResearchNote, 'id'>) => void;
   updateNote: (id: string, note: Partial<ResearchNote>) => void;
   deleteNote: (id: string) => void;
@@ -135,42 +135,37 @@ export function BlogProvider({ children }: { children: React.ReactNode }) {
   const [mediaLibrary, setMediaLibrary, mediaError] = usePersistentState<MediaItem[]>('ot_sec_media', INITIAL_MEDIA, isMediaArray);
   const [analytics, setAnalytics] = usePersistentState<AnalyticsKPIs>(
     'ot_sec_analytics', INITIAL_ANALYTICS, isAnalytics, { bestEffort: true });
-  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(() => safeGetItem('ot_sec_admin_auth') === 'true');
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
   const storageError = articlesError || deletionError || notesError || projectsError || mediaError;
   const articles = mergeArticles(PUBLISHED_ARTICLES, localArticles, deletedArticleIds, articleViews);
   const adminArticles = mergeArticles(PUBLISHED_ARTICLES, localArticles, deletedArticleIds, articleViews, true);
 
-  const [adminPassword, setAdminPassword] = useState<string>(() => {
-    return safeGetItem('ot_sec_admin_password') || 'sec2026';
-  });
+  useEffect(() => {
+    adminApi.session().then(({ authenticated }) => {
+      setIsAdminLoggedIn(authenticated);
+      // Older versions treated deletion as a browser-only hide. Restore those rows so
+      // the administrator can despublicá-las through the repository-backed action.
+      if (authenticated) setDeletedArticleIds([], true);
+    }).catch(() => setIsAdminLoggedIn(false));
+  }, []);
 
-  const loginAdmin = (password: string) => {
-    // Accepts custom password or default initialization key
-    if (password === adminPassword || password === 'sec2026') {
+  const loginAdmin = async (password: string) => {
+    try {
+      await adminApi.login(password);
       setIsAdminLoggedIn(true);
-      safeSetItem('ot_sec_admin_auth', 'true');
+      setDeletedArticleIds([], true);
       return true;
-    }
-    return false;
+    } catch { return false; }
   };
 
-  const logoutAdmin = () => {
+  const logoutAdmin = async () => {
+    await adminApi.logout().catch(() => undefined);
     setIsAdminLoggedIn(false);
-    safeRemoveItem('ot_sec_admin_auth');
   };
 
   const changePassword = (currentPass: string, newPass: string) => {
-    if (currentPass !== adminPassword && currentPass !== 'sec2026' && currentPass !== 'admin' && currentPass !== 'root') {
-      return { success: false, message: 'Current password credential is incorrect.' };
-    }
-    if (!newPass || newPass.trim().length < 4) {
-      return { success: false, message: 'New password must be at least 4 characters long.' };
-    }
-    const cleanPass = newPass.trim();
-    try { writeVerifiedItem('ot_sec_admin_password', cleanPass); }
-    catch (error) { return { success: false, message: error instanceof Error ? error.message : 'Falha ao salvar.' }; }
-    setAdminPassword(cleanPass);
-    return { success: true, message: 'Password successfully updated! Keep your new credential safe.' };
+    void currentPass; void newPass;
+    return { success: false, message: 'A senha agora é gerenciada pelo segredo ADMIN_PASSWORD no Cloudflare Pages.' };
   };
 
   // Handlers
@@ -197,8 +192,16 @@ export function BlogProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const deleteArticle = (id: string) => {
+  const saveArticle = async (article: Article) => {
+    await adminApi.saveArticle(article);
+    if (PUBLISHED_ARTICLES.some(item => item.id === article.id)) updateArticle(article.id, article);
+    else setLocalArticles(previous => [article, ...previous.filter(item => item.id !== article.id)]);
+    return article;
+  };
+
+  const deleteArticle = async (id: string) => {
     if (PUBLISHED_ARTICLES.some(article => article.id === id)) {
+      await adminApi.deleteArticle(id);
       setDeletedArticleIds(previous => previous.includes(id) ? previous : [...previous, id]);
     } else {
       setLocalArticles(previous => previous.filter(article => article.id !== id));
@@ -349,8 +352,8 @@ export function BlogProvider({ children }: { children: React.ReactNode }) {
         loginAdmin,
         logoutAdmin,
         changePassword,
-        addArticle,
         updateArticle,
+        saveArticle,
         deleteArticle,
         addNote,
         updateNote,

@@ -68,7 +68,7 @@ interface ArticleEditorModalProps {
   article: Partial<Article>;
   existingArticles: Article[];
   onClose: () => void;
-  onSave: (article: Article) => void;
+  onSave: (article: Article) => Promise<void>;
   uploadImage: (file: File) => Promise<MediaItem>;
   onOpenMediaPicker: (mode: 'cover' | 'content') => void;
 }
@@ -458,7 +458,7 @@ export function ArticleEditorModal({
   };
 
   // Save changes handler
-  const handleSaveChanges = (closeModalAfter = false) => {
+  const handleSaveChanges = async (closeModalAfter = false) => {
     // If there are critical bugs preventing safe rendering
     if (hasCriticalBugs) {
       setSaveState('error');
@@ -475,10 +475,10 @@ export function ArticleEditorModal({
     const updatedArticle = getEditedArticle();
 
     try {
-      onSave(updatedArticle);
+      await onSave(updatedArticle);
       setIsDirty(false);
       setSaveState('saved');
-      setSaveFeedbackMessage('Edição salva neste navegador. Exporte o artigo e importe no projeto para preparar a publicação.');
+      setSaveFeedbackMessage('Alteração enviada ao GitHub. O Cloudflare Pages está preparando a nova versão do blog.');
 
       if (closeModalAfter) {
         onClose();

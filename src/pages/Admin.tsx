@@ -31,7 +31,7 @@ export function Admin() {
   const {
     adminArticles: articles, adminNotes: notes, projects, mediaLibrary, analytics, storageError,
     isAdminLoggedIn, loginAdmin, logoutAdmin, changePassword,
-    addArticle, updateArticle, deleteArticle,
+    saveArticle, deleteArticle,
     addNote, updateNote, deleteNote,
     addProject, updateProject, deleteProject,
     uploadImage, deleteMedia, resetCounters
@@ -88,9 +88,9 @@ export function Admin() {
   // Drag & drop upload state
   const [isDragging, setIsDragging] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (loginAdmin(password)) {
+    if (await loginAdmin(password)) {
       setAuthError(false);
       setPassword('');
     } else {
@@ -184,12 +184,12 @@ export function Admin() {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter passcode (e.g. sec2026)"
+                  placeholder="Enter the administrator passcode"
                   className="w-full px-4 py-3 bg-gray-950 border border-gray-800 text-cyan-300 font-mono text-sm focus:outline-none focus:border-cyan-500 rounded transition-colors"
                 />
                 {authError && (
                   <p className="text-xs font-mono text-rose-500 mt-2 flex items-center gap-1">
-                    [!] ACCESS DENIED: Invalid passcode credential. Try &apos;sec2026&apos;.
+                    [!] ACCESS DENIED: Invalid passcode credential.
                   </p>
                 )}
               </div>
@@ -201,15 +201,6 @@ export function Admin() {
                 <Unlock className="w-4 h-4" /> Authenticate System
               </button>
 
-              <div className="pt-4 border-t border-gray-800/60 text-center">
-                <button
-                  type="button"
-                  onClick={() => loginAdmin('sec2026')}
-                  className="text-xs font-mono text-gray-500 hover:text-cyan-400 transition-colors underline decoration-dashed"
-                >
-                  [ Quick Bypass: One-Click Demo Unlock ]
-                </button>
-              </div>
             </form>
           </SpotlightCard>
         </motion.div>
@@ -680,9 +671,12 @@ export function Admin() {
                               <Edit3 className="w-4 h-4" />
                             </button>
                             <button
-                              onClick={() => withStorageFeedback(() => deleteArticle(article.id))}
+                              onClick={() => withStorageFeedback(async () => {
+                                await deleteArticle(article.id);
+                                setExportFeedback(`Despublicação enviada: ${article.title}. Aguarde o deploy do Cloudflare Pages.`);
+                              })}
                               className="p-1.5 hover:bg-rose-950 text-gray-400 hover:text-rose-400 rounded transition-colors"
-                              title="Ocultar neste navegador; não remove o artigo do site"
+                              title="Despublicar no GitHub e iniciar novo deploy"
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
@@ -704,14 +698,11 @@ export function Admin() {
                 setShowArticleForm(false);
                 setEditingArticle(null);
               }}
-              onSave={(savedArticle) => {
+              onSave={async (savedArticle) => {
                 setActionError('');
-                if (savedArticle.id && articles.some(a => a.id === savedArticle.id)) {
-                  updateArticle(savedArticle.id, savedArticle);
-                  setEditingArticle(savedArticle);
-                } else {
-                  setEditingArticle(addArticle(savedArticle));
-                }
+                await saveArticle(savedArticle);
+                setEditingArticle(savedArticle);
+                setExportFeedback(`Alteração enviada: ${savedArticle.title}. Aguarde o deploy do Cloudflare Pages.`);
               }}
               uploadImage={uploadImage}
               onOpenMediaPicker={(mode) => setShowMediaPickerFor(mode)}
