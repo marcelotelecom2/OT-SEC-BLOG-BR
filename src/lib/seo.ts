@@ -1,4 +1,5 @@
 import { Article, ArticleLanguage } from '../types';
+import { getOptimizedSocialImage } from './responsiveImage';
 
 export const SITE_URL = 'https://ot-sec.blog.br';
 
@@ -158,7 +159,7 @@ export function setArticleLanguageLinks(slug: string): void {
  */
 export function buildArticleStructuredData(article: Article, language: ArticleLanguage = 'en'): Record<string, unknown> {
   const canonicalUrl = getArticleCanonicalUrl(article.slug, language);
-  const imageUrl = resolveImageUrl(article.coverImage);
+  const imageUrl = resolveImageUrl(getOptimizedSocialImage(article.coverImage));
 
   const schema: Record<string, unknown> = {
     '@context': 'https://schema.org',
@@ -244,7 +245,7 @@ export function applyArticleSEO(article: Article, language: ArticleLanguage = 'e
   const articleTitle = `${article.title} | OT-SEC`;
   const description = formatMetaDescription(article.summary);
   const canonical = getArticleCanonicalUrl(article.slug, language);
-  const imageUrl = resolveImageUrl(article.coverImage);
+  const imageUrl = resolveImageUrl(getOptimizedSocialImage(article.coverImage));
 
   // Document title
   document.title = articleTitle;

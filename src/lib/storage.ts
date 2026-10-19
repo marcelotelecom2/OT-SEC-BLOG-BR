@@ -11,8 +11,8 @@ export { safeGetItem, safeSetItem, safeRemoveItem } from './persistence';
  */
 export async function compressImageFile(
   file: File,
-  maxWidth = 1200,
-  maxHeight = 800,
+  maxWidth = 1600,
+  maxHeight = 1200,
   quality = 0.82
 ): Promise<{ url: string; sizeStr: string; type: string }> {
   // Preserve vector images and GIF animation.

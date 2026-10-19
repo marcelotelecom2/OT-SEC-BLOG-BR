@@ -6,6 +6,7 @@ import { SpotlightCard } from '../components/ui/SpotlightCard';
 import { TerminalLoader } from '../components/ui/TerminalLoader';
 import { useBlog } from '../context/BlogContext';
 import { useLanguage, getLocalizedArticle } from '../context/LanguageContext';
+import { ResponsiveImage } from '../components/ui/ResponsiveImage';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -61,10 +62,12 @@ export function Articles() {
                 <SpotlightCard className="group relative flex flex-col md:flex-row items-stretch bg-transparent border border-gray-800/50 p-5 sm:p-6 md:p-7 transition-all duration-300 hud-border gap-5 sm:gap-6">
                   {article.coverImage && (
                     <div className="w-full md:w-56 lg:w-64 h-48 md:h-auto min-h-[140px] shrink-0 rounded overflow-hidden border border-gray-800/80 bg-gray-950/80 relative group-hover:border-cyan-500/50 transition-colors shadow-lg">
-                      <img
+                      <ResponsiveImage
                         src={article.coverImage}
                         alt={article.title}
+                        sizes="(max-width: 767px) calc(100vw - 40px), 256px"
                         loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-[#050505]/60 via-transparent to-transparent pointer-events-none" />

@@ -9,6 +9,7 @@ import { useBlog } from '../context/BlogContext';
 import { useLanguage, getLocalizedArticle } from '../context/LanguageContext';
 import { getTagBadgeStyle, getAuthorBadgeStyle } from '../constants/researchClassification';
 import { publicNotes } from '../lib/articleState';
+import { ResponsiveImage } from '../components/ui/ResponsiveImage';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -133,10 +134,12 @@ export function Home() {
                 <div className="absolute top-0 right-0 w-8 h-8 bg-gradient-to-bl from-gray-800/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 {article.coverImage && (
                   <div className="w-full h-40 mb-4 rounded overflow-hidden border border-gray-800/80 bg-gray-950/80 relative z-10">
-                    <img
+                    <ResponsiveImage
                       src={article.coverImage}
                       alt={article.title}
+                      sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1023px) 50vw, 33vw"
                       loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#050505]/50 via-transparent to-transparent pointer-events-none" />

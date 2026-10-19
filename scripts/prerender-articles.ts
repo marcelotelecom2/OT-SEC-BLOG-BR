@@ -6,7 +6,9 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { ARTICLES_METADATA } from '../src/content/articles/metadata';
 import { Article, ArticleLanguage } from '../src/types';
 import { ArticleContent } from '../src/components/article/ArticleContent';
+import { ResponsiveImage } from '../src/components/ui/ResponsiveImage';
 import { localizeArticle } from '../src/lib/articleLocalization';
+import { getOptimizedSocialImage } from '../src/lib/responsiveImage';
 import {
   formatMetaDescription,
   resolveImageUrl,
@@ -61,8 +63,17 @@ function renderArticleBody(article: Article): string {
   const body = renderToStaticMarkup(React.createElement(ArticleContent, {
     content: article.content || article.summary,
   })).replace(/\snode="\[object Object\]"/g, '');
-  const cover = article.coverImage
-    ? `<div class="mb-10 sm:mb-14 rounded-lg overflow-hidden border border-gray-800/80 shadow-2xl"><img src="${escapeHtml(article.coverImage)}" alt="${escapeHtml(article.title)}" class="w-full h-auto max-h-[520px] object-cover" /></div>`
+  const coverImage = article.coverImage ? renderToStaticMarkup(React.createElement(ResponsiveImage, {
+    src: article.coverImage,
+    alt: article.title,
+    sizes: '(max-width: 1150px) calc(100vw - 32px), 1100px',
+    className: 'w-full h-auto max-h-[520px] object-cover',
+    loading: 'eager',
+    decoding: 'async',
+    fetchPriority: 'high',
+  })) : '';
+  const cover = coverImage
+    ? `<div class="mb-10 sm:mb-14 rounded-lg overflow-hidden border border-gray-800/80 shadow-2xl">${coverImage}</div>`
     : '';
   return `<article data-prerendered-article="true" class="w-full px-4 sm:px-6 lg:px-8 py-10 sm:py-16 md:py-20">
   <div class="max-w-[1100px] mx-auto">
@@ -90,7 +101,7 @@ export function prerenderArticleHtml(templateHtml: string, article: Article, lan
   const canonicalUrl = getArticleCanonicalUrl(article.slug, language);
   const languageUrls = getArticleLanguageUrls(article.slug);
   const formattedDescription = formatMetaDescription(article.summary, 160);
-  const imageUrl = resolveImageUrl(article.coverImage);
+  const imageUrl = resolveImageUrl(getOptimizedSocialImage(article.coverImage));
   const schema = buildArticleStructuredData(article, language);
 
   // 1. Remove generic head metadata tags from index.html template

@@ -9,6 +9,7 @@ import { ArticleSEO } from '../components/seo/ArticleSEO';
 import { findPublicArticle } from '../lib/articleState';
 import { localizeArticle } from '../lib/articleLocalization';
 import type { ArticleLanguage } from '../types';
+import { ResponsiveImage } from '../components/ui/ResponsiveImage';
 
 const LANGUAGE_NAMES: Record<ArticleLanguage, Record<ArticleLanguage, string>> = {
   en: { en: 'English', pt: 'Portuguese', es: 'Spanish' },
@@ -115,10 +116,14 @@ export function ArticleDetail({ routeLanguage }: { routeLanguage?: ArticleLangua
         {/* Hero Cover Image */}
         {article.coverImage && (
           <div className="mb-10 sm:mb-14 rounded-lg overflow-hidden border border-gray-800/80 shadow-2xl">
-            <img
+            <ResponsiveImage
               src={article.coverImage}
               alt={article.title}
+              sizes="(max-width: 1150px) calc(100vw - 32px), 1100px"
               className="w-full h-auto max-h-[520px] object-cover"
+              loading="eager"
+              decoding="async"
+              fetchPriority="high"
               referrerPolicy="no-referrer"
             />
           </div>

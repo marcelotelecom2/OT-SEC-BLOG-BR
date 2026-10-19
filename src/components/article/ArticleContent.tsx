@@ -2,6 +2,7 @@ import React from 'react';
 import Markdown, { Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { sanitizeExternalUrl, sanitizeImageUrl } from '../../lib/sanitizeUrl';
+import { ResponsiveImage } from '../ui/ResponsiveImage';
 
 interface ArticleContentProps {
   content: string;
@@ -175,11 +176,15 @@ const markdownComponents: Components = {
     const safeSrc = sanitizeImageUrl(src) || src || '';
     return (
       <figure className="my-8 sm:my-10 w-full">
-        <img
+        <ResponsiveImage
           src={safeSrc}
           alt={alt || ''}
+          width={1600}
+          height={1200}
+          sizes="(max-width: 812px) calc(100vw - 32px), 780px"
           className="w-full h-auto rounded-lg border border-gray-800 shadow-xl object-cover max-h-[650px]"
           loading="lazy"
+          decoding="async"
           {...props}
         />
         {alt && (
