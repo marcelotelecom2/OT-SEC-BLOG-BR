@@ -57,6 +57,25 @@ A importação não faz commit, push ou deploy automaticamente. Guarde o arquivo
 exportado como cópia portátil: os dados do navegador podem ser apagados pelo
 usuário ou pelo próprio navegador.
 
+## Idiomas dos artigos
+
+O idioma padrão da interface pública continua sendo inglês. Cada artigo, porém,
+declara seu próprio **idioma original** no editor; novos artigos usam português
+como padrão. Título, resumo e corpo original permanecem juntos na mesma entrada
+editorial, e as versões em inglês e espanhol pertencem a essa entrada — não há
+mais uma tabela global capaz de sobrescrever uma edição recente.
+
+Em cada idioma adicional, preencha título e resumo em conjunto. O corpo traduzido
+é opcional. Quando ele for preenchido, a importação cria um Markdown adjacente,
+como `nome-do-artigo.en.md`. Quando estiver vazio, o site pode mostrar o título e
+o resumo traduzidos, mas exibe antes do texto um aviso informando o idioma real do
+corpo. Se nem os metadados estiverem traduzidos, o site mantém a versão original e
+também informa isso ao leitor.
+
+O arquivo `.ot-sec.json` usa atualmente a versão 2 para transportar o idioma
+original e todas as traduções. O importador continua aceitando arquivos da versão
+1 e os interpreta como artigos originalmente em português.
+
 O painel só confirma “salvo” depois de gravar e conferir os dados no navegador.
 Se faltar espaço ou o armazenamento estiver bloqueado, a edição permanece aberta
 e pode ser guardada com **Exportar artigo**. Bibliotecas de imagens não são

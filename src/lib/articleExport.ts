@@ -3,7 +3,7 @@ import { sanitizeImageUrl } from './sanitizeUrl';
 
 export interface ArticleExport {
   format: 'ot-sec-article';
-  version: 1;
+  version: 2;
   article: Article;
 }
 
@@ -11,7 +11,7 @@ export interface ArticleExport {
 export function parseArticleExport(value: unknown): ArticleExport {
   if (!value || typeof value !== 'object') throw new Error('Arquivo de artigo inválido.');
   const packet = value as Record<string, unknown>;
-  if (packet.format !== 'ot-sec-article' || packet.version !== 1) {
+  if (packet.format !== 'ot-sec-article' || (packet.version !== 1 && packet.version !== 2)) {
     throw new Error('Formato de exportação não reconhecido.');
   }
   if (!packet.article || typeof packet.article !== 'object') throw new Error('Artigo ausente.');
@@ -43,6 +43,35 @@ export function parseArticleExport(value: unknown): ArticleExport {
   if (source.coverImage && !sanitizeImageUrl(source.coverImage as string)) {
     throw new Error('URL da imagem de capa inválida.');
   }
+  const sourceLanguage = source.sourceLanguage ?? 'pt';
+  if (sourceLanguage !== 'en' && sourceLanguage !== 'pt' && sourceLanguage !== 'es') {
+    throw new Error('Idioma original inválido.');
+  }
+  const translations: Article['translations'] = {};
+  if (source.translations !== undefined) {
+    if (!source.translations || typeof source.translations !== 'object' || Array.isArray(source.translations)) {
+      throw new Error('Traduções inválidas.');
+    }
+    for (const [language, rawTranslation] of Object.entries(source.translations as Record<string, unknown>)) {
+      if ((language !== 'en' && language !== 'pt' && language !== 'es') || language === sourceLanguage
+        || !rawTranslation || typeof rawTranslation !== 'object' || Array.isArray(rawTranslation)) {
+        throw new Error(`Tradução inválida: ${language}.`);
+      }
+      const translation = rawTranslation as Record<string, unknown>;
+      if (typeof translation.title !== 'string' || !translation.title.trim()
+        || typeof translation.summary !== 'string' || !translation.summary.trim()
+        || (translation.content !== undefined && typeof translation.content !== 'string')) {
+        throw new Error(`Tradução incompleta: ${language}.`);
+      }
+      translations[language] = {
+        title: translation.title.trim(),
+        summary: translation.summary.trim(),
+        ...(typeof translation.content === 'string' && translation.content.trim()
+          ? { content: translation.content.trim() }
+          : {}),
+      };
+    }
+  }
 
   // Explicitly copy editorial fields. Browser counters and runtime fields are not published.
   const article: Article = {
@@ -50,17 +79,18 @@ export function parseArticleExport(value: unknown): ArticleExport {
     title: (source.title as string).trim(), summary: (source.summary as string).trim(),
     content: source.content as string, area: (source.area as string).trim(),
     readTime: (source.readTime as string).trim(), date: source.date as string,
-    published: source.published,
+    published: source.published, sourceLanguage,
   };
   for (const field of ['coverImage', 'author', 'updatedAt'] as const) {
     if (typeof source[field] === 'string' && source[field].trim()) article[field] = source[field].trim();
   }
   if (source.tags) article.tags = (source.tags as string[]).map(tag => tag.trim()).filter(Boolean);
-  return { format: 'ot-sec-article', version: 1, article };
+  if (Object.keys(translations).length) article.translations = translations;
+  return { format: 'ot-sec-article', version: 2, article };
 }
 
 export function serializeArticleExport(article: Article): string {
-  return JSON.stringify(parseArticleExport({ format: 'ot-sec-article', version: 1, article }), null, 2) + '\n';
+  return JSON.stringify(parseArticleExport({ format: 'ot-sec-article', version: 2, article }), null, 2) + '\n';
 }
 
 export function downloadArticleExport(article: Article): void {

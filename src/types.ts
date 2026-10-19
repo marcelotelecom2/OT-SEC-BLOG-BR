@@ -1,3 +1,12 @@
+export type ArticleLanguage = 'en' | 'pt' | 'es';
+
+export interface ArticleTranslation {
+  title: string;
+  summary: string;
+  /** When omitted, the canonical body is shown with an explicit language notice. */
+  content?: string;
+}
+
 export interface Article {
   id: string;
   slug: string;
@@ -13,6 +22,10 @@ export interface Article {
   author?: string;
   updatedAt?: string;
   tags?: string[];
+  /** Language of title, summary and content stored in the canonical fields. */
+  sourceLanguage?: ArticleLanguage;
+  /** Optional article-owned versions. Missing content means metadata-only translation. */
+  translations?: Partial<Record<ArticleLanguage, ArticleTranslation>>;
 }
 
 export type ContentType =

@@ -60,6 +60,21 @@ test('cover and inline uploads become permanent image files and use the same pat
   assert.equal(plan.files.get('src/content/articles/novo-artigo-ot.md'), `![Diagrama](${publicPath})\n`);
 });
 
+test('translated bodies become article-owned Markdown files while metadata-only translations stay inline', () => {
+  const plan = planArticleImport(packet({
+    sourceLanguage: 'pt',
+    translations: {
+      en: { title: 'English title', summary: 'English summary', content: '# English\n\nFull body.' },
+      es: { title: 'Título español', summary: 'Resumen español.' },
+    },
+  }), []);
+  const metadata = metadataOf(plan)[0];
+  assert.equal(plan.files.get('src/content/articles/novo-artigo-ot.en.md'), '# English\n\nFull body.\n');
+  assert.equal(metadata.translations?.en?.contentFile, 'novo-artigo-ot.en.md');
+  assert.equal(metadata.translations?.es?.contentFile, undefined);
+  assert.equal(metadata.translations?.es?.title, 'Título español');
+});
+
 test('drafts, duplicate slugs, unsafe filenames and temporary image URLs fail before writing', () => {
   assert.throws(() => planArticleImport(packet({ published: false }), []), /rascunho/);
   assert.throws(() => planArticleImport(packet({ slug: ARTICLES_METADATA[0].slug }), ARTICLES_METADATA), /Slug/);
@@ -88,6 +103,9 @@ test('every registered article has a Markdown body and a unique content filename
   assert.equal(new Set(ARTICLES_METADATA.map(entry => entry.contentFile)).size, ARTICLES_METADATA.length);
   for (const entry of ARTICLES_METADATA) {
     assert.ok(fs.readFileSync(path.join(root, entry.contentFile), 'utf8').trim().length > 100);
+    for (const translation of Object.values(entry.translations ?? {})) {
+      if (translation?.contentFile) assert.ok(fs.readFileSync(path.join(root, translation.contentFile), 'utf8').trim().length > 0);
+    }
   }
 });
 

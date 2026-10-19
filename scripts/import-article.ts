@@ -3,6 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 import { ARTICLES_METADATA, type ArticleMetadata } from '../src/content/articles/metadata';
+import type { ArticleTranslationMetadata } from '../src/lib/articleMetadata';
 import { parseArticleExport } from '../src/lib/articleExport';
 
 export interface ImportPlan {
@@ -46,8 +47,38 @@ export function planArticleImport(value: unknown, existing: ArticleMetadata[]): 
   if (/data:|blob:/i.test(coverImage ?? '') || /(?:\]\(|src=["'])\s*(?:data:|blob:)/i.test(content)) {
     throw new Error('Há uma imagem temporária ou não suportada. Use PNG, JPEG, GIF, WebP ou SVG em base64, ou uma URL permanente.');
   }
-  const { content: _content, views: _views, ...editorial } = article;
-  const metadata: ArticleMetadata = { ...editorial, contentFile, views: 0 };
+  const translationMetadata: ArticleMetadata['translations'] = {};
+  for (const [language, translation] of Object.entries(article.translations ?? {})) {
+    if (!translation) continue;
+    const translatedContent = translation.content ? extractImages(translation.content) : undefined;
+    const previousTranslation = previous?.translations?.[language as keyof typeof previous.translations];
+    const translatedContentFile = translatedContent
+      ? previousTranslation?.contentFile ?? `${article.slug}.${language}.md`
+      : undefined;
+    if (translatedContentFile && !/^[a-z0-9][a-z0-9.-]*\.md$/.test(translatedContentFile)) {
+      throw new Error(`Arquivo de tradução inválido: ${translatedContentFile}`);
+    }
+    if (translatedContent && /data:|blob:/i.test(translatedContent)) {
+      throw new Error(`A tradução ${language} contém uma imagem temporária ou não suportada.`);
+    }
+    const translated: ArticleTranslationMetadata = {
+      title: translation.title,
+      summary: translation.summary,
+      ...(translatedContentFile ? { contentFile: translatedContentFile } : {}),
+    };
+    translationMetadata[language as keyof typeof translationMetadata] = translated;
+    if (translatedContentFile && translatedContent) {
+      files.set(`src/content/articles/${translatedContentFile}`,
+        translatedContent.endsWith('\n') ? translatedContent : `${translatedContent}\n`);
+    }
+  }
+  const { content: _content, views: _views, translations: _articleTranslations, ...editorial } = article;
+  const metadata: ArticleMetadata = {
+    ...editorial,
+    contentFile,
+    views: 0,
+    ...(Object.keys(translationMetadata).length ? { translations: translationMetadata } : {}),
+  };
   if (coverImage) metadata.coverImage = coverImage;
   const entries = previous
     ? existing.map(item => item.id === article.id ? metadata : item)
@@ -55,8 +86,8 @@ export function planArticleImport(value: unknown, existing: ArticleMetadata[]): 
 
   files.set(`src/content/articles/${contentFile}`, content.endsWith('\n') ? content : `${content}\n`);
   files.set('src/content/articles/metadata.ts',
-    "import type { Article } from '../../types';\n\n"
-    + "export type ArticleMetadata = Omit<Article, 'content'> & { contentFile: string };\n\n"
+    "import type { ArticleMetadata } from '../../lib/articleMetadata';\n"
+    + "export type { ArticleMetadata } from '../../lib/articleMetadata';\n\n"
     + `export const ARTICLES_METADATA: ArticleMetadata[] = ${JSON.stringify(entries, null, 2)};\n`);
   return { files, articleId: article.id, slug: article.slug, replacing: Boolean(previous) };
 }

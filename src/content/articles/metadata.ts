@@ -1,6 +1,5 @@
-import { Article } from '../../types';
-
-export type ArticleMetadata = Omit<Article, 'content'> & { contentFile: string };
+import type { ArticleMetadata } from '../../lib/articleMetadata';
+export type { ArticleMetadata } from '../../lib/articleMetadata';
 
 export const ARTICLES_METADATA: ArticleMetadata[] = [
 {
@@ -13,6 +12,7 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
   "readTime": "3 min de leitura",
   "area": "Regulation Update",
   "author": "Walter Rodrigues",
+  "sourceLanguage": "pt",
   "published": true,
   "views": 0,
   "tags": [
@@ -32,6 +32,7 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
   "readTime": "3 min de leitura",
   "area": "Regulation Update",
   "author": "Walter Rodrigues",
+  "sourceLanguage": "pt",
   "published": true,
   "views": 0,
   "tags": [
@@ -51,6 +52,7 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
   "readTime": "4 min de leitura",
   "area": "Regulation Update",
   "author": "Walter Rodrigues",
+  "sourceLanguage": "pt",
   "published": true,
   "views": 0,
   "tags": [
@@ -70,6 +72,7 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
   "readTime": "4 min de leitura",
   "area": "Regulation Update",
   "author": "Walter Rodrigues",
+  "sourceLanguage": "pt",
   "published": true,
   "views": 0,
   "tags": [
@@ -89,6 +92,7 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
   "readTime": "5 min de leitura",
   "area": "Regulation Update",
   "author": "Walter Rodrigues",
+  "sourceLanguage": "pt",
   "published": true,
   "views": 0,
   "tags": [
@@ -108,6 +112,7 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
   "readTime": "5 min de leitura",
   "area": "Regulation Update",
   "author": "Walter Rodrigues",
+  "sourceLanguage": "pt",
   "published": true,
   "views": 0,
   "tags": [
@@ -126,6 +131,17 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
     date: '2026-07-10',
     readTime: '12 min read',
     area: 'Artificial Intelligence',
+    sourceLanguage: 'en',
+    translations: {
+      pt: {
+        title: 'O Papel da IA na Detecção de Anomalias em Redes ICS',
+        summary: 'Uma exploração de como modelos de machine learning podem ser treinados em tráfego Modbus e DNP3 para identificar novos vetores de ataque e configurações incorretas em tempo real.',
+      },
+      es: {
+        title: 'El Papel de la IA en la Detección de Anomalías en Redes ICS',
+        summary: 'Una exploración de cómo los modelos de machine learning pueden entrenarse con tráfico Modbus y DNP3 para identificar nuevos vectores de ataque y errores de configuración en tiempo real.',
+      },
+    },
     published: true,
     views: 0,
     coverImage: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1200&auto=format&fit=crop&q=80'
@@ -139,6 +155,17 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
     date: '2026-06-22',
     readTime: '18 min read',
     area: 'Vulnerability Analysis',
+    sourceLanguage: 'en',
+    translations: {
+      pt: {
+        title: 'Desconstruindo o Payload do Stuxnet: Lições Ainda Não Aprendidas',
+        summary: 'Uma análise retrospectiva da ciberarma mais famosa do mundo, focando nas injeções específicas de DLL no Siemens Step7 e como sistemas OT modernos ainda estão vulneráveis a táticas similares.',
+      },
+      es: {
+        title: 'Desconstruyendo el Payload de Stuxnet: Lecciones Aún No Aprendidas',
+        summary: 'Un análisis retrospectivo de la ciberarma más famosa del mundo, centrado en las inyecciones específicas de DLL en Siemens Step7 y cómo los sistemas OT modernos siguen siendo vulnerables a tácticas similares.',
+      },
+    },
     published: true,
     views: 0,
     coverImage: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=1200&auto=format&fit=crop&q=80'
@@ -152,6 +179,17 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
     date: '2026-05-15',
     readTime: '15 min read',
     area: 'Network Engineering',
+    sourceLanguage: 'en',
+    translations: {
+      pt: {
+        title: 'Arquitetura Zero Trust em Ambientes SCADA Legados',
+        summary: 'Implementando microssegmentação e controles de acesso baseados em identidade em redes com PLCs de mais de 20 anos que carecem de mecanismos nativos de autenticação.',
+      },
+      es: {
+        title: 'Arquitectura Zero Trust en Entornos SCADA Heredados',
+        summary: 'Implementación de microsegmentación y controles de acceso basados en identidad en redes con PLCs de más de 20 años que carecen de mecanismos nativos de autenticación.',
+      },
+    },
     published: true,
     views: 0,
     coverImage: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=1200&auto=format&fit=crop&q=80'
@@ -165,6 +203,17 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
     date: '2026-04-02',
     readTime: '10 min read',
     area: 'Network Engineering',
+    sourceLanguage: 'en',
+    translations: {
+      pt: {
+        title: 'Analisando o Impacto do 5G na Segurança de Redes Elétricas Inteligentes (Smart Grid)',
+        summary: 'Com a expansão da infraestrutura 5G nas redes elétricas, a superfície de ataque aumenta. Analisamos as implicações de segurança da comunicação ultraconfiável de baixa latência (URLLC) na distribuição de energia.',
+      },
+      es: {
+        title: 'Analizando el Impacto del 5G en la Seguridad de Redes Eléctricas Inteligentes (Smart Grid)',
+        summary: 'Con el despliegue de la infraestructura 5G en las redes eléctricas, la superficie de ataque se amplía. Analizamos las implicaciones de seguridad de la comunicación ultraconfiable de baja latencia (URLLC) en la distribución de energía.',
+      },
+    },
     published: true,
     views: 0,
     coverImage: 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=1200&auto=format&fit=crop&q=80'
@@ -178,6 +227,17 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
     date: '2026-03-18',
     readTime: '22 min read',
     area: 'Vulnerability Analysis',
+    sourceLanguage: 'en',
+    translations: {
+      pt: {
+        title: 'Engenharia Reversa de Protocolos Proprietários de PLCs',
+        summary: 'Um guia técnico sobre captura, análise e fuzzing de protocolos industriais não documentados usando dissectors customizados do Wireshark e rádios definidos por software (SDR).',
+      },
+      es: {
+        title: 'Ingeniería Inversa de Protocolos Propietarios de PLCs',
+        summary: 'Una guía técnica sobre captura, análisis y fuzzing de protocolos industriales no documentados utilizando diseccionadores personalizados de Wireshark y radios definidas por software (SDR).',
+      },
+    },
     published: true,
     views: 0,
     coverImage: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1200&auto=format&fit=crop&q=80'
@@ -191,6 +251,17 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
     date: '2026-08-04',
     readTime: '14 min read',
     area: 'Regulation Update',
+    sourceLanguage: 'en',
+    translations: {
+      pt: {
+        title: 'NERC CIP-002: Como Sistemas Cibernéticos BES São Classificados por Impacto',
+        summary: 'Uma análise técnica aprofundada dos critérios da norma NERC CIP-002, explicando como ativos e sistemas cibernéticos do Sistema Elétrico de Potência (BES) são categorizados em classificações de impacto Alto, Médio e Baixo.',
+      },
+      es: {
+        title: 'NERC CIP-002: Cómo se Clasifican los Sistemas Cibernéticos BES por Impacto',
+        summary: 'Un análisis técnico profundo de los criterios de la norma NERC CIP-002, explicando cómo los activos y sistemas cibernéticos del Sistema Eléctrico de Potencia (BES) se clasifican en niveles de impacto Alto, Medio y Bajo.',
+      },
+    },
     published: true,
     views: 0,
     coverImage: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&auto=format&fit=crop&q=80'

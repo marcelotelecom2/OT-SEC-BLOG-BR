@@ -1,9 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { Article } from '../types';
+import type { ArticleLanguage } from '../types';
 import { safeGetItem, safeSetItem } from '../lib/persistence';
-import { ARTICLE_TRANSLATIONS } from 'virtual:published-articles';
+export { getLocalizedArticle } from '../lib/articleLocalization';
 
-export type Language = 'en' | 'pt' | 'es';
+export type Language = ArticleLanguage;
 
 export interface LanguageOption {
   code: Language;
@@ -72,6 +72,8 @@ export const TRANSLATIONS = {
       notFoundDesc: 'The requested publication identifier does not exist in the index.',
       returnBtn: 'Return to Articles',
       views: 'views',
+      metadataOnlyNotice: 'The title and summary are translated. The article body is available in {language}.',
+      untranslatedNotice: 'This article is not available in the selected language. The content below is shown in {language}.',
     },
     insights: {
       title: 'Insights',
@@ -171,6 +173,8 @@ export const TRANSLATIONS = {
       notFoundDesc: 'O identificador da publicação solicitada não existe no índice.',
       returnBtn: 'Retornar aos Artigos',
       views: 'visualizações',
+      metadataOnlyNotice: 'O título e o resumo estão traduzidos. O corpo do artigo está disponível em {language}.',
+      untranslatedNotice: 'Este artigo não está disponível no idioma selecionado. O conteúdo abaixo é exibido em {language}.',
     },
     insights: {
       title: 'Pesquisas & Notas de Campo',
@@ -270,6 +274,8 @@ export const TRANSLATIONS = {
       notFoundDesc: 'El identificador de publicación solicitado no existe en el índice.',
       returnBtn: 'Volver a Artículos',
       views: 'vistas',
+      metadataOnlyNotice: 'El título y el resumen están traducidos. El cuerpo del artículo está disponible en {language}.',
+      untranslatedNotice: 'Este artículo no está disponible en el idioma seleccionado. El contenido se muestra en {language}.',
     },
     insights: {
       title: 'Investigaciones & Notas de Campo',
@@ -317,20 +323,6 @@ export const TRANSLATIONS = {
     },
   },
 };
-
-export { ARTICLE_TRANSLATIONS } from 'virtual:published-articles';
-
-export function getLocalizedArticle(article: Article, language: Language): Article {
-  const custom = Object.hasOwn(ARTICLE_TRANSLATIONS, article.id) ? ARTICLE_TRANSLATIONS[article.id] : undefined;
-  if (!custom) return article;
-
-  const translation = custom[language] || custom.en;
-  return {
-    ...article,
-    title: translation.title || article.title,
-    summary: translation.summary || article.summary,
-  };
-}
 
 interface LanguageContextType {
   language: Language;

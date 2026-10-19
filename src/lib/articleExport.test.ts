@@ -12,10 +12,11 @@ const article: Article = {
 
 test('export round trip preserves editorial metadata and Markdown but excludes browser counters', () => {
   const packet = parseArticleExport(JSON.parse(serializeArticleExport(article)));
-  const { views: _views, ...expected } = article;
+  const { views: _views, ...withoutViews } = article;
+  const expected = { ...withoutViews, sourceLanguage: 'pt' };
   assert.deepEqual(packet.article, expected);
   assert.equal(packet.format, 'ot-sec-article');
-  assert.equal(packet.version, 1);
+  assert.equal(packet.version, 2);
 });
 
 test('drafts can be exported as portable editorial backups', () => {
@@ -25,7 +26,7 @@ test('drafts can be exported as portable editorial backups', () => {
 test('invalid export versions and malformed fields are rejected', () => {
   const packet = JSON.parse(serializeArticleExport(article));
   assert.throws(() => parseArticleExport(null));
-  assert.throws(() => parseArticleExport({ ...packet, version: 2 }));
+  assert.throws(() => parseArticleExport({ ...packet, version: 3 }));
   for (const change of [
     { slug: '../../outside' }, { title: ' ' }, { content: '' },
     { date: '2026-02-30' }, { date: 'not-a-date' }, { tags: [12] }, { published: 'true' },
@@ -33,6 +34,21 @@ test('invalid export versions and malformed fields are rejected', () => {
   ]) {
     assert.throws(() => parseArticleExport({ ...packet, article: { ...article, ...change } }));
   }
+});
+
+test('translations travel with the article and incomplete versions are rejected', () => {
+  const translated = {
+    ...article,
+    sourceLanguage: 'pt' as const,
+    translations: {
+      en: { title: 'OT Security', summary: 'Technical summary.', content: '# Research\n\nTranslated body.' },
+      es: { title: 'Seguridad OT', summary: 'Resumen técnico.' },
+    },
+  };
+  assert.deepEqual(parseArticleExport(JSON.parse(serializeArticleExport(translated))).article.translations, translated.translations);
+  const packet = JSON.parse(serializeArticleExport(article));
+  assert.throws(() => parseArticleExport({ ...packet, article: { ...packet.article, translations: { en: { title: 'Only title' } } } }));
+  assert.throws(() => parseArticleExport({ ...packet, article: { ...packet.article, sourceLanguage: 'de' } }));
 });
 
 test('unknown runtime properties are not copied to the publication package', () => {

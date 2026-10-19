@@ -6,7 +6,7 @@ import {
   Upload, X, RefreshCw, FileText, Clock, Tag, Calendar, CheckCircle2,
   Info, AlertCircle, Link2, Copy
 } from 'lucide-react';
-import { Article, MediaItem } from '../../types';
+import { Article, ArticleLanguage, ArticleTranslation, MediaItem } from '../../types';
 import { ArticleContent } from '../article/ArticleContent';
 import { DecodeText } from '../ui/DecodeText';
 import { downloadArticleExport } from '../../lib/articleExport';
@@ -104,6 +104,8 @@ export function ArticleEditorModal({
   const [content, setContent] = useState(article.content || '');
   const [coverImage, setCoverImage] = useState(article.coverImage || '');
   const [published, setPublished] = useState(article.published ?? true);
+  const [sourceLanguage, setSourceLanguage] = useState<ArticleLanguage>(article.sourceLanguage ?? 'pt');
+  const [translations, setTranslations] = useState<Article['translations']>(() => structuredClone(article.translations ?? {}));
 
   // Editor Tabs
   const [activeTab, setActiveTab] = useState<'editor' | 'preview' | 'diagnostics'>('editor');
@@ -399,16 +401,46 @@ export function ArticleEditorModal({
   const warnings = useMemo(() => diagnosticReport.filter(d => d.type === 'warning'), [diagnosticReport]);
   const passes = useMemo(() => diagnosticReport.filter(d => d.type === 'pass'), [diagnosticReport]);
 
-  const hasCriticalBugs = errors.length > 0;
+  const translationError = (Object.entries(translations ?? {}) as [ArticleLanguage, ArticleTranslation][])
+    .some(([language, translation]) => language === sourceLanguage
+      || Boolean(translation.title?.trim() || translation.summary?.trim() || translation.content?.trim())
+        && (!translation.title?.trim() || !translation.summary?.trim()));
+  const hasCriticalBugs = errors.length > 0 || translationError;
 
-  const getEditedArticle = (): Article => ({
-    ...article,
-    id: article.id || editorId,
-    slug: slug.trim() || generateSlugFromTitle(title) || `article-${Date.now()}`,
-    title: title.trim(), summary: summary.trim(), content: content.trim(), area,
-    readTime: readTime.trim() || autoReadTime, date,
-    coverImage: coverImage.trim() || undefined, published, views: article.views ?? 0,
-  });
+  const updateTranslation = (language: ArticleLanguage, field: keyof ArticleTranslation, value: string) => {
+    setTranslations(previous => ({
+      ...previous,
+      [language]: {
+        title: previous?.[language]?.title ?? '',
+        summary: previous?.[language]?.summary ?? '',
+        ...previous?.[language],
+        [field]: value,
+      },
+    }));
+    markDirty();
+  };
+
+  const getEditedArticle = (): Article => {
+    const cleanTranslations: Article['translations'] = {};
+    for (const [language, translation] of Object.entries(translations ?? {}) as [ArticleLanguage, ArticleTranslation][]) {
+      if (language === sourceLanguage || (!translation.title.trim() && !translation.summary.trim() && !translation.content?.trim())) continue;
+      cleanTranslations[language] = {
+        title: translation.title.trim(),
+        summary: translation.summary.trim(),
+        ...(translation.content?.trim() ? { content: translation.content.trim() } : {}),
+      };
+    }
+    return {
+      ...article,
+      id: article.id || editorId,
+      slug: slug.trim() || generateSlugFromTitle(title) || `article-${Date.now()}`,
+      title: title.trim(), summary: summary.trim(), content: content.trim(), area,
+      readTime: readTime.trim() || autoReadTime, date,
+      coverImage: coverImage.trim() || undefined, published, views: article.views ?? 0,
+      sourceLanguage,
+      translations: Object.keys(cleanTranslations).length ? cleanTranslations : undefined,
+    };
+  };
 
   const handleExport = () => {
     try {
@@ -426,8 +458,10 @@ export function ArticleEditorModal({
     // If there are critical bugs preventing safe rendering
     if (hasCriticalBugs) {
       setSaveState('error');
-      setSaveFeedbackMessage(`Não foi possível salvar: ${errors.length} bug(s) crítico(s) detectado(s). Corrija os campos destacados.`);
-      setActiveTab('diagnostics');
+      setSaveFeedbackMessage(translationError
+        ? 'Não foi possível salvar: toda tradução iniciada precisa de título e resumo; o corpo pode ficar vazio.'
+        : `Não foi possível salvar: ${errors.length} bug(s) crítico(s) detectado(s). Corrija os campos destacados.`);
+      if (!translationError) setActiveTab('diagnostics');
       return;
     }
 
@@ -464,7 +498,7 @@ export function ArticleEditorModal({
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [hasCriticalBugs, title, slug, summary, content, area, readTime, date, coverImage, published, article, onSave]);
+  }, [hasCriticalBugs, translationError, title, slug, summary, content, area, readTime, date, coverImage, published, sourceLanguage, translations, article, onSave]);
 
   // Upload Handlers
   const handleCoverUploadFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -1007,6 +1041,79 @@ export function ArticleEditorModal({
                     <Eye className="w-3 h-3" /> Ver Preview em Tempo Real →
                   </button>
                 </div>
+              </div>
+
+              {/* Article-owned language versions */}
+              <div className="p-4 bg-gray-950/70 border border-gray-800/80 rounded-lg space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <div>
+                    <h3 className="text-sm font-semibold text-white">Idiomas do artigo</h3>
+                    <p className="mt-1 text-[11px] text-gray-500">
+                      O idioma original guarda a versão principal. Em cada tradução, título e resumo são obrigatórios; o corpo é opcional.
+                    </p>
+                  </div>
+                  <label className="text-xs text-gray-400">
+                    Idioma original
+                    <select
+                      value={sourceLanguage}
+                      onChange={event => {
+                        const nextLanguage = event.target.value as ArticleLanguage;
+                        setSourceLanguage(nextLanguage);
+                        setTranslations(previous => {
+                          const next = { ...previous };
+                          delete next[nextLanguage];
+                          return next;
+                        });
+                        markDirty();
+                      }}
+                      className="ml-2 px-2 py-1.5 bg-gray-900 border border-gray-700 text-cyan-300 rounded font-mono"
+                    >
+                      <option value="pt">Português</option>
+                      <option value="en">English</option>
+                      <option value="es">Español</option>
+                    </select>
+                  </label>
+                </div>
+
+                {(['en', 'pt', 'es'] as ArticleLanguage[]).filter(language => language !== sourceLanguage).map(language => {
+                  const translation = translations?.[language] ?? { title: '', summary: '', content: '' };
+                  const label = language === 'en' ? 'English' : language === 'pt' ? 'Português' : 'Español';
+                  const started = Boolean(translation.title || translation.summary || translation.content);
+                  return (
+                    <details key={language} open={started} className="border border-gray-800 rounded bg-gray-900/30">
+                      <summary className="cursor-pointer px-3 py-2 text-xs font-mono text-cyan-300">
+                        {label} {translation.content?.trim() ? '• corpo traduzido' : started ? '• somente metadados' : '• não configurado'}
+                      </summary>
+                      <div className="p-3 pt-2 space-y-3 border-t border-gray-800">
+                        <input
+                          value={translation.title}
+                          onChange={event => updateTranslation(language, 'title', event.target.value)}
+                          placeholder={`Título em ${label}`}
+                          className="w-full px-3 py-2 bg-gray-950 border border-gray-800 text-gray-200 focus:border-cyan-500 rounded text-xs"
+                        />
+                        <textarea
+                          rows={3}
+                          value={translation.summary}
+                          onChange={event => updateTranslation(language, 'summary', event.target.value)}
+                          placeholder={`Resumo em ${label}`}
+                          className="w-full px-3 py-2 bg-gray-950 border border-gray-800 text-gray-200 focus:border-cyan-500 rounded text-xs"
+                        />
+                        <textarea
+                          rows={8}
+                          value={translation.content ?? ''}
+                          onChange={event => updateTranslation(language, 'content', event.target.value)}
+                          placeholder={`Corpo completo em ${label} (opcional). Se ficar vazio, o leitor verá um aviso e o corpo no idioma original.`}
+                          className="w-full px-3 py-2 bg-gray-950 border border-gray-800 text-gray-200 focus:border-cyan-500 rounded font-mono text-xs leading-relaxed"
+                        />
+                      </div>
+                    </details>
+                  );
+                })}
+                {translationError && (
+                  <p className="text-[11px] text-rose-400 flex items-center gap-1">
+                    <AlertCircle className="w-3 h-3" /> Preencha título e resumo em cada tradução iniciada.
+                  </p>
+                )}
               </div>
 
               {/* Publish Toggle */}

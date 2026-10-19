@@ -31,22 +31,21 @@ async function main() {
       id: 'validation-private', slug: 'validation-private-draft', title: 'Private validation draft',
       summary: 'VALIDATION_PRIVATE_SUMMARY_836901', contentFile: 'validation-private-draft.md',
       date: '2026-10-18', readTime: '1 min', area: 'OT', published: false, views: 0,
+      sourceLanguage: 'pt', translations: { en: { title: translationMarker, summary: translationMarker } },
     };
     const publicBody = 'VALIDATION_PUBLIC_ARTICLE_BODY_836901';
+    const publicTranslationBody = 'VALIDATION_PUBLIC_TRANSLATION_BODY_836901';
     fs.writeFileSync(path.join(contentRoot, 'validation-public-article.md'), publicBody);
+    fs.writeFileSync(path.join(contentRoot, 'validation-public-article.en.md'), publicTranslationBody);
     const publicArticle = { ...draft, id: 'validation-public', slug: 'validation-public-article',
-      title: 'Public validation article', summary: 'Public summary', contentFile: 'validation-public-article.md', published: true };
+      title: 'Public validation article', summary: 'Public summary', contentFile: 'validation-public-article.md',
+      published: true, translations: { en: { title: 'Translated public title', summary: 'Translated public summary',
+        contentFile: 'validation-public-article.en.md' } } };
     const metadataPath = path.join(contentRoot, 'metadata.ts');
     const metadata = fs.readFileSync(metadataPath, 'utf8');
     assert.match(metadata, /\];\s*$/);
     fs.writeFileSync(metadataPath, metadata.replace(/\];\s*$/, `,${JSON.stringify(draft)},${JSON.stringify(publicArticle)}\n];\n`));
 
-    fs.appendFileSync(path.join(contentRoot, 'translations.ts'),
-      `\nARTICLE_TRANSLATIONS[${JSON.stringify(draft.id)}] = ${JSON.stringify({
-        en: { title: translationMarker, summary: translationMarker },
-        pt: { title: translationMarker, summary: translationMarker },
-        es: { title: translationMarker, summary: translationMarker },
-      })};\n`);
     fs.appendFileSync(path.join(fixture, 'src/content/notes.ts'),
       `\nRESEARCH_NOTES.push(${JSON.stringify({
         id: 'source-draft', date: '2026-10-18', tag: '#PRIVATE', content: sourceNoteMarker, published: false,
@@ -92,6 +91,9 @@ async function main() {
     const direct = render(<Routes><Route path="/articles/:slug" element={<ArticleDetail />} /></Routes>, '/articles/validation-private-draft');
     const byId = render(<Routes><Route path="/articles/:slug" element={<ArticleDetail />} /></Routes>, '/articles/validation-private');
     const visible = render(<Routes><Route path="/articles/:slug" element={<ArticleDetail />} /></Routes>, '/articles/validation-public-article');
+    const fallbackArticle = PUBLISHED_ARTICLES.find((item: any) => item.sourceLanguage === 'pt' && !item.translations?.en);
+    assert.ok(fallbackArticle, 'A Portuguese article without an English body is required for the notice check');
+    const languageFallback = render(<Routes><Route path="/articles/:slug" element={<ArticleDetail />} /></Routes>, `/articles/${fallbackArticle.slug}`);
     function LocalEditorProbe() { return <div>{useBlog().adminNotes.map((note: any) => note.content).join('')}</div>; }
     const editor = render(<LocalEditorProbe />);
     stored.delete('ot_sec_notes');
@@ -111,7 +113,10 @@ async function main() {
       directDraftIdRendersBody: byId.includes(bodyMarker),
       draftPageIsNoindex: direct.includes('noindex'),
       publicArticleInJavascript: javascript.includes(publicBody),
-      publicArticleRenders: visible.includes(publicBody),
+      publicTranslationInJavascript: javascript.includes(publicTranslationBody),
+      publicTranslationRenders: visible.includes(publicTranslationBody),
+      languageFallbackNoticeShown: languageFallback.includes('not available in the selected language')
+        && languageFallback.includes('shown in Portuguese'),
       localDraftRemainsInEditor: editor.includes(noteMarker),
       privateMetadataInJavascript: javascript.includes(draft.slug) || javascript.includes(draft.summary),
       privateTranslationInJavascript: javascript.includes(translationMarker),
@@ -131,7 +136,9 @@ async function main() {
     assert.equal(results.directDraftIdRendersBody, false);
     assert.equal(results.draftPageIsNoindex, true);
     assert.equal(results.publicArticleInJavascript, true);
-    assert.equal(results.publicArticleRenders, true);
+    assert.equal(results.publicTranslationInJavascript, true);
+    assert.equal(results.publicTranslationRenders, true);
+    assert.equal(results.languageFallbackNoticeShown, true);
     assert.equal(results.localDraftRemainsInEditor, true);
     assert.equal(results.privateMetadataInJavascript, false);
     assert.equal(results.privateTranslationInJavascript, false);

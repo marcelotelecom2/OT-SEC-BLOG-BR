@@ -1,12 +1,20 @@
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useBlog } from '../context/BlogContext';
-import { useLanguage, getLocalizedArticle } from '../context/LanguageContext';
+import { useLanguage } from '../context/LanguageContext';
 import { ArrowLeft, Clock, Calendar, Eye, Tag } from 'lucide-react';
 import { DecodeText } from '../components/ui/DecodeText';
 import { ArticleContent } from '../components/article/ArticleContent';
 import { ArticleSEO } from '../components/seo/ArticleSEO';
 import { findPublicArticle } from '../lib/articleState';
+import { localizeArticle } from '../lib/articleLocalization';
+import type { ArticleLanguage } from '../types';
+
+const LANGUAGE_NAMES: Record<ArticleLanguage, Record<ArticleLanguage, string>> = {
+  en: { en: 'English', pt: 'Portuguese', es: 'Spanish' },
+  pt: { en: 'inglês', pt: 'português', es: 'espanhol' },
+  es: { en: 'inglés', pt: 'portugués', es: 'español' },
+};
 
 export function ArticleDetail() {
   const { slug, id } = useParams<{ slug?: string; id?: string }>();
@@ -44,7 +52,13 @@ export function ArticleDetail() {
     );
   }
 
-  const article = getLocalizedArticle(rawArticle, language);
+  const localization = localizeArticle(rawArticle, language);
+  const article = localization.article;
+  const showLanguageNotice = localization.contentLanguage !== language;
+  const languageNotice = (localization.metadataTranslated
+    ? t.articleDetail.metadataOnlyNotice
+    : t.articleDetail.untranslatedNotice
+  ).replace('{language}', LANGUAGE_NAMES[language][localization.contentLanguage]);
 
   return (
     <article className="w-full px-4 sm:px-6 lg:px-8 py-10 sm:py-16 md:py-20">
@@ -86,6 +100,12 @@ export function ArticleDetail() {
             {article.summary}
           </p>
         </header>
+
+        {showLanguageNotice && (
+          <div role="status" className="mb-8 rounded border border-amber-700/60 bg-amber-950/30 px-4 py-3 text-sm text-amber-200 font-mono">
+            {languageNotice}
+          </div>
+        )}
 
         {/* Hero Cover Image */}
         {article.coverImage && (
