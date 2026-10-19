@@ -14,7 +14,11 @@ import type { Article } from '../src/types';
 const article: Article = {
   id: '123456', slug: 'novo-artigo-ot', title: 'Novo artigo OT', summary: 'Resumo do artigo.',
   content: '# Pesquisa\n\nConteúdo técnico.', area: 'OT', readTime: '5 min', date: '2026-10-18',
-  published: true, author: 'Walter Rodrigues', tags: ['ICS'], views: 80,
+  published: true, author: 'Walter Rodrigues', tags: ['ICS'], views: 80, sourceLanguage: 'pt',
+  translations: {
+    en: { title: 'New OT article', summary: 'Article summary.', content: '# Research\n\nTechnical content.' },
+    es: { title: 'Nuevo artículo OT', summary: 'Resumen del artículo.', content: '# Investigación\n\nContenido técnico.' },
+  },
 };
 const packet = (changes: Partial<Article> = {}) => JSON.parse(serializeArticleExport({ ...article, ...changes }));
 const metadataOf = (plan: ReturnType<typeof planArticleImport>): ArticleMetadata[] => {
@@ -60,18 +64,18 @@ test('cover and inline uploads become permanent image files and use the same pat
   assert.equal(plan.files.get('src/content/articles/novo-artigo-ot.md'), `![Diagrama](${publicPath})\n`);
 });
 
-test('translated bodies become article-owned Markdown files while metadata-only translations stay inline', () => {
+test('translated bodies become article-owned Markdown files', () => {
   const plan = planArticleImport(packet({
     sourceLanguage: 'pt',
     translations: {
       en: { title: 'English title', summary: 'English summary', content: '# English\n\nFull body.' },
-      es: { title: 'Título español', summary: 'Resumen español.' },
+      es: { title: 'Título español', summary: 'Resumen español.', content: '# Español\n\nCuerpo completo.' },
     },
   }), []);
   const metadata = metadataOf(plan)[0];
   assert.equal(plan.files.get('src/content/articles/novo-artigo-ot.en.md'), '# English\n\nFull body.\n');
   assert.equal(metadata.translations?.en?.contentFile, 'novo-artigo-ot.en.md');
-  assert.equal(metadata.translations?.es?.contentFile, undefined);
+  assert.equal(metadata.translations?.es?.contentFile, 'novo-artigo-ot.es.md');
   assert.equal(metadata.translations?.es?.title, 'Título español');
 });
 
@@ -80,6 +84,7 @@ test('drafts, duplicate slugs, unsafe filenames and temporary image URLs fail be
   assert.throws(() => planArticleImport(packet({ slug: ARTICLES_METADATA[0].slug }), ARTICLES_METADATA), /Slug/);
   assert.throws(() => planArticleImport(packet({ content: '![Diagrama](blob:temporary)' }), []), /temporária/);
   assert.throws(() => planArticleImport(packet(), [{ ...article, contentFile: '../outside.md' }]), /arquivo/);
+  assert.throws(() => planArticleImport(packet({ translations: { en: article.translations!.en } }), []), /ES/);
 });
 
 test('import writes reviewable source files and refuses to overwrite an unrelated Markdown file', t => {
@@ -105,6 +110,29 @@ test('every registered article has a Markdown body and a unique content filename
     assert.ok(fs.readFileSync(path.join(root, entry.contentFile), 'utf8').trim().length > 100);
     for (const translation of Object.values(entry.translations ?? {})) {
       if (translation?.contentFile) assert.ok(fs.readFileSync(path.join(root, translation.contentFile), 'utf8').trim().length > 0);
+    }
+  }
+});
+
+test('every published article has complete English, Portuguese and Spanish versions', () => {
+  const root = path.resolve('src/content/articles');
+  const languages = ['en', 'pt', 'es'] as const;
+  for (const entry of ARTICLES_METADATA.filter(item => item.published)) {
+    assert.ok(languages.includes(entry.sourceLanguage!), `${entry.slug}: idioma original ausente`);
+    const source = fs.readFileSync(path.join(root, entry.contentFile), 'utf8');
+    for (const language of languages) {
+      if (language === entry.sourceLanguage) continue;
+      const translation = entry.translations?.[language];
+      assert.ok(translation?.title.trim(), `${entry.slug}: título ${language} ausente`);
+      assert.ok(translation?.summary.trim(), `${entry.slug}: resumo ${language} ausente`);
+      assert.ok(translation?.contentFile, `${entry.slug}: corpo ${language} ausente`);
+      const body = fs.readFileSync(path.join(root, translation.contentFile), 'utf8');
+      assert.ok(body.trim().split(/\s+/).length >= Math.max(10, source.trim().split(/\s+/).length * 0.55),
+        `${entry.slug}: corpo ${language} parece incompleto`);
+      assert.equal((body.match(/```/g) ?? []).length, (source.match(/```/g) ?? []).length,
+        `${entry.slug}: blocos de código divergentes em ${language}`);
+      const destinations = (text: string) => [...text.matchAll(/!?\[[^\]]*\]\(([^)]+)\)/g)].map(match => match[1]).sort();
+      assert.deepEqual(destinations(body), destinations(source), `${entry.slug}: links divergentes em ${language}`);
     }
   }
 });

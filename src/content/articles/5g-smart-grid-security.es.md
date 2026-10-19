@@ -1,0 +1,1 @@
+La segmentación de red 5G ofrece canales dedicados para automatizar la distribución de energía. Sin embargo, las vulnerabilidades en el aislamiento entre segmentos podrían exponer los flujos de sincrofasores a ataques de suplantación.

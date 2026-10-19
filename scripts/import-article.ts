@@ -18,6 +18,13 @@ export function planArticleImport(value: unknown, existing: ArticleMetadata[]): 
   if (!article.published) {
     throw new Error('O arquivo contém um rascunho. Marque "Pronto para publicar" no editor antes de importar no site.');
   }
+  const missingLanguage = (['en', 'pt', 'es'] as const).find(language => language !== article.sourceLanguage
+    && (!article.translations?.[language]?.title.trim()
+      || !article.translations?.[language]?.summary.trim()
+      || !article.translations?.[language]?.content?.trim()));
+  if (missingLanguage) {
+    throw new Error(`A publicação exige título, resumo e corpo completos em ${missingLanguage.toUpperCase()}.`);
+  }
   if (existing.some(item => item.slug === article.slug && item.id !== article.id)) {
     throw new Error(`Slug já utilizado por outro artigo: ${article.slug}`);
   }

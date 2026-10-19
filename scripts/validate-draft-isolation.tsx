@@ -41,10 +41,15 @@ async function main() {
       title: 'Public validation article', summary: 'Public summary', contentFile: 'validation-public-article.md',
       published: true, translations: { en: { title: 'Translated public title', summary: 'Translated public summary',
         contentFile: 'validation-public-article.en.md' } } };
+    fs.writeFileSync(path.join(contentRoot, 'validation-language-fallback.md'), 'VALIDATION_LANGUAGE_FALLBACK_BODY_836901');
+    const fallbackFixture = { ...draft, id: 'validation-fallback', slug: 'validation-language-fallback',
+      title: 'Artigo sem tradução', summary: 'Resumo sem tradução', contentFile: 'validation-language-fallback.md',
+      published: true, translations: undefined };
     const metadataPath = path.join(contentRoot, 'metadata.ts');
     const metadata = fs.readFileSync(metadataPath, 'utf8');
     assert.match(metadata, /\];\s*$/);
-    fs.writeFileSync(metadataPath, metadata.replace(/\];\s*$/, `,${JSON.stringify(draft)},${JSON.stringify(publicArticle)}\n];\n`));
+    fs.writeFileSync(metadataPath, metadata.replace(/\];\s*$/,
+      `,${JSON.stringify(draft)},${JSON.stringify(publicArticle)},${JSON.stringify(fallbackFixture)}\n];\n`));
 
     fs.appendFileSync(path.join(fixture, 'src/content/notes.ts'),
       `\nRESEARCH_NOTES.push(${JSON.stringify({
@@ -82,6 +87,7 @@ async function main() {
     const { ArticleDetail } = await server.ssrLoadModule('/src/pages/ArticleDetail.tsx');
     const { PUBLISHED_ARTICLES } = await server.ssrLoadModule('/src/content/articles/index.ts');
     const { mergeArticles } = await server.ssrLoadModule('/src/lib/articleState.ts');
+    const { localizeArticle } = await server.ssrLoadModule('/src/lib/articleLocalization.ts');
     const publicArticles = mergeArticles(PUBLISHED_ARTICLES, [], [], {});
     const render = (node: React.ReactElement, route = '/') => renderToStaticMarkup(
       <LanguageProvider><BlogProvider><MemoryRouter initialEntries={[route]}>{node}</MemoryRouter></BlogProvider></LanguageProvider>
@@ -91,13 +97,20 @@ async function main() {
     const direct = render(<Routes><Route path="/articles/:slug" element={<ArticleDetail />} /></Routes>, '/articles/validation-private-draft');
     const byId = render(<Routes><Route path="/articles/:slug" element={<ArticleDetail />} /></Routes>, '/articles/validation-private');
     const visible = render(<Routes><Route path="/articles/:slug" element={<ArticleDetail />} /></Routes>, '/articles/validation-public-article');
-    const fallbackArticle = PUBLISHED_ARTICLES.find((item: any) => item.sourceLanguage === 'pt' && !item.translations?.en);
+    const fallbackArticle = PUBLISHED_ARTICLES.find((item: any) => item.id === fallbackFixture.id);
     assert.ok(fallbackArticle, 'A Portuguese article without an English body is required for the notice check');
     const languageFallback = render(<Routes><Route path="/articles/:slug" element={<ArticleDetail />} /></Routes>, `/articles/${fallbackArticle.slug}`);
     function LocalEditorProbe() { return <div>{useBlog().adminNotes.map((note: any) => note.content).join('')}</div>; }
     const editor = render(<LocalEditorProbe />);
     stored.delete('ot_sec_notes');
     const sourceHome = render(<Home />);
+    const productionArticles = PUBLISHED_ARTICLES.filter((item: any) => !item.id.startsWith('validation-'));
+    const allArticleLanguagesComplete = productionArticles.every((item: any) =>
+      ['en', 'pt', 'es'].every(language => {
+        const localized = localizeArticle(item, language);
+        return localized.contentLanguage === language && localized.bodyTranslated
+          && Boolean(localized.article.title.trim() && localized.article.summary.trim() && localized.article.content.trim());
+      }));
     const results = {
       fixtureBuildPassed: true,
       staleDraftHtmlRemoved: !fs.existsSync(staleHtml),
@@ -117,6 +130,7 @@ async function main() {
       publicTranslationRenders: visible.includes(publicTranslationBody),
       languageFallbackNoticeShown: languageFallback.includes('not available in the selected language')
         && languageFallback.includes('shown in Portuguese'),
+      allArticleLanguagesComplete,
       localDraftRemainsInEditor: editor.includes(noteMarker),
       privateMetadataInJavascript: javascript.includes(draft.slug) || javascript.includes(draft.summary),
       privateTranslationInJavascript: javascript.includes(translationMarker),
@@ -139,6 +153,7 @@ async function main() {
     assert.equal(results.publicTranslationInJavascript, true);
     assert.equal(results.publicTranslationRenders, true);
     assert.equal(results.languageFallbackNoticeShown, true);
+    assert.equal(results.allArticleLanguagesComplete, true);
     assert.equal(results.localDraftRemainsInEditor, true);
     assert.equal(results.privateMetadataInJavascript, false);
     assert.equal(results.privateTranslationInJavascript, false);

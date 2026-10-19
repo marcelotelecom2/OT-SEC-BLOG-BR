@@ -13,6 +13,18 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
   "area": "Regulation Update",
   "author": "Walter Rodrigues",
   "sourceLanguage": "pt",
+  "translations": {
+    "en": {
+      "title": "IEC 62351: security attacks and the relationship between threat and attack",
+      "summary": "Section 5.3.4 of IEC 62351-1 explains how different attacks and attack chains can materialize a threat to electrical and OT systems.",
+      "contentFile": "iec-62351-ataques-seguranca.en.md"
+    },
+    "es": {
+      "title": "IEC 62351: ataques a la seguridad y la relación entre amenaza y ataque",
+      "summary": "La sección 5.3.4 de IEC 62351-1 explica cómo los diferentes ataques y cadenas de ataques pueden materializar una amenaza para los sistemas eléctricos y OT.",
+      "contentFile": "iec-62351-ataques-seguranca.es.md"
+    }
+  },
   "published": true,
   "views": 0,
   "tags": [
@@ -33,6 +45,18 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
   "area": "Regulation Update",
   "author": "Walter Rodrigues",
   "sourceLanguage": "pt",
+  "translations": {
+    "en": {
+      "title": "IEC 62351: security requirements, threats and vulnerabilities",
+      "summary": "An annotated summary of sections 5.3.1 to 5.3.3 of IEC 62351-1: security requirements, threats and vulnerabilities in electrical systems.",
+      "contentFile": "iec-62351-requisitos-ameacas-vulnerabilidades.en.md"
+    },
+    "es": {
+      "title": "IEC 62351: requisitos de seguridad, amenazas y vulnerabilidades",
+      "summary": "Un resumen comentado de las secciones 5.3.1 a 5.3.3 de IEC 62351-1: requisitos de seguridad, amenazas y vulnerabilidades en sistemas eléctricos.",
+      "contentFile": "iec-62351-requisitos-ameacas-vulnerabilidades.es.md"
+    }
+  },
   "published": true,
   "views": 0,
   "tags": [
@@ -53,6 +77,18 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
   "area": "Regulation Update",
   "author": "Walter Rodrigues",
   "sourceLanguage": "pt",
+  "translations": {
+    "en": {
+      "title": "IEC 62351: deliberate threats to electrical systems",
+      "summary": "An annotated summary of IEC 62351-1 on deliberate threats: people, access, equipment and information that need to be considered in OT security.",
+      "contentFile": "iec-62351-ameacas-deliberadas-sistemas-eletricos.en.md"
+    },
+    "es": {
+      "title": "IEC 62351: amenazas deliberadas a los sistemas eléctricos",
+      "summary": "Un resumen comentado de IEC 62351-1 sobre amenazas deliberadas: personas, acceso, equipos e información que deben considerarse en la seguridad OT.",
+      "contentFile": "iec-62351-ameacas-deliberadas-sistemas-eletricos.es.md"
+    }
+  },
   "published": true,
   "views": 0,
   "tags": [
@@ -73,6 +109,18 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
   "area": "Regulation Update",
   "author": "Walter Rodrigues",
   "sourceLanguage": "pt",
+  "translations": {
+    "en": {
+      "title": "IEC 62351: unintentional threats are also part of OT security",
+      "summary": "IEC 62351-1 broadens OT security by considering human error, equipment failures, safety issues and natural disasters as threats to electrical systems.",
+      "contentFile": "iec-62351-ameacas-nao-intencionais.en.md"
+    },
+    "es": {
+      "title": "IEC 62351: las amenazas involuntarias también forman parte de la seguridad OT",
+      "summary": "IEC 62351-1 amplía la seguridad de OT al considerar el error humano, los equipos, la seguridad y los desastres naturales como amenazas a los sistemas eléctricos.",
+      "contentFile": "iec-62351-ameacas-nao-intencionais.es.md"
+    }
+  },
   "published": true,
   "views": 0,
   "tags": [
@@ -93,6 +141,18 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
   "area": "Regulation Update",
   "author": "Walter Rodrigues",
   "sourceLanguage": "pt",
+  "translations": {
+    "en": {
+      "title": "IEC 62351: Understanding deliberate threats to electrical systems",
+      "summary": "Understand the deliberate threats to electrical systems in IEC 62351-1: insiders, espionage, vandalism, hackers, malware, theft and terrorism.",
+      "contentFile": "iec-62351-entendendo-ameacas-deliberadas.en.md"
+    },
+    "es": {
+      "title": "IEC 62351: Comprensión de las amenazas deliberadas a los sistemas eléctricos",
+      "summary": "Comprenda las amenazas deliberadas a los sistemas eléctricos en IEC 62351-1: información privilegiada, espionaje, vandalismo, piratas informáticos, malware, robo y terrorismo.",
+      "contentFile": "iec-62351-entendendo-ameacas-deliberadas.es.md"
+    }
+  },
   "published": true,
   "views": 0,
   "tags": [
@@ -113,6 +173,18 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
   "area": "Regulation Update",
   "author": "Walter Rodrigues",
   "sourceLanguage": "pt",
+  "translations": {
+    "en": {
+      "title": "IEC 62351: deliberate threats go far beyond hackers",
+      "summary": "Deliberate threats to electrical systems go beyond hackers. Discover the vision of IEC 62351-1 on insiders, malware, espionage and impacts on OT.",
+      "contentFile": "iec-62351-ameacas-deliberadas.en.md"
+    },
+    "es": {
+      "title": "IEC 62351: las amenazas deliberadas van mucho más allá de los piratas informáticos",
+      "summary": "Las amenazas deliberadas a los sistemas eléctricos van más allá de los piratas informáticos. Descubra la visión de IEC 62351-1 sobre información privilegiada, malware, espionaje e impactos en OT.",
+      "contentFile": "iec-62351-ameacas-deliberadas.es.md"
+    }
+  },
   "published": true,
   "views": 0,
   "tags": [
@@ -136,10 +208,12 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
       pt: {
         title: 'O Papel da IA na Detecção de Anomalias em Redes ICS',
         summary: 'Uma exploração de como modelos de machine learning podem ser treinados em tráfego Modbus e DNP3 para identificar novos vetores de ataque e configurações incorretas em tempo real.',
+        contentFile: 'ai-detecting-anomalies-ics-networks.pt.md',
       },
       es: {
         title: 'El Papel de la IA en la Detección de Anomalías en Redes ICS',
         summary: 'Una exploración de cómo los modelos de machine learning pueden entrenarse con tráfico Modbus y DNP3 para identificar nuevos vectores de ataque y errores de configuración en tiempo real.',
+        contentFile: 'ai-detecting-anomalies-ics-networks.es.md',
       },
     },
     published: true,
@@ -160,10 +234,12 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
       pt: {
         title: 'Desconstruindo o Payload do Stuxnet: Lições Ainda Não Aprendidas',
         summary: 'Uma análise retrospectiva da ciberarma mais famosa do mundo, focando nas injeções específicas de DLL no Siemens Step7 e como sistemas OT modernos ainda estão vulneráveis a táticas similares.',
+        contentFile: 'stuxnet-payload-retrospective.pt.md',
       },
       es: {
         title: 'Desconstruyendo el Payload de Stuxnet: Lecciones Aún No Aprendidas',
         summary: 'Un análisis retrospectivo de la ciberarma más famosa del mundo, centrado en las inyecciones específicas de DLL en Siemens Step7 y cómo los sistemas OT modernos siguen siendo vulnerables a tácticas similares.',
+        contentFile: 'stuxnet-payload-retrospective.es.md',
       },
     },
     published: true,
@@ -184,10 +260,12 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
       pt: {
         title: 'Arquitetura Zero Trust em Ambientes SCADA Legados',
         summary: 'Implementando microssegmentação e controles de acesso baseados em identidade em redes com PLCs de mais de 20 anos que carecem de mecanismos nativos de autenticação.',
+        contentFile: 'zero-trust-legacy-scada.pt.md',
       },
       es: {
         title: 'Arquitectura Zero Trust en Entornos SCADA Heredados',
         summary: 'Implementación de microsegmentación y controles de acceso basados en identidad en redes con PLCs de más de 20 años que carecen de mecanismos nativos de autenticación.',
+        contentFile: 'zero-trust-legacy-scada.es.md',
       },
     },
     published: true,
@@ -208,10 +286,12 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
       pt: {
         title: 'Analisando o Impacto do 5G na Segurança de Redes Elétricas Inteligentes (Smart Grid)',
         summary: 'Com a expansão da infraestrutura 5G nas redes elétricas, a superfície de ataque aumenta. Analisamos as implicações de segurança da comunicação ultraconfiável de baixa latência (URLLC) na distribuição de energia.',
+        contentFile: '5g-smart-grid-security.pt.md',
       },
       es: {
         title: 'Analizando el Impacto del 5G en la Seguridad de Redes Eléctricas Inteligentes (Smart Grid)',
         summary: 'Con el despliegue de la infraestructura 5G en las redes eléctricas, la superficie de ataque se amplía. Analizamos las implicaciones de seguridad de la comunicación ultraconfiable de baja latencia (URLLC) en la distribución de energía.',
+        contentFile: '5g-smart-grid-security.es.md',
       },
     },
     published: true,
@@ -232,10 +312,12 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
       pt: {
         title: 'Engenharia Reversa de Protocolos Proprietários de PLCs',
         summary: 'Um guia técnico sobre captura, análise e fuzzing de protocolos industriais não documentados usando dissectors customizados do Wireshark e rádios definidos por software (SDR).',
+        contentFile: 'reverse-engineering-plc-protocols.pt.md',
       },
       es: {
         title: 'Ingeniería Inversa de Protocolos Propietarios de PLCs',
         summary: 'Una guía técnica sobre captura, análisis y fuzzing de protocolos industriales no documentados utilizando diseccionadores personalizados de Wireshark y radios definidas por software (SDR).',
+        contentFile: 'reverse-engineering-plc-protocols.es.md',
       },
     },
     published: true,
@@ -256,10 +338,12 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
       pt: {
         title: 'NERC CIP-002: Como Sistemas Cibernéticos BES São Classificados por Impacto',
         summary: 'Uma análise técnica aprofundada dos critérios da norma NERC CIP-002, explicando como ativos e sistemas cibernéticos do Sistema Elétrico de Potência (BES) são categorizados em classificações de impacto Alto, Médio e Baixo.',
+        contentFile: 'nerc-cip-002-bes-classification.pt.md',
       },
       es: {
         title: 'NERC CIP-002: Cómo se Clasifican los Sistemas Cibernéticos BES por Impacto',
         summary: 'Un análisis técnico profundo de los criterios de la norma NERC CIP-002, explicando cómo los activos y sistemas cibernéticos del Sistema Eléctrico de Potencia (BES) se clasifican en niveles de impacto Alto, Medio y Bajo.',
+        contentFile: 'nerc-cip-002-bes-classification.es.md',
       },
     },
     published: true,

@@ -65,12 +65,12 @@ como padrão. Título, resumo e corpo original permanecem juntos na mesma entrad
 editorial, e as versões em inglês e espanhol pertencem a essa entrada — não há
 mais uma tabela global capaz de sobrescrever uma edição recente.
 
-Em cada idioma adicional, preencha título e resumo em conjunto. O corpo traduzido
-é opcional. Quando ele for preenchido, a importação cria um Markdown adjacente,
-como `nome-do-artigo.en.md`. Quando estiver vazio, o site pode mostrar o título e
-o resumo traduzidos, mas exibe antes do texto um aviso informando o idioma real do
-corpo. Se nem os metadados estiverem traduzidos, o site mantém a versão original e
-também informa isso ao leitor.
+Em cada idioma adicional, preencha título, resumo e corpo. Um rascunho pode ser
+guardado enquanto essas versões estão incompletas, mas o editor e o importador
+bloqueiam a publicação até que inglês, português e espanhol estejam completos.
+A importação cria um Markdown adjacente para cada corpo traduzido, como
+`nome-do-artigo.en.md`. O aviso de idioma permanece como proteção para rascunhos e
+dados antigos incompletos, mas artigos novos não podem ser publicados nessa condição.
 
 O arquivo `.ot-sec.json` usa atualmente a versão 2 para transportar o idioma
 original e todas as traduções. O importador continua aceitando arquivos da versão

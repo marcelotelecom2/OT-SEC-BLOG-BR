@@ -4,6 +4,11 @@ import { safeGetItem, safeSetItem } from '../lib/persistence';
 export { getLocalizedArticle } from '../lib/articleLocalization';
 
 export type Language = ArticleLanguage;
+export const DEFAULT_LANGUAGE: Language = 'en';
+
+export function resolveLanguagePreference(saved: string | null): Language {
+  return saved === 'en' || saved === 'pt' || saved === 'es' ? saved : DEFAULT_LANGUAGE;
+}
 
 export interface LanguageOption {
   code: Language;
@@ -334,13 +339,8 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguageState] = useState<Language>(() => {
-    if (typeof window === 'undefined') return 'en';
-    const saved = safeGetItem('ot_sec_language') as Language;
-    if (saved && (saved === 'en' || saved === 'pt' || saved === 'es')) {
-      return saved;
-    }
-    // Always default to English on first visit
-    return 'en';
+    if (typeof window === 'undefined') return DEFAULT_LANGUAGE;
+    return resolveLanguagePreference(safeGetItem('ot_sec_language'));
   });
 
   const setLanguage = (lang: Language) => {

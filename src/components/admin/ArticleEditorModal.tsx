@@ -401,10 +401,14 @@ export function ArticleEditorModal({
   const warnings = useMemo(() => diagnosticReport.filter(d => d.type === 'warning'), [diagnosticReport]);
   const passes = useMemo(() => diagnosticReport.filter(d => d.type === 'pass'), [diagnosticReport]);
 
-  const translationError = (Object.entries(translations ?? {}) as [ArticleLanguage, ArticleTranslation][])
-    .some(([language, translation]) => language === sourceLanguage
-      || Boolean(translation.title?.trim() || translation.summary?.trim() || translation.content?.trim())
-        && (!translation.title?.trim() || !translation.summary?.trim()));
+  const translationError = (['en', 'pt', 'es'] as ArticleLanguage[])
+    .filter(language => language !== sourceLanguage)
+    .some(language => {
+      const translation = translations?.[language];
+      if (published) return !translation?.title.trim() || !translation.summary.trim() || !translation.content?.trim();
+      const started = Boolean(translation?.title.trim() || translation?.summary.trim() || translation?.content?.trim());
+      return started && (!translation?.title.trim() || !translation.summary.trim());
+    });
   const hasCriticalBugs = errors.length > 0 || translationError;
 
   const updateTranslation = (language: ArticleLanguage, field: keyof ArticleTranslation, value: string) => {
@@ -459,7 +463,9 @@ export function ArticleEditorModal({
     if (hasCriticalBugs) {
       setSaveState('error');
       setSaveFeedbackMessage(translationError
-        ? 'Não foi possível salvar: toda tradução iniciada precisa de título e resumo; o corpo pode ficar vazio.'
+        ? published
+          ? 'Não foi possível salvar: para publicar, inglês, português e espanhol precisam de título, resumo e corpo completos.'
+          : 'Não foi possível salvar: toda tradução iniciada precisa de título e resumo.'
         : `Não foi possível salvar: ${errors.length} bug(s) crítico(s) detectado(s). Corrija os campos destacados.`);
       if (!translationError) setActiveTab('diagnostics');
       return;
@@ -1049,7 +1055,7 @@ export function ArticleEditorModal({
                   <div>
                     <h3 className="text-sm font-semibold text-white">Idiomas do artigo</h3>
                     <p className="mt-1 text-[11px] text-gray-500">
-                      O idioma original guarda a versão principal. Em cada tradução, título e resumo são obrigatórios; o corpo é opcional.
+                      O idioma original guarda a versão principal. Para publicar, os outros dois idiomas precisam de título, resumo e corpo completos.
                     </p>
                   </div>
                   <label className="text-xs text-gray-400">
@@ -1102,7 +1108,7 @@ export function ArticleEditorModal({
                           rows={8}
                           value={translation.content ?? ''}
                           onChange={event => updateTranslation(language, 'content', event.target.value)}
-                          placeholder={`Corpo completo em ${label} (opcional). Se ficar vazio, o leitor verá um aviso e o corpo no idioma original.`}
+                          placeholder={`Corpo completo em ${label}${published ? ' (obrigatório para publicar)' : ' (pode ser concluído antes da publicação)'}`}
                           className="w-full px-3 py-2 bg-gray-950 border border-gray-800 text-gray-200 focus:border-cyan-500 rounded font-mono text-xs leading-relaxed"
                         />
                       </div>
@@ -1111,7 +1117,9 @@ export function ArticleEditorModal({
                 })}
                 {translationError && (
                   <p className="text-[11px] text-rose-400 flex items-center gap-1">
-                    <AlertCircle className="w-3 h-3" /> Preencha título e resumo em cada tradução iniciada.
+                    <AlertCircle className="w-3 h-3" /> {published
+                      ? 'Preencha título, resumo e corpo nos dois idiomas adicionais.'
+                      : 'Preencha título e resumo em cada tradução iniciada.'}
                   </p>
                 )}
               </div>

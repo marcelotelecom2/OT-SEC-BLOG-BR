@@ -42,14 +42,20 @@ const markdownComponents: Components = {
       {children}
     </h4>
   ),
-  p: ({ children, ...props }) => (
-    <p
-      className="mb-6 leading-[1.75] text-[16px] sm:text-[18px] text-gray-300 font-sans font-normal break-words"
-      {...props}
-    >
-      {children}
-    </p>
-  ),
+  p: ({ node, children, ...props }) => {
+    const containsOnlyImages = node?.children.every(child =>
+      (child.type === 'element' && child.tagName === 'img')
+      || (child.type === 'text' && !child.value.trim()));
+    if (containsOnlyImages) return <>{children}</>;
+    return (
+      <p
+        className="mb-6 leading-[1.75] text-[16px] sm:text-[18px] text-gray-300 font-sans font-normal break-words"
+        {...props}
+      >
+        {children}
+      </p>
+    );
+  },
   strong: ({ children, ...props }) => (
     <strong className="font-semibold text-white" {...props}>
       {children}

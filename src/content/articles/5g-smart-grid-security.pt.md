@@ -1,0 +1,1 @@
+O fatiamento da rede 5G oferece canais dedicados para automação da distribuição de energia. No entanto, as vulnerabilidades de isolamento de fatias podem expor os fluxos de sincrofasores a ataques de falsificação.

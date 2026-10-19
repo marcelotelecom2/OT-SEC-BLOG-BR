@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import type { Article } from '../types';
-import { localizeArticle } from './articleLocalization';
+import { localizeArticle, localizeReadTime } from './articleLocalization';
+import { resolveLanguagePreference } from '../context/LanguageContext';
 
 const article: Article = {
   id: '1', slug: 'artigo', title: 'Título original', summary: 'Resumo original',
@@ -13,9 +14,12 @@ const article: Article = {
   },
 };
 
-test('the original language keeps the canonical article unchanged', () => {
+test('the original language keeps canonical editorial content and localizes shared labels', () => {
   const result = localizeArticle(article, 'pt');
-  assert.equal(result.article, article);
+  assert.equal(result.article.title, article.title);
+  assert.equal(result.article.summary, article.summary);
+  assert.equal(result.article.content, article.content);
+  assert.equal(result.article.readTime, '3 min de leitura');
   assert.equal(result.bodyTranslated, true);
   assert.equal(result.contentLanguage, 'pt');
 });
@@ -43,4 +47,18 @@ test('a missing translation uses the original version and reports its language',
   assert.equal(result.article.title, article.title);
   assert.equal(result.metadataTranslated, false);
   assert.equal(result.contentLanguage, 'pt');
+});
+
+test('a first visit defaults to English and valid saved choices restore Portuguese or Spanish', () => {
+  assert.equal(resolveLanguagePreference(null), 'en');
+  assert.equal(resolveLanguagePreference('invalid'), 'en');
+  assert.equal(resolveLanguagePreference('pt'), 'pt');
+  assert.equal(resolveLanguagePreference('es'), 'es');
+});
+
+test('reading time and article areas follow the selected interface language', () => {
+  assert.equal(localizeReadTime('12 min de leitura', 'en'), '12 min read');
+  assert.equal(localizeReadTime('12 min read', 'pt'), '12 min de leitura');
+  assert.equal(localizeReadTime('12 min read', 'es'), '12 min de lectura');
+  assert.equal(localizeArticle({ ...article, area: 'Regulation Update' }, 'es').article.area, 'Actualización Regulatoria');
 });
