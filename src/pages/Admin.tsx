@@ -25,10 +25,11 @@ import {
 } from '../constants/researchClassification';
 import { ArticleEditorModal } from '../components/admin/ArticleEditorModal';
 import { downloadArticleExport } from '../lib/articleExport';
+import { downloadEditorialBackup } from '../lib/persistence';
 
 export function Admin() {
   const {
-    adminArticles: articles, adminNotes: notes, projects, mediaLibrary, analytics,
+    adminArticles: articles, adminNotes: notes, projects, mediaLibrary, analytics, storageError,
     isAdminLoggedIn, loginAdmin, logoutAdmin, changePassword,
     addArticle, updateArticle, deleteArticle,
     addNote, updateNote, deleteNote,
@@ -44,6 +45,21 @@ export function Admin() {
   const [searchTerm, setSearchTerm] = useState('');
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [exportFeedback, setExportFeedback] = useState('');
+  const [actionError, setActionError] = useState('');
+  const withStorageFeedback = async (action: () => unknown | Promise<unknown>) => {
+    setActionError('');
+    try { await action(); }
+    catch (error) { setActionError(error instanceof Error ? error.message : 'Não foi possível salvar a edição.'); }
+  };
+  const storageNotice = (actionError || storageError) && (
+    <div role="alert" className="fixed top-20 inset-x-4 z-[110] max-w-3xl mx-auto p-4 border border-rose-700 bg-gray-950 text-rose-200 rounded shadow-xl text-sm">
+      <p>{actionError || storageError}</p>
+      <p className="mt-1">Alterações abertas no editor podem ser exportadas pelo botão “Exportar artigo”.</p>
+      <button type="button" className="mt-2 text-cyan-300 underline" onClick={() => withStorageFeedback(downloadEditorialBackup)}>
+        Exportar cópia dos dados locais
+      </button>
+    </div>
+  );
 
   // Modals / Form States
   const [editingArticle, setEditingArticle] = useState<Partial<Article> | null>(null);
@@ -91,7 +107,7 @@ export function Admin() {
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files[0]) {
-      await uploadImage(files[0]);
+      await withStorageFeedback(() => uploadImage(files[0]));
     }
   };
 
@@ -99,47 +115,26 @@ export function Admin() {
     e.preventDefault();
     setIsDragging(false);
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      await uploadImage(e.dataTransfer.files[0]);
+      await withStorageFeedback(() => uploadImage(e.dataTransfer.files[0]));
     }
   };
 
   // Preset cyber image samples for instant upload testing
   const addPresetImage = async (presetUrl: string, name: string) => {
-    await uploadImage({
+    await withStorageFeedback(() => uploadImage({
       name,
       url: presetUrl,
       size: '1.4 MB',
       type: 'image/png'
-    });
+    }));
   };
 
-  const handleResetCounters = () => {
+  const handleResetCounters = () => withStorageFeedback(() => {
     resetCounters();
     setShowResetModal(false);
     setResetSuccessMessage('Todos os contadores foram zerados com sucesso (artigos e analítica em 0).');
     setTimeout(() => setResetSuccessMessage(null), 4000);
-  };
-
-  const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files && files[0]) {
-      const item = await uploadImage(files[0]);
-      setEditingArticle(prev => ({ ...prev, coverImage: item.url }));
-    }
-  };
-
-  const handleContentImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files && files[0]) {
-      const item = await uploadImage(files[0]);
-      const cleanName = files[0].name.replace(/\.[^/.]+$/, '');
-      const markdownImage = `\n\n![${cleanName}](${item.url})\n\n`;
-      setEditingArticle(prev => ({
-        ...prev,
-        content: (prev?.content || '') + markdownImage
-      }));
-    }
-  };
+  });
 
   const handleSelectMediaForArticle = (item: MediaItem) => {
     if (showMediaPickerFor === 'cover') {
@@ -161,6 +156,7 @@ export function Admin() {
   if (!isAdminLoggedIn) {
     return (
       <div className="min-h-[85vh] flex items-center justify-center px-4 py-12 sm:py-24">
+        {storageNotice}
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -226,6 +222,7 @@ export function Admin() {
   // -------------------------------------------------------------
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      {storageNotice}
       {/* Top Bar Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-gray-800 pb-6 mb-6 sm:mb-8 gap-4">
         <div>
@@ -574,6 +571,9 @@ export function Admin() {
             <p>Para publicar: edite o artigo, marque “Pronto para publicar” e clique em “Exportar artigo”. No projeto, execute:</p>
             <code className="block break-all">npm run import:article -- "/caminho/artigo.ot-sec.json"</code>
             <p>Depois revise os arquivos, valide o build e envie ao GitHub. O Cloudflare Pages publica o deploy.</p>
+            <button type="button" className="text-cyan-300 underline" onClick={() => withStorageFeedback(downloadEditorialBackup)}>
+              Exportar cópia de todos os dados locais
+            </button>
           </div>
           {exportFeedback && <p role="status" className="text-xs text-cyan-300">{exportFeedback}</p>}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-gray-950/60 p-4 border border-gray-800 rounded">
@@ -680,7 +680,7 @@ export function Admin() {
                               <Edit3 className="w-4 h-4" />
                             </button>
                             <button
-                              onClick={() => deleteArticle(article.id)}
+                              onClick={() => withStorageFeedback(() => deleteArticle(article.id))}
                               className="p-1.5 hover:bg-rose-950 text-gray-400 hover:text-rose-400 rounded transition-colors"
                               title="Ocultar neste navegador; não remove o artigo do site"
                             >
@@ -705,6 +705,7 @@ export function Admin() {
                 setEditingArticle(null);
               }}
               onSave={(savedArticle) => {
+                setActionError('');
                 if (savedArticle.id && articles.some(a => a.id === savedArticle.id)) {
                   updateArticle(savedArticle.id, savedArticle);
                   setEditingArticle(savedArticle);
@@ -779,7 +780,7 @@ export function Admin() {
                         <Edit3 className="w-3.5 h-3.5" />
                       </button>
                       <button
-                        onClick={() => deleteNote(note.id)}
+                        onClick={() => withStorageFeedback(() => deleteNote(note.id))}
                         className="p-1 text-gray-500 hover:text-rose-400"
                         title="Delete Insight"
                       >
@@ -1012,7 +1013,7 @@ export function Admin() {
                     </button>
                     <button
                       type="button"
-                      onClick={() => {
+                      onClick={() => withStorageFeedback(() => {
                         if (!editingNote.content && !editingNote.title) return;
                         const noteToSave: any = {
                           ...editingNote,
@@ -1036,7 +1037,7 @@ export function Admin() {
                           addNote(noteToSave);
                         }
                         setShowNoteForm(false);
-                      }}
+                      })}
                       className="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-mono font-bold text-xs uppercase rounded"
                     >
                       Save Insight
@@ -1093,7 +1094,7 @@ export function Admin() {
                         <Edit3 className="w-4 h-4" />
                       </button>
                       <button
-                        onClick={() => deleteProject(project.id)}
+                        onClick={() => withStorageFeedback(() => deleteProject(project.id))}
                         className="p-1 text-gray-500 hover:text-rose-400"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -1212,7 +1213,7 @@ export function Admin() {
                     </button>
                     <button
                       type="button"
-                      onClick={() => {
+                      onClick={() => withStorageFeedback(() => {
                         if (!editingProject.title || !editingProject.description) return;
                         if (editingProject.id) {
                           updateProject(editingProject.id, editingProject);
@@ -1220,7 +1221,7 @@ export function Admin() {
                           addProject(editingProject as any);
                         }
                         setShowProjectForm(false);
-                      }}
+                      })}
                       className="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-mono font-bold text-xs uppercase rounded"
                     >
                       Save Project
@@ -1313,7 +1314,7 @@ export function Admin() {
                       )}
                     </button>
                     <button
-                      onClick={() => deleteMedia(item.id)}
+                      onClick={() => withStorageFeedback(() => deleteMedia(item.id))}
                       className="p-1 text-gray-500 hover:text-rose-400 hover:bg-rose-950/30 rounded transition-colors"
                       title="Delete Asset"
                     >

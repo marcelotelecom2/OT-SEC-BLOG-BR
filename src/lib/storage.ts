@@ -3,47 +3,7 @@
  * Protects against QuotaExceededError and prevents crashes in sandboxed iframe environments.
  */
 
-export function safeGetItem(key: string): string | null {
-  if (typeof window === 'undefined' || !window.localStorage) return null;
-  try {
-    return localStorage.getItem(key);
-  } catch (err) {
-    console.warn(`[Storage] Could not read "${key}" from localStorage:`, err);
-    return null;
-  }
-}
-
-export function safeSetItem(key: string, value: string): boolean {
-  if (typeof window === 'undefined' || !window.localStorage) return false;
-  try {
-    localStorage.setItem(key, value);
-    return true;
-  } catch (err: any) {
-    console.warn(`[Storage] Failed to save "${key}" to localStorage:`, err?.message || err);
-    // If quota exceeded, attempt to clear non-essential caches to make room
-    try {
-      if (key === 'ot_sec_local_articles') {
-        // Articles are highest priority. Remove non-essential logs/media cache to save article
-        localStorage.removeItem('ot_sec_media');
-        localStorage.removeItem('ot_sec_analytics');
-        localStorage.setItem(key, value);
-        return true;
-      }
-    } catch {
-      // ignore secondary failure
-    }
-    return false;
-  }
-}
-
-export function safeRemoveItem(key: string): void {
-  if (typeof window === 'undefined' || !window.localStorage) return;
-  try {
-    localStorage.removeItem(key);
-  } catch (err) {
-    console.warn(`[Storage] Could not remove "${key}":`, err);
-  }
-}
+export { safeGetItem, safeSetItem, safeRemoveItem } from './persistence';
 
 /**
  * Compresses an image file (e.g. from camera or screenshot) down to an optimized WebP/JPEG,
@@ -55,17 +15,18 @@ export async function compressImageFile(
   maxHeight = 800,
   quality = 0.82
 ): Promise<{ url: string; sizeStr: string; type: string }> {
-  // If SVG, don't re-compress on canvas
-  if (file.type === 'image/svg+xml') {
+  // Preserve vector images and GIF animation.
+  if (file.type === 'image/svg+xml' || file.type === 'image/gif') {
     const url = await fileToDataUrl(file);
     return { url, sizeStr: formatBytes(file.size), type: file.type };
   }
 
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const img = new Image();
     const objectUrl = URL.createObjectURL(file);
 
     img.onload = () => {
+      try {
       URL.revokeObjectURL(objectUrl);
 
       let { width, height } = img;
@@ -83,7 +44,7 @@ export async function compressImageFile(
       if (!ctx) {
         fileToDataUrl(file).then((url) => {
           resolve({ url, sizeStr: formatBytes(file.size), type: file.type });
-        });
+        }).catch(reject);
         return;
       }
 
@@ -91,12 +52,13 @@ export async function compressImageFile(
       ctx.drawImage(img, 0, 0, width, height);
 
       // Prefer image/webp or fallback to image/jpeg
-      const outputType = 'image/webp';
+      let outputType = 'image/webp';
       let dataUrl = canvas.toDataURL(outputType, quality);
 
       // If browser doesn't support webp dataURL, fallback to jpeg
       if (!dataUrl.startsWith('data:image/webp')) {
-        dataUrl = canvas.toDataURL('image/jpeg', quality);
+        outputType = 'image/jpeg';
+        dataUrl = canvas.toDataURL(outputType, quality);
       }
 
       // Approximate size from base64 string
@@ -106,13 +68,12 @@ export async function compressImageFile(
         sizeStr: formatBytes(sizeBytes),
         type: outputType,
       });
+      } catch (error) { reject(error); }
     };
 
     img.onerror = () => {
       URL.revokeObjectURL(objectUrl);
-      fileToDataUrl(file).then((url) => {
-        resolve({ url, sizeStr: formatBytes(file.size), type: file.type });
-      });
+      reject(new Error('Não foi possível abrir a imagem. A edição foi mantida.'));
     };
 
     img.src = objectUrl;
@@ -120,9 +81,11 @@ export async function compressImageFile(
 }
 
 function fileToDataUrl(file: File): Promise<string> {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result as string);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = () => reject(new Error('Não foi possível ler a imagem.'));
+    reader.onabort = () => reject(new Error('A leitura da imagem foi cancelada.'));
     reader.readAsDataURL(file);
   });
 }

@@ -56,3 +56,21 @@ publique essa alteração pelo GitHub.
 A importação não faz commit, push ou deploy automaticamente. Guarde o arquivo
 exportado como cópia portátil: os dados do navegador podem ser apagados pelo
 usuário ou pelo próprio navegador.
+
+O painel só confirma “salvo” depois de gravar e conferir os dados no navegador.
+Se faltar espaço ou o armazenamento estiver bloqueado, a edição permanece aberta
+e pode ser guardada com **Exportar artigo**. Bibliotecas de imagens não são
+apagadas automaticamente para liberar espaço. Imagens rasterizadas são reduzidas
+antes de entrar na biblioteca; GIFs mantêm a animação e SVGs mantêm o vetor.
+
+Dados antigos são recuperados antes da limpeza. Quando há versões diferentes do
+mesmo artigo ou dados inválidos, os originais ficam preservados em chaves de
+recuperação ou no armazenamento antigo. **Exportar cópia de todos os dados locais**
+baixa uma cópia técnica para recuperação, incluindo esses originais; esse arquivo
+pode conter material privado e deve ser guardado fora do repositório público.
+Senhas e informações de autenticação não entram nessa cópia.
+
+Evite editar o mesmo conteúdo em várias abas. Se outra aba alterar os dados, o
+painel bloqueia a sobrescrita: exporte sua edição antes de recarregar e comparar
+as versões. Contadores podem funcionar apenas durante a sessão se o navegador
+não permitir sua persistência; isso não impede a leitura do site público.

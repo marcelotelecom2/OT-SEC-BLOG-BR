@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Article } from '../types';
+import { safeGetItem, safeSetItem } from '../lib/persistence';
 import { ARTICLE_TRANSLATIONS } from 'virtual:published-articles';
 
 export type Language = 'en' | 'pt' | 'es';
@@ -342,7 +343,7 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguageState] = useState<Language>(() => {
     if (typeof window === 'undefined') return 'en';
-    const saved = localStorage.getItem('ot_sec_language') as Language;
+    const saved = safeGetItem('ot_sec_language') as Language;
     if (saved && (saved === 'en' || saved === 'pt' || saved === 'es')) {
       return saved;
     }
@@ -353,7 +354,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
     if (typeof window !== 'undefined') {
-      localStorage.setItem('ot_sec_language', lang);
+      safeSetItem('ot_sec_language', lang);
       document.documentElement.lang = lang;
     }
   };

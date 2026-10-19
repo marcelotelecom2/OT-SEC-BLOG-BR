@@ -1,8 +1,14 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import { Article, ResearchNote, Project, MediaItem, AnalyticsKPIs } from '../types';
 import { PUBLISHED_ARTICLES } from '../content/articles';
 import { PUBLISHED_NOTES as INITIAL_NOTES } from 'virtual:published-articles';
 import { mergeArticles, publicNotes, updateLocalArticle } from '../lib/articleState';
+import { usePersistentState } from '../lib/usePersistentState';
+import { generateSlug, loadLocalArticles, LOCAL_ARTICLES_KEY } from '../lib/articleStorage';
+import { safeGetItem, safeSetItem, safeRemoveItem, writeVerifiedItem } from '../lib/persistence';
+import { compressImageFile } from '../lib/storage';
+import { isArticleArray, isStringArray, isViewCounts, isNoteArray, isProjectArray, isMediaArray, isAnalytics } from '../lib/storageSchemas';
+export { CONTENT_VERSION_KEY, CURRENT_CONTENT_VERSION } from '../lib/articleStorage';
 
 const INITIAL_PROJECTS: Project[] = [
   {
@@ -95,6 +101,7 @@ interface BlogContextType {
   projects: Project[];
   mediaLibrary: MediaItem[];
   analytics: AnalyticsKPIs;
+  storageError: string | null;
   isAdminLoggedIn: boolean;
   loginAdmin: (pass: string) => boolean;
   logoutAdmin: () => void;
@@ -116,207 +123,32 @@ interface BlogContextType {
 
 const BlogContext = createContext<BlogContextType | undefined>(undefined);
 
-const generateSlug = (title: string, fallbackId: string): string => {
-  const base = title
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '');
-  return base || `article-${fallbackId}`;
-};
-
-/**
- * Migration Key & One-Time LocalStorage Migration:
- * Removes legacy demo view values (e.g. 1420, 2150) and analytics metrics stored in localStorage.
- * Runs only once when a new CONTENT_VERSION is detected, ensuring views and counters start at 0
- * and do not get overwritten to 0 on subsequent application reloads.
- */
-export const CONTENT_VERSION_KEY = 'ot_sec_content_version';
-export const CURRENT_CONTENT_VERSION = '2.3.0-phase-zero-all-counters';
-
-const runViewsMigrationIfNeeded = () => {
-  if (typeof window === 'undefined' || !window.localStorage) return;
-  try {
-    const currentVersion = localStorage.getItem(CONTENT_VERSION_KEY);
-    if (currentVersion !== CURRENT_CONTENT_VERSION) {
-      // 1. Wipe previous mock/demo view and analytics values from local storage
-      localStorage.removeItem('ot_sec_article_views');
-      localStorage.removeItem('ot_sec_articles');
-      localStorage.removeItem('ot_sec_analytics');
-
-      // 2. Reset views to 0 for any local/draft articles created previously with mock counts
-      const localSaved = localStorage.getItem('ot_sec_local_articles');
-      if (localSaved) {
-        try {
-          const parsed: Article[] = JSON.parse(localSaved);
-          const reset = parsed.map(item => ({ ...item, views: 0 }));
-          localStorage.setItem('ot_sec_local_articles', JSON.stringify(reset));
-        } catch {
-          // ignore parsing error
-        }
-      }
-
-      // 3. Mark migration as finished so this executes only once
-      localStorage.setItem(CONTENT_VERSION_KEY, CURRENT_CONTENT_VERSION);
-    }
-  } catch {
-    // ignore storage access issues
-  }
-};
-
 export function BlogProvider({ children }: { children: React.ReactNode }) {
-  // Execute migration once before reading stored state
-  runViewsMigrationIfNeeded();
-
-  // Canonical published articles are always sourced from src/content/articles
-  // Local articles / drafts created via Admin are stored in localStorage
-  const [localArticles, setLocalArticles] = useState<Article[]>(() => {
-    const localSaved = localStorage.getItem('ot_sec_local_articles');
-    if (localSaved) {
-      try {
-        const parsed: Article[] = JSON.parse(localSaved);
-        return parsed.map(item => ({
-          ...item,
-          views: item.views ?? 0,
-          slug: item.slug || generateSlug(item.title, item.id)
-        }));
-      } catch {
-        return [];
-      }
-    }
-    // Migration: recover any non-canonical custom articles or drafts from old ot_sec_articles
-    const legacySaved = localStorage.getItem('ot_sec_articles');
-    if (legacySaved) {
-      try {
-        const parsed: Article[] = JSON.parse(legacySaved);
-        return parsed
-          .filter(item => !PUBLISHED_ARTICLES.some(pub => pub.id === item.id))
-          .map(item => ({
-            ...item,
-            views: 0,
-            slug: item.slug || generateSlug(item.title, item.id)
-          }));
-      } catch {
-        return [];
-      }
-    }
-    return [];
-  });
-
-  const [deletedArticleIds, setDeletedArticleIds] = useState<string[]>(() => {
-    const saved = localStorage.getItem('ot_sec_deleted_article_ids');
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch {
-        return [];
-      }
-    }
-    return [];
-  });
-
-  const [articleViews, setArticleViews] = useState<Record<string, number>>(() => {
-    const saved = localStorage.getItem('ot_sec_article_views');
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch {
-        return {};
-      }
-    }
-    return {};
-  });
-
-  // Ignore old reading snapshots on public pages without deleting local editorial work.
+  const [localArticles, setLocalArticles, articlesError] = usePersistentState<Article[]>(
+    LOCAL_ARTICLES_KEY, [], isArticleArray, { load: loadLocalArticles });
+  const [deletedArticleIds, setDeletedArticleIds, deletionError] = usePersistentState<string[]>(
+    'ot_sec_deleted_article_ids', [], isStringArray);
+  const [articleViews, setArticleViews] = usePersistentState<Record<string, number>>(
+    'ot_sec_article_views', {}, isViewCounts, { bestEffort: true });
+  const [notes, setNotes, notesError] = usePersistentState<ResearchNote[]>('ot_sec_notes', INITIAL_NOTES, isNoteArray);
+  const [projects, setProjects, projectsError] = usePersistentState<Project[]>('ot_sec_projects', INITIAL_PROJECTS, isProjectArray);
+  const [mediaLibrary, setMediaLibrary, mediaError] = usePersistentState<MediaItem[]>('ot_sec_media', INITIAL_MEDIA, isMediaArray);
+  const [analytics, setAnalytics] = usePersistentState<AnalyticsKPIs>(
+    'ot_sec_analytics', INITIAL_ANALYTICS, isAnalytics, { bestEffort: true });
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(() => safeGetItem('ot_sec_admin_auth') === 'true');
+  const storageError = articlesError || deletionError || notesError || projectsError || mediaError;
   const articles = mergeArticles(PUBLISHED_ARTICLES, localArticles, deletedArticleIds, articleViews);
   const adminArticles = mergeArticles(PUBLISHED_ARTICLES, localArticles, deletedArticleIds, articleViews, true);
 
-  // Save local articles / drafts and views to localStorage
-  useEffect(() => {
-    localStorage.setItem('ot_sec_local_articles', JSON.stringify(localArticles));
-  }, [localArticles]);
-
-  useEffect(() => {
-    localStorage.setItem('ot_sec_article_views', JSON.stringify(articleViews));
-  }, [articleViews]);
-
-  // Clean legacy ot_sec_articles so it never overrides canonical published articles
-  useEffect(() => {
-    if (localStorage.getItem('ot_sec_articles')) {
-      localStorage.removeItem('ot_sec_articles');
-    }
-  }, []);
-
-  const [notes, setNotes] = useState<ResearchNote[]>(() => {
-    const saved = localStorage.getItem('ot_sec_notes');
-    if (saved) {
-      try {
-        const parsed: ResearchNote[] = JSON.parse(saved);
-        return parsed.map((n) => {
-          const defaultMatch = INITIAL_NOTES.find((init) => init.id === n.id);
-          if (defaultMatch && (!n.tags || n.tags.length === 0 || (n.tag && n.tag.startsWith('#VULN_ANALYSIS')))) {
-            return {
-              ...n,
-              tag: defaultMatch.tag,
-              tags: defaultMatch.tags,
-              contentType: n.contentType || defaultMatch.contentType
-            };
-          }
-          return n;
-        });
-      } catch (e) {
-        return INITIAL_NOTES;
-      }
-    }
-    return INITIAL_NOTES;
-  });
-
-  const [projects, setProjects] = useState<Project[]>(() => {
-    const saved = localStorage.getItem('ot_sec_projects');
-    return saved ? JSON.parse(saved) : INITIAL_PROJECTS;
-  });
-
-  const [mediaLibrary, setMediaLibrary] = useState<MediaItem[]>(() => {
-    const saved = localStorage.getItem('ot_sec_media');
-    return saved ? JSON.parse(saved) : INITIAL_MEDIA;
-  });
-
-  const [analytics, setAnalytics] = useState<AnalyticsKPIs>(() => {
-    const saved = localStorage.getItem('ot_sec_analytics');
-    return saved ? JSON.parse(saved) : INITIAL_ANALYTICS;
-  });
-
-  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState<boolean>(() => {
-    return localStorage.getItem('ot_sec_admin_auth') === 'true';
-  });
-
-  // Save changes to localStorage
-  useEffect(() => {
-    localStorage.setItem('ot_sec_notes', JSON.stringify(notes));
-  }, [notes]);
-
-  useEffect(() => {
-    localStorage.setItem('ot_sec_projects', JSON.stringify(projects));
-  }, [projects]);
-
-  useEffect(() => {
-    localStorage.setItem('ot_sec_media', JSON.stringify(mediaLibrary));
-  }, [mediaLibrary]);
-
-  useEffect(() => {
-    localStorage.setItem('ot_sec_analytics', JSON.stringify(analytics));
-  }, [analytics]);
-
   const [adminPassword, setAdminPassword] = useState<string>(() => {
-    return localStorage.getItem('ot_sec_admin_password') || 'sec2026';
+    return safeGetItem('ot_sec_admin_password') || 'sec2026';
   });
 
   const loginAdmin = (password: string) => {
     // Accepts custom password or default initialization key
     if (password === adminPassword || password === 'sec2026') {
       setIsAdminLoggedIn(true);
-      localStorage.setItem('ot_sec_admin_auth', 'true');
+      safeSetItem('ot_sec_admin_auth', 'true');
       return true;
     }
     return false;
@@ -324,7 +156,7 @@ export function BlogProvider({ children }: { children: React.ReactNode }) {
 
   const logoutAdmin = () => {
     setIsAdminLoggedIn(false);
-    localStorage.removeItem('ot_sec_admin_auth');
+    safeRemoveItem('ot_sec_admin_auth');
   };
 
   const changePassword = (currentPass: string, newPass: string) => {
@@ -335,8 +167,9 @@ export function BlogProvider({ children }: { children: React.ReactNode }) {
       return { success: false, message: 'New password must be at least 4 characters long.' };
     }
     const cleanPass = newPass.trim();
+    try { writeVerifiedItem('ot_sec_admin_password', cleanPass); }
+    catch (error) { return { success: false, message: error instanceof Error ? error.message : 'Falha ao salvar.' }; }
     setAdminPassword(cleanPass);
-    localStorage.setItem('ot_sec_admin_password', cleanPass);
     return { success: true, message: 'Password successfully updated! Keep your new credential safe.' };
   };
 
@@ -350,28 +183,25 @@ export function BlogProvider({ children }: { children: React.ReactNode }) {
       slug,
       views: 0
     };
-    setLocalArticles(prev => [newArticle, ...prev]);
+    setLocalArticles(prev => [newArticle, ...prev.filter(item => item.id !== newArticle.id)]);
     return newArticle;
   };
 
   const updateArticle = (id: string, updated: Partial<Article>) => {
+    setLocalArticles(prev => updateLocalArticle(prev, PUBLISHED_ARTICLES, id, updated));
     if (updated.views !== undefined) {
       setArticleViews(prev => ({
         ...prev,
         [id]: updated.views!
       }));
     }
-    setLocalArticles(prev => updateLocalArticle(prev, PUBLISHED_ARTICLES, id, updated));
   };
 
   const deleteArticle = (id: string) => {
-    setLocalArticles(prev => prev.filter(item => item.id !== id));
-    if (PUBLISHED_ARTICLES.some(pub => pub.id === id)) {
-      setDeletedArticleIds(prev => {
-        const next = prev.includes(id) ? prev : [...prev, id];
-        localStorage.setItem('ot_sec_deleted_article_ids', JSON.stringify(next));
-        return next;
-      });
+    if (PUBLISHED_ARTICLES.some(article => article.id === id)) {
+      setDeletedArticleIds(previous => previous.includes(id) ? previous : [...previous, id]);
+    } else {
+      setLocalArticles(previous => previous.filter(article => article.id !== id));
     }
   };
 
@@ -411,21 +241,13 @@ export function BlogProvider({ children }: { children: React.ReactNode }) {
     let newItem: MediaItem;
 
     if (input instanceof File) {
-      const url = await new Promise<string>((resolve) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result as string);
-        reader.readAsDataURL(input);
-      });
-
-      const sizeInMB = (input.size / (1024 * 1024)).toFixed(1);
-      const sizeStr = input.size > 1024 * 1024 ? `${sizeInMB} MB` : `${Math.round(input.size / 1024)} KB`;
-
+      const compressed = await compressImageFile(input);
       newItem = {
         id: Date.now().toString(),
         name: input.name,
-        url,
-        type: input.type || 'image/jpeg',
-        size: sizeStr,
+        url: compressed.url,
+        type: compressed.type || 'image/jpeg',
+        size: compressed.sizeStr,
         uploadDate: new Date().toISOString().split('T')[0],
         dimensions: 'Responsive'
       };
@@ -482,22 +304,9 @@ export function BlogProvider({ children }: { children: React.ReactNode }) {
   };
 
   const resetCounters = () => {
-    // 1. Reset article views in state and localStorage
-    const zeroViews: Record<string, number> = {};
-    for (const article of PUBLISHED_ARTICLES) {
-      zeroViews[article.id] = 0;
-    }
-    setArticleViews(zeroViews);
-    localStorage.setItem('ot_sec_article_views', JSON.stringify(zeroViews));
+    const zeroViews = Object.fromEntries(adminArticles.map(article => [article.id, 0]));
+    setArticleViews(zeroViews, true);
 
-    // Reset views on any local/custom articles
-    setLocalArticles(prev => {
-      const reset = prev.map(item => ({ ...item, views: 0 }));
-      localStorage.setItem('ot_sec_local_articles', JSON.stringify(reset));
-      return reset;
-    });
-
-    // 2. Reset analytics and telemetry counters in state and localStorage
     const zeroAnalytics: AnalyticsKPIs = {
       totalVisitors: 0,
       pageViews: 0,
@@ -522,8 +331,7 @@ export function BlogProvider({ children }: { children: React.ReactNode }) {
       recentEvents: []
     };
 
-    setAnalytics(zeroAnalytics);
-    localStorage.setItem('ot_sec_analytics', JSON.stringify(zeroAnalytics));
+    setAnalytics(zeroAnalytics, true);
   };
 
   return (
@@ -536,6 +344,7 @@ export function BlogProvider({ children }: { children: React.ReactNode }) {
         projects,
         mediaLibrary,
         analytics,
+        storageError,
         isAdminLoggedIn,
         loginAdmin,
         logoutAdmin,

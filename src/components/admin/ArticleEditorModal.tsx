@@ -441,17 +441,16 @@ export function ArticleEditorModal({
       setSaveFeedbackMessage('Edição salva neste navegador. Exporte o artigo e importe no projeto para preparar a publicação.');
 
       if (closeModalAfter) {
-        setTimeout(() => {
-          onClose();
-        }, 600);
+        onClose();
       } else {
         setTimeout(() => {
-          setSaveState('idle');
+          setSaveState(previous => previous === 'saved' ? 'idle' : previous);
         }, 4000);
       }
     } catch (err: any) {
       setSaveState('error');
-      setSaveFeedbackMessage(`Erro ao persistir dados: ${err?.message || 'Falha desconhecida'}`);
+      setIsDirty(true);
+      setSaveFeedbackMessage(`${err?.message || 'Não foi possível confirmar a gravação.'} A edição continua aberta. Use Exportar artigo para guardar uma cópia.`);
     }
   };
 
@@ -476,6 +475,9 @@ export function ArticleEditorModal({
         const item = await uploadImage(files[0]);
         setCoverImage(item.url);
         markDirty();
+      } catch (error) {
+        setSaveState('error');
+        setSaveFeedbackMessage(error instanceof Error ? error.message : 'Falha ao salvar a imagem. A edição foi mantida.');
       } finally {
         setIsUploadingCover(false);
       }
@@ -492,6 +494,9 @@ export function ArticleEditorModal({
         const markdownImage = `\n\n![${cleanName}](${item.url})\n\n`;
         setContent(prev => (prev || '') + markdownImage);
         markDirty();
+      } catch (error) {
+        setSaveState('error');
+        setSaveFeedbackMessage(error instanceof Error ? error.message : 'Falha ao salvar a imagem. A edição foi mantida.');
       } finally {
         setIsUploadingContentImg(false);
       }
@@ -1212,7 +1217,7 @@ export function ArticleEditorModal({
             ) : (
               <span className="text-emerald-400 flex items-center gap-1">
                 <Check className="w-3.5 h-3.5" />
-                Edição local salva. A publicação depende do envio ao GitHub.
+                {saveState === 'saved' ? 'Gravação conferida neste navegador.' : 'Use Salvar neste navegador ou Exportar artigo para guardar esta edição.'}
               </span>
             )}
           </div>

@@ -12,7 +12,7 @@
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",
     "lint": "tsc --noEmit",
-    "test:articles": "tsx --test src/lib/articleState.test.ts src/lib/articleExport.test.ts scripts/import-article.test.ts",
+    "test:articles": "tsx --test src/lib/articleState.test.ts src/lib/articleExport.test.ts src/lib/persistence.test.ts scripts/import-article.test.ts",
     "import:article": "tsx scripts/import-article.ts",
     "test:drafts": "tsx scripts/validate-draft-isolation.tsx"
   },
