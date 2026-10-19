@@ -3,7 +3,6 @@ import { useEffect } from 'react';
 import { useBlog } from '../context/BlogContext';
 import { useLanguage } from '../context/LanguageContext';
 import { ArrowLeft, Clock, Calendar, Eye, Tag } from 'lucide-react';
-import { DecodeText } from '../components/ui/DecodeText';
 import { ArticleContent } from '../components/article/ArticleContent';
 import { ArticleSEO } from '../components/seo/ArticleSEO';
 import { findPublicArticle } from '../lib/articleState';
@@ -98,7 +97,7 @@ export function ArticleDetail({ routeLanguage }: { routeLanguage?: ArticleLangua
           </div>
 
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[50px] font-bold text-white tracking-tight leading-[1.15] mb-6 font-sans break-words">
-            <DecodeText text={article.title} delay={100} />
+            {article.title}
           </h1>
 
           {/* Editorial Lead Paragraph */}

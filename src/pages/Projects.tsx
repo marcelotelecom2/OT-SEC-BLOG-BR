@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { motion } from 'motion/react';
 import { DecodeText } from '../components/ui/DecodeText';
 import { SpotlightCard } from '../components/ui/SpotlightCard';
-import { TerminalLoader } from '../components/ui/TerminalLoader';
 import { ArrowRight, Github, ExternalLink } from 'lucide-react';
 import { useBlog } from '../context/BlogContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -24,7 +23,6 @@ const itemVariants = {
 export function Projects() {
   const { projects, recordPageView } = useBlog();
   const { t } = useLanguage();
-  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     recordPageView('/projects');
@@ -39,10 +37,7 @@ export function Projects() {
         <p className="text-gray-400 font-mono text-xs sm:text-sm">{t.projects.subtitle}</p>
       </div>
       
-      {!isLoaded ? (
-        <TerminalLoader onComplete={() => setIsLoaded(true)} text={t.projects.loader} />
-      ) : (
-        <motion.div 
+      <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="show"
@@ -113,8 +108,7 @@ export function Projects() {
               </SpotlightCard>
             </motion.div>
           ))}
-        </motion.div>
-      )}
+      </motion.div>
     </div>
   );
 }

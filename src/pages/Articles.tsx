@@ -1,9 +1,7 @@
 import { Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { motion } from 'motion/react';
-import { DecodeText } from '../components/ui/DecodeText';
 import { SpotlightCard } from '../components/ui/SpotlightCard';
-import { TerminalLoader } from '../components/ui/TerminalLoader';
 import { useBlog } from '../context/BlogContext';
 import { useLanguage, getLocalizedArticle } from '../context/LanguageContext';
 import { ResponsiveImage } from '../components/ui/ResponsiveImage';
@@ -24,7 +22,6 @@ const itemVariants = {
 export function Articles() {
   const { articles, recordPageView } = useBlog();
   const { language, t } = useLanguage();
-  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     recordPageView('/articles');
@@ -38,15 +35,12 @@ export function Articles() {
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-24 min-h-[80vh]">
       <div className="border-b border-gray-800 pb-6 sm:pb-8 mb-8 sm:mb-12">
         <h1 className="text-3xl sm:text-4xl font-bold text-white tracking-tight mb-3 sm:mb-4 cursor-crosshair">
-          <DecodeText text={t.articles.title} delay={100} />
+          {t.articles.title}
         </h1>
         <p className="text-gray-400 font-mono text-xs sm:text-sm">{t.articles.subtitle}</p>
       </div>
       
-      {!isLoaded ? (
-        <TerminalLoader onComplete={() => setIsLoaded(true)} text={t.articles.loader} />
-      ) : (
-        <motion.div 
+      <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="show"
@@ -57,7 +51,7 @@ export function Articles() {
               {t.articles.empty}
             </div>
           ) : (
-            publishedArticles.map((article) => (
+            publishedArticles.map((article, index) => (
               <motion.div key={article.id} variants={itemVariants}>
                 <SpotlightCard className="group relative flex flex-col md:flex-row items-stretch bg-transparent border border-gray-800/50 p-5 sm:p-6 md:p-7 transition-all duration-300 hud-border gap-5 sm:gap-6">
                   {article.coverImage && (
@@ -66,8 +60,9 @@ export function Articles() {
                         src={article.coverImage}
                         alt={article.title}
                         sizes="(max-width: 767px) calc(100vw - 40px), 256px"
-                        loading="lazy"
+                        loading={index === 0 ? 'eager' : 'lazy'}
                         decoding="async"
+                        fetchPriority={index === 0 ? 'high' : 'auto'}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-[#050505]/60 via-transparent to-transparent pointer-events-none" />
@@ -109,8 +104,7 @@ export function Articles() {
               </motion.div>
             ))
           )}
-        </motion.div>
-      )}
+      </motion.div>
     </div>
   );
 }

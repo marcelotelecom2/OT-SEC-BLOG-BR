@@ -55,9 +55,7 @@ export function Home() {
         
         <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center">
           <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
+            initial={false}
             className="inline-flex items-center px-3 py-1 mb-6 rounded-full border border-cyan-500/30 bg-cyan-500/10 backdrop-blur-sm cursor-crosshair group"
           >
             <span className="flex w-2 h-2 rounded-full bg-cyan-400 mr-2 group-hover:animate-ping transition-all duration-300"></span>
@@ -65,11 +63,9 @@ export function Home() {
           </motion.div>
           
           <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-sans font-bold tracking-tight text-white mb-6">
-            <DecodeText text={t.hero.title1} delay={800} /> <br />
+            {t.hero.title1} <br />
             <motion.span 
-              initial={{ opacity: 0, filter: 'blur(10px)' }}
-              animate={{ opacity: 1, filter: 'blur(0px)' }}
-              transition={{ delay: 1.5, duration: 0.8 }}
+              initial={false}
               className="text-transparent bg-clip-text bg-gradient-to-r from-gray-200 to-gray-500 inline-block"
             >
               {t.hero.title2}
@@ -77,18 +73,14 @@ export function Home() {
           </h1>
           
           <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.8, duration: 0.5 }}
+            initial={false}
             className="max-w-2xl text-base sm:text-lg md:text-xl text-gray-400 font-sans mb-8 sm:mb-10 leading-relaxed"
           >
             {t.hero.subtitle}
           </motion.p>
           
           <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 2.1, duration: 0.5 }}
+            initial={false}
             className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto items-center justify-center"
           >
             <Link to="/insights" className="hud-border relative overflow-hidden px-6 sm:px-8 py-3.5 text-white font-mono text-sm tracking-widest uppercase bg-transparent group min-h-[44px] flex items-center justify-center">

@@ -2,7 +2,6 @@ import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'motion/react';
 import { Filter, Tag, Hash, ShieldAlert, X, ExternalLink } from 'lucide-react';
 import { DecodeText } from '../components/ui/DecodeText';
-import { TerminalLoader } from '../components/ui/TerminalLoader';
 import { useBlog } from '../context/BlogContext';
 import { useLanguage } from '../context/LanguageContext';
 import { sanitizeExternalUrl } from '../lib/sanitizeUrl';
@@ -31,7 +30,6 @@ const itemVariants = {
 export function Research() {
   const { notes, recordPageView } = useBlog();
   const { t } = useLanguage();
-  const [isLoaded, setIsLoaded] = useState(false);
   const [selectedType, setSelectedType] = useState<string>('All');
   const [selectedTag, setSelectedTag] = useState<string>('All');
   const publishedNotes = useMemo(() => publicNotes(notes), [notes]);
@@ -175,10 +173,7 @@ export function Research() {
         )}
       </div>
       
-      {!isLoaded ? (
-        <TerminalLoader onComplete={() => setIsLoaded(true)} text={t.insights.loader} />
-      ) : (
-        <motion.div 
+      <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="show"
@@ -285,8 +280,7 @@ export function Research() {
               );
             })
           )}
-        </motion.div>
-      )}
+      </motion.div>
     </div>
   );
 }
