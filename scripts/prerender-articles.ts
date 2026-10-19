@@ -1,8 +1,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import React from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
 import { ARTICLES_METADATA } from '../src/content/articles/metadata';
 import { Article } from '../src/types';
+import { ArticleContent } from '../src/components/article/ArticleContent';
+import { localizeArticle } from '../src/lib/articleLocalization';
 import {
   formatMetaDescription,
   resolveImageUrl,
@@ -26,6 +30,54 @@ function escapeHtml(unsafe: string): string {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
+}
+
+function loadArticleContent(articleMeta: (typeof ARTICLES_METADATA)[number]): Article {
+  const contentRoot = path.resolve(projectRoot, 'src/content/articles');
+  const readMarkdown = (filename: string) => {
+    const resolved = path.resolve(contentRoot, filename);
+    if (!resolved.startsWith(contentRoot + path.sep)) throw new Error(`Invalid content file: ${filename}`);
+    return fs.readFileSync(resolved, 'utf8');
+  };
+  const translations: Article['translations'] = {};
+  for (const [language, translation] of Object.entries(articleMeta.translations ?? {})) {
+    if (!translation) continue;
+    translations[language as keyof typeof translations] = {
+      title: translation.title,
+      summary: translation.summary,
+      ...(translation.contentFile ? { content: readMarkdown(translation.contentFile) } : {}),
+    };
+  }
+  const { contentFile, translations: _metadataTranslations, ...metadata } = articleMeta;
+  return {
+    ...metadata,
+    content: readMarkdown(contentFile),
+    ...(Object.keys(translations).length ? { translations } : {}),
+  };
+}
+
+function renderArticleBody(article: Article): string {
+  const body = renderToStaticMarkup(React.createElement(ArticleContent, {
+    content: article.content || article.summary,
+  })).replace(/\snode="\[object Object\]"/g, '');
+  const cover = article.coverImage
+    ? `<div class="mb-10 sm:mb-14 rounded-lg overflow-hidden border border-gray-800/80 shadow-2xl"><img src="${escapeHtml(article.coverImage)}" alt="${escapeHtml(article.title)}" class="w-full h-auto max-h-[520px] object-cover" /></div>`
+    : '';
+  return `<article data-prerendered-article="true" class="w-full px-4 sm:px-6 lg:px-8 py-10 sm:py-16 md:py-20">
+  <div class="max-w-[1100px] mx-auto">
+    <header class="border-b border-gray-800 pb-8 sm:pb-10 mb-8 sm:mb-12">
+      <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs font-mono text-gray-500 mb-4">
+        <span class="text-cyan-400 font-medium">${escapeHtml(article.area)}</span>
+        <time datetime="${escapeHtml(article.date)}">${escapeHtml(article.date)}</time>
+        <span>${escapeHtml(article.readTime)}</span>
+      </div>
+      <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-[50px] font-bold text-white tracking-tight leading-[1.15] mb-6 font-sans break-words">${escapeHtml(article.title)}</h1>
+      <p class="text-lg sm:text-xl text-gray-300 font-sans leading-relaxed border-l-2 border-cyan-500 pl-5 py-2 bg-cyan-950/20 rounded-r">${escapeHtml(article.summary)}</p>
+    </header>
+    ${cover}
+  </div>
+  <div class="max-w-[780px] mx-auto">${body}</div>
+</article>`;
 }
 
 /**
@@ -128,7 +180,10 @@ ${jsonLdContent}
     }
   }
 
-  return compactedLines.join('\n');
+  const compactedHtml = compactedLines.join('\n');
+  const root = '<div id="root"></div>';
+  if (!compactedHtml.includes(root)) throw new Error('The application root was not found in the build template.');
+  return compactedHtml.replace(root, `<div id="root">${renderArticleBody(article)}</div>`);
 }
 
 /**
@@ -172,11 +227,14 @@ export function main() {
 
   let count = 0;
   for (const articleMeta of publishedArticles) {
-    const article: Article = {
-      ...articleMeta,
-    };
+    const sourceArticle = loadArticleContent(articleMeta);
+    const article = localizeArticle(sourceArticle, 'en').article;
 
     const articleHtml = prerenderArticleHtml(templateHtml, article);
+    if (!articleHtml.includes('data-prerendered-article="true"')
+      || !articleHtml.includes('article-editorial-content')) {
+      throw new Error(`Article body was not prerendered: ${article.slug}`);
+    }
 
     // Remove legacy directory if it still exists
     const legacyArticleDir = path.resolve(articlesDir, article.slug);

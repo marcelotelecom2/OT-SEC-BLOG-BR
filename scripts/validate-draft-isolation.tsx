@@ -69,6 +69,8 @@ async function main() {
     const javascript = fs.readdirSync(assets).filter(name => name.endsWith('.js'))
       .map(name => fs.readFileSync(path.join(assets, name), 'utf8')).join('\n');
     const sitemap = fs.readFileSync(path.join(fixture, 'dist/sitemap.xml'), 'utf8');
+    const publicArticleHtml = fs.readFileSync(
+      path.join(fixture, 'dist/articles/validation-public-article.html'), 'utf8');
 
     const stored = new Map<string, string>([['ot_sec_notes', JSON.stringify([{
       id: 'validation-note', date: '2026-10-18', tag: '#TEST', tags: [tagMarker],
@@ -127,6 +129,8 @@ async function main() {
       draftPageIsNoindex: direct.includes('noindex'),
       publicArticleInJavascript: javascript.includes(publicBody),
       publicTranslationInJavascript: javascript.includes(publicTranslationBody),
+      publicArticleBodyInStaticHtml: publicArticleHtml.includes(publicTranslationBody),
+      publicArticleHasEmptyRoot: publicArticleHtml.includes('<div id="root"></div>'),
       publicTranslationRenders: visible.includes(publicTranslationBody),
       languageFallbackNoticeShown: languageFallback.includes('not available in the selected language')
         && languageFallback.includes('shown in Portuguese'),
@@ -151,6 +155,8 @@ async function main() {
     assert.equal(results.draftPageIsNoindex, true);
     assert.equal(results.publicArticleInJavascript, true);
     assert.equal(results.publicTranslationInJavascript, true);
+    assert.equal(results.publicArticleBodyInStaticHtml, true);
+    assert.equal(results.publicArticleHasEmptyRoot, false);
     assert.equal(results.publicTranslationRenders, true);
     assert.equal(results.languageFallbackNoticeShown, true);
     assert.equal(results.allArticleLanguagesComplete, true);
