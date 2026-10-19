@@ -4,6 +4,25 @@ export type ArticleMetadata = Omit<Article, 'content'> & { contentFile: string }
 
 export const ARTICLES_METADATA: ArticleMetadata[] = [
 {
+  "id": "12",
+  "contentFile": "iec-62351-ataques-seguranca.md",
+  "slug": "iec-62351-ataques-seguranca-relacao-ameaca-ataque",
+  "title": "IEC 62351: ataques de segurança e a relação entre ameaça e ataque",
+  "summary": "A seção 5.3.4 da IEC 62351-1 explica como diferentes ataques e cadeias de ataques podem concretizar uma ameaça nos sistemas elétricos e em OT.",
+  "date": "2026-10-18",
+  "readTime": "3 min de leitura",
+  "area": "Regulation Update",
+  "author": "Walter Rodrigues",
+  "published": true,
+  "views": 0,
+  "tags": [
+    "IEC 62351",
+    "OT Security",
+    "Sistemas elétricos"
+  ],
+  "coverImage": "/images/articles/iec-62351-ataques-seguranca-capa.jpg"
+},
+{
   "id": "11",
   "contentFile": "iec-62351-requisitos-ameacas-vulnerabilidades.md",
   "slug": "iec-62351-requisitos-ameacas-vulnerabilidades-seguranca",
