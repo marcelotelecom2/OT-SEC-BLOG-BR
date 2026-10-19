@@ -10,6 +10,8 @@ assert.ok(existsSync(dist), 'dist/ não existe; execute npm run build antes da v
 const headers = readFileSync(join(dist, '_headers'), 'utf8');
 assert.match(headers, /\/assets\/\*[\s\S]*max-age=31536000, immutable/);
 assert.match(headers, /\/images\/articles\/\*[\s\S]*stale-while-revalidate=86400/);
+assert.match(headers, /Cloudflare-CDN-Cache-Control: public, max-age=31536000, immutable/);
+assert.match(headers, /Cloudflare-CDN-Cache-Control: public, max-age=604800, stale-while-revalidate=86400/);
 assert.match(headers, /\/admin[\s\S]*Cache-Control: no-store/);
 
 const assetFiles = readdirSync(join(dist, 'assets'));
