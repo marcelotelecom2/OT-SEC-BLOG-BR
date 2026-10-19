@@ -6,7 +6,7 @@ import './index.css';
 async function bootstrap() {
   // Keep the complete prerendered article visible until its interactive route is ready.
   // This avoids replacing useful HTML with the Suspense fallback during hydration startup.
-  if (/^\/articles\/[^/]+\/?$/.test(window.location.pathname)) {
+  if (/^\/(?:en|pt|es)\/articles\/[^/]+\/?$/.test(window.location.pathname)) {
     await import('./pages/ArticleDetail');
   }
 

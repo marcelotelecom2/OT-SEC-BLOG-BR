@@ -10,6 +10,11 @@ export function resolveLanguagePreference(saved: string | null): Language {
   return saved === 'en' || saved === 'pt' || saved === 'es' ? saved : DEFAULT_LANGUAGE;
 }
 
+export function resolveLanguageFromPath(pathname: string): Language | null {
+  const language = pathname.match(/^\/(en|pt|es)\/articles\//)?.[1];
+  return language === 'en' || language === 'pt' || language === 'es' ? language : null;
+}
+
 export interface LanguageOption {
   code: Language;
   label: string;
@@ -340,7 +345,8 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguageState] = useState<Language>(() => {
     if (typeof window === 'undefined') return DEFAULT_LANGUAGE;
-    return resolveLanguagePreference(safeGetItem('ot_sec_language'));
+    return resolveLanguageFromPath(window.location.pathname)
+      ?? resolveLanguagePreference(safeGetItem('ot_sec_language'));
   });
 
   const setLanguage = (lang: Language) => {

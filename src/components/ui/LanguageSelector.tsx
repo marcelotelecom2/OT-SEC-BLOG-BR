@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useLanguage, LANGUAGE_OPTIONS } from '../../context/LanguageContext';
 import { Globe, ChevronDown, Check } from 'lucide-react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 interface LanguageSelectorProps {
   className?: string;
@@ -8,6 +9,8 @@ interface LanguageSelectorProps {
 
 export function LanguageSelector({ className = '' }: LanguageSelectorProps) {
   const { language, setLanguage, t } = useLanguage();
+  const location = useLocation();
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -85,6 +88,8 @@ export function LanguageSelector({ className = '' }: LanguageSelectorProps) {
                   type="button"
                   onClick={() => {
                     setLanguage(opt.code);
+                    const articleRoute = location.pathname.match(/^\/(?:en|pt|es)\/articles\/([^/]+)\/?$/);
+                    if (articleRoute) navigate(`/${opt.code}/articles/${articleRoute[1]}`);
                     setIsOpen(false);
                   }}
                   className={`w-full text-left flex items-center justify-between px-2.5 py-2 rounded transition-colors text-xs ${

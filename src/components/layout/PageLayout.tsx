@@ -19,7 +19,7 @@ export function PageLayout() {
 
   useEffect(() => {
     // Whenever current route is not an article detail page, ensure default institutional SEO
-    if (!location.pathname.startsWith('/articles/')) {
+    if (!/^\/(?:en|pt|es)\/articles\//.test(location.pathname)) {
       applyDefaultSEO();
     }
   }, [location.pathname]);

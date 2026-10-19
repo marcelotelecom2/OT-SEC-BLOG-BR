@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://ot-sec.blog.br/</loc>
   </url>
@@ -16,51 +16,291 @@
     <loc>https://ot-sec.blog.br/about</loc>
   </url>
   <url>
-    <loc>https://ot-sec.blog.br/articles/iec-62351-ataques-seguranca-relacao-ameaca-ataque</loc>
+    <loc>https://ot-sec.blog.br/en/articles/iec-62351-ataques-seguranca-relacao-ameaca-ataque</loc>
     <lastmod>2026-10-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ot-sec.blog.br/en/articles/iec-62351-ataques-seguranca-relacao-ameaca-ataque" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://ot-sec.blog.br/pt/articles/iec-62351-ataques-seguranca-relacao-ameaca-ataque" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://ot-sec.blog.br/es/articles/iec-62351-ataques-seguranca-relacao-ameaca-ataque" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ot-sec.blog.br/en/articles/iec-62351-ataques-seguranca-relacao-ameaca-ataque" />
   </url>
   <url>
-    <loc>https://ot-sec.blog.br/articles/iec-62351-requisitos-ameacas-vulnerabilidades-seguranca</loc>
+    <loc>https://ot-sec.blog.br/pt/articles/iec-62351-ataques-seguranca-relacao-ameaca-ataque</loc>
     <lastmod>2026-10-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ot-sec.blog.br/en/articles/iec-62351-ataques-seguranca-relacao-ameaca-ataque" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://ot-sec.blog.br/pt/articles/iec-62351-ataques-seguranca-relacao-ameaca-ataque" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://ot-sec.blog.br/es/articles/iec-62351-ataques-seguranca-relacao-ameaca-ataque" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ot-sec.blog.br/en/articles/iec-62351-ataques-seguranca-relacao-ameaca-ataque" />
   </url>
   <url>
-    <loc>https://ot-sec.blog.br/articles/iec-62351-ameacas-deliberadas-sistemas-eletricos</loc>
+    <loc>https://ot-sec.blog.br/es/articles/iec-62351-ataques-seguranca-relacao-ameaca-ataque</loc>
     <lastmod>2026-10-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ot-sec.blog.br/en/articles/iec-62351-ataques-seguranca-relacao-ameaca-ataque" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://ot-sec.blog.br/pt/articles/iec-62351-ataques-seguranca-relacao-ameaca-ataque" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://ot-sec.blog.br/es/articles/iec-62351-ataques-seguranca-relacao-ameaca-ataque" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ot-sec.blog.br/en/articles/iec-62351-ataques-seguranca-relacao-ameaca-ataque" />
   </url>
   <url>
-    <loc>https://ot-sec.blog.br/articles/iec-62351-ameacas-nao-intencionais-seguranca-ot</loc>
+    <loc>https://ot-sec.blog.br/en/articles/iec-62351-requisitos-ameacas-vulnerabilidades-seguranca</loc>
     <lastmod>2026-10-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ot-sec.blog.br/en/articles/iec-62351-requisitos-ameacas-vulnerabilidades-seguranca" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://ot-sec.blog.br/pt/articles/iec-62351-requisitos-ameacas-vulnerabilidades-seguranca" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://ot-sec.blog.br/es/articles/iec-62351-requisitos-ameacas-vulnerabilidades-seguranca" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ot-sec.blog.br/en/articles/iec-62351-requisitos-ameacas-vulnerabilidades-seguranca" />
   </url>
   <url>
-    <loc>https://ot-sec.blog.br/articles/iec-62351-entendendo-ameacas-deliberadas-sistemas-eletricos</loc>
+    <loc>https://ot-sec.blog.br/pt/articles/iec-62351-requisitos-ameacas-vulnerabilidades-seguranca</loc>
     <lastmod>2026-10-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ot-sec.blog.br/en/articles/iec-62351-requisitos-ameacas-vulnerabilidades-seguranca" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://ot-sec.blog.br/pt/articles/iec-62351-requisitos-ameacas-vulnerabilidades-seguranca" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://ot-sec.blog.br/es/articles/iec-62351-requisitos-ameacas-vulnerabilidades-seguranca" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ot-sec.blog.br/en/articles/iec-62351-requisitos-ameacas-vulnerabilidades-seguranca" />
   </url>
   <url>
-    <loc>https://ot-sec.blog.br/articles/iec-62351-ameacas-deliberadas-alem-de-hackers</loc>
+    <loc>https://ot-sec.blog.br/es/articles/iec-62351-requisitos-ameacas-vulnerabilidades-seguranca</loc>
     <lastmod>2026-10-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ot-sec.blog.br/en/articles/iec-62351-requisitos-ameacas-vulnerabilidades-seguranca" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://ot-sec.blog.br/pt/articles/iec-62351-requisitos-ameacas-vulnerabilidades-seguranca" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://ot-sec.blog.br/es/articles/iec-62351-requisitos-ameacas-vulnerabilidades-seguranca" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ot-sec.blog.br/en/articles/iec-62351-requisitos-ameacas-vulnerabilidades-seguranca" />
   </url>
   <url>
-    <loc>https://ot-sec.blog.br/articles/the-role-of-ai-in-detecting-anomalies-in-ics-networks</loc>
+    <loc>https://ot-sec.blog.br/en/articles/iec-62351-ameacas-deliberadas-sistemas-eletricos</loc>
+    <lastmod>2026-10-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ot-sec.blog.br/en/articles/iec-62351-ameacas-deliberadas-sistemas-eletricos" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://ot-sec.blog.br/pt/articles/iec-62351-ameacas-deliberadas-sistemas-eletricos" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://ot-sec.blog.br/es/articles/iec-62351-ameacas-deliberadas-sistemas-eletricos" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ot-sec.blog.br/en/articles/iec-62351-ameacas-deliberadas-sistemas-eletricos" />
+  </url>
+  <url>
+    <loc>https://ot-sec.blog.br/pt/articles/iec-62351-ameacas-deliberadas-sistemas-eletricos</loc>
+    <lastmod>2026-10-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ot-sec.blog.br/en/articles/iec-62351-ameacas-deliberadas-sistemas-eletricos" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://ot-sec.blog.br/pt/articles/iec-62351-ameacas-deliberadas-sistemas-eletricos" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://ot-sec.blog.br/es/articles/iec-62351-ameacas-deliberadas-sistemas-eletricos" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ot-sec.blog.br/en/articles/iec-62351-ameacas-deliberadas-sistemas-eletricos" />
+  </url>
+  <url>
+    <loc>https://ot-sec.blog.br/es/articles/iec-62351-ameacas-deliberadas-sistemas-eletricos</loc>
+    <lastmod>2026-10-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ot-sec.blog.br/en/articles/iec-62351-ameacas-deliberadas-sistemas-eletricos" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://ot-sec.blog.br/pt/articles/iec-62351-ameacas-deliberadas-sistemas-eletricos" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://ot-sec.blog.br/es/articles/iec-62351-ameacas-deliberadas-sistemas-eletricos" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ot-sec.blog.br/en/articles/iec-62351-ameacas-deliberadas-sistemas-eletricos" />
+  </url>
+  <url>
+    <loc>https://ot-sec.blog.br/en/articles/iec-62351-ameacas-nao-intencionais-seguranca-ot</loc>
+    <lastmod>2026-10-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ot-sec.blog.br/en/articles/iec-62351-ameacas-nao-intencionais-seguranca-ot" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://ot-sec.blog.br/pt/articles/iec-62351-ameacas-nao-intencionais-seguranca-ot" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://ot-sec.blog.br/es/articles/iec-62351-ameacas-nao-intencionais-seguranca-ot" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ot-sec.blog.br/en/articles/iec-62351-ameacas-nao-intencionais-seguranca-ot" />
+  </url>
+  <url>
+    <loc>https://ot-sec.blog.br/pt/articles/iec-62351-ameacas-nao-intencionais-seguranca-ot</loc>
+    <lastmod>2026-10-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ot-sec.blog.br/en/articles/iec-62351-ameacas-nao-intencionais-seguranca-ot" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://ot-sec.blog.br/pt/articles/iec-62351-ameacas-nao-intencionais-seguranca-ot" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://ot-sec.blog.br/es/articles/iec-62351-ameacas-nao-intencionais-seguranca-ot" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ot-sec.blog.br/en/articles/iec-62351-ameacas-nao-intencionais-seguranca-ot" />
+  </url>
+  <url>
+    <loc>https://ot-sec.blog.br/es/articles/iec-62351-ameacas-nao-intencionais-seguranca-ot</loc>
+    <lastmod>2026-10-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ot-sec.blog.br/en/articles/iec-62351-ameacas-nao-intencionais-seguranca-ot" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://ot-sec.blog.br/pt/articles/iec-62351-ameacas-nao-intencionais-seguranca-ot" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://ot-sec.blog.br/es/articles/iec-62351-ameacas-nao-intencionais-seguranca-ot" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ot-sec.blog.br/en/articles/iec-62351-ameacas-nao-intencionais-seguranca-ot" />
+  </url>
+  <url>
+    <loc>https://ot-sec.blog.br/en/articles/iec-62351-entendendo-ameacas-deliberadas-sistemas-eletricos</loc>
+    <lastmod>2026-10-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ot-sec.blog.br/en/articles/iec-62351-entendendo-ameacas-deliberadas-sistemas-eletricos" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://ot-sec.blog.br/pt/articles/iec-62351-entendendo-ameacas-deliberadas-sistemas-eletricos" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://ot-sec.blog.br/es/articles/iec-62351-entendendo-ameacas-deliberadas-sistemas-eletricos" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ot-sec.blog.br/en/articles/iec-62351-entendendo-ameacas-deliberadas-sistemas-eletricos" />
+  </url>
+  <url>
+    <loc>https://ot-sec.blog.br/pt/articles/iec-62351-entendendo-ameacas-deliberadas-sistemas-eletricos</loc>
+    <lastmod>2026-10-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ot-sec.blog.br/en/articles/iec-62351-entendendo-ameacas-deliberadas-sistemas-eletricos" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://ot-sec.blog.br/pt/articles/iec-62351-entendendo-ameacas-deliberadas-sistemas-eletricos" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://ot-sec.blog.br/es/articles/iec-62351-entendendo-ameacas-deliberadas-sistemas-eletricos" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ot-sec.blog.br/en/articles/iec-62351-entendendo-ameacas-deliberadas-sistemas-eletricos" />
+  </url>
+  <url>
+    <loc>https://ot-sec.blog.br/es/articles/iec-62351-entendendo-ameacas-deliberadas-sistemas-eletricos</loc>
+    <lastmod>2026-10-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ot-sec.blog.br/en/articles/iec-62351-entendendo-ameacas-deliberadas-sistemas-eletricos" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://ot-sec.blog.br/pt/articles/iec-62351-entendendo-ameacas-deliberadas-sistemas-eletricos" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://ot-sec.blog.br/es/articles/iec-62351-entendendo-ameacas-deliberadas-sistemas-eletricos" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ot-sec.blog.br/en/articles/iec-62351-entendendo-ameacas-deliberadas-sistemas-eletricos" />
+  </url>
+  <url>
+    <loc>https://ot-sec.blog.br/en/articles/iec-62351-ameacas-deliberadas-alem-de-hackers</loc>
+    <lastmod>2026-10-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ot-sec.blog.br/en/articles/iec-62351-ameacas-deliberadas-alem-de-hackers" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://ot-sec.blog.br/pt/articles/iec-62351-ameacas-deliberadas-alem-de-hackers" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://ot-sec.blog.br/es/articles/iec-62351-ameacas-deliberadas-alem-de-hackers" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ot-sec.blog.br/en/articles/iec-62351-ameacas-deliberadas-alem-de-hackers" />
+  </url>
+  <url>
+    <loc>https://ot-sec.blog.br/pt/articles/iec-62351-ameacas-deliberadas-alem-de-hackers</loc>
+    <lastmod>2026-10-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ot-sec.blog.br/en/articles/iec-62351-ameacas-deliberadas-alem-de-hackers" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://ot-sec.blog.br/pt/articles/iec-62351-ameacas-deliberadas-alem-de-hackers" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://ot-sec.blog.br/es/articles/iec-62351-ameacas-deliberadas-alem-de-hackers" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ot-sec.blog.br/en/articles/iec-62351-ameacas-deliberadas-alem-de-hackers" />
+  </url>
+  <url>
+    <loc>https://ot-sec.blog.br/es/articles/iec-62351-ameacas-deliberadas-alem-de-hackers</loc>
+    <lastmod>2026-10-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ot-sec.blog.br/en/articles/iec-62351-ameacas-deliberadas-alem-de-hackers" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://ot-sec.blog.br/pt/articles/iec-62351-ameacas-deliberadas-alem-de-hackers" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://ot-sec.blog.br/es/articles/iec-62351-ameacas-deliberadas-alem-de-hackers" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ot-sec.blog.br/en/articles/iec-62351-ameacas-deliberadas-alem-de-hackers" />
+  </url>
+  <url>
+    <loc>https://ot-sec.blog.br/en/articles/the-role-of-ai-in-detecting-anomalies-in-ics-networks</loc>
     <lastmod>2026-07-10</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ot-sec.blog.br/en/articles/the-role-of-ai-in-detecting-anomalies-in-ics-networks" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://ot-sec.blog.br/pt/articles/the-role-of-ai-in-detecting-anomalies-in-ics-networks" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://ot-sec.blog.br/es/articles/the-role-of-ai-in-detecting-anomalies-in-ics-networks" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ot-sec.blog.br/en/articles/the-role-of-ai-in-detecting-anomalies-in-ics-networks" />
   </url>
   <url>
-    <loc>https://ot-sec.blog.br/articles/deconstructing-the-stuxnet-payload-lessons-still-unlearned</loc>
+    <loc>https://ot-sec.blog.br/pt/articles/the-role-of-ai-in-detecting-anomalies-in-ics-networks</loc>
+    <lastmod>2026-07-10</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ot-sec.blog.br/en/articles/the-role-of-ai-in-detecting-anomalies-in-ics-networks" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://ot-sec.blog.br/pt/articles/the-role-of-ai-in-detecting-anomalies-in-ics-networks" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://ot-sec.blog.br/es/articles/the-role-of-ai-in-detecting-anomalies-in-ics-networks" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ot-sec.blog.br/en/articles/the-role-of-ai-in-detecting-anomalies-in-ics-networks" />
+  </url>
+  <url>
+    <loc>https://ot-sec.blog.br/es/articles/the-role-of-ai-in-detecting-anomalies-in-ics-networks</loc>
+    <lastmod>2026-07-10</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ot-sec.blog.br/en/articles/the-role-of-ai-in-detecting-anomalies-in-ics-networks" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://ot-sec.blog.br/pt/articles/the-role-of-ai-in-detecting-anomalies-in-ics-networks" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://ot-sec.blog.br/es/articles/the-role-of-ai-in-detecting-anomalies-in-ics-networks" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ot-sec.blog.br/en/articles/the-role-of-ai-in-detecting-anomalies-in-ics-networks" />
+  </url>
+  <url>
+    <loc>https://ot-sec.blog.br/en/articles/deconstructing-the-stuxnet-payload-lessons-still-unlearned</loc>
     <lastmod>2026-06-22</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ot-sec.blog.br/en/articles/deconstructing-the-stuxnet-payload-lessons-still-unlearned" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://ot-sec.blog.br/pt/articles/deconstructing-the-stuxnet-payload-lessons-still-unlearned" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://ot-sec.blog.br/es/articles/deconstructing-the-stuxnet-payload-lessons-still-unlearned" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ot-sec.blog.br/en/articles/deconstructing-the-stuxnet-payload-lessons-still-unlearned" />
   </url>
   <url>
-    <loc>https://ot-sec.blog.br/articles/zero-trust-architecture-in-legacy-scada-environments</loc>
+    <loc>https://ot-sec.blog.br/pt/articles/deconstructing-the-stuxnet-payload-lessons-still-unlearned</loc>
+    <lastmod>2026-06-22</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ot-sec.blog.br/en/articles/deconstructing-the-stuxnet-payload-lessons-still-unlearned" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://ot-sec.blog.br/pt/articles/deconstructing-the-stuxnet-payload-lessons-still-unlearned" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://ot-sec.blog.br/es/articles/deconstructing-the-stuxnet-payload-lessons-still-unlearned" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ot-sec.blog.br/en/articles/deconstructing-the-stuxnet-payload-lessons-still-unlearned" />
+  </url>
+  <url>
+    <loc>https://ot-sec.blog.br/es/articles/deconstructing-the-stuxnet-payload-lessons-still-unlearned</loc>
+    <lastmod>2026-06-22</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ot-sec.blog.br/en/articles/deconstructing-the-stuxnet-payload-lessons-still-unlearned" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://ot-sec.blog.br/pt/articles/deconstructing-the-stuxnet-payload-lessons-still-unlearned" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://ot-sec.blog.br/es/articles/deconstructing-the-stuxnet-payload-lessons-still-unlearned" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ot-sec.blog.br/en/articles/deconstructing-the-stuxnet-payload-lessons-still-unlearned" />
+  </url>
+  <url>
+    <loc>https://ot-sec.blog.br/en/articles/zero-trust-architecture-in-legacy-scada-environments</loc>
     <lastmod>2026-05-15</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ot-sec.blog.br/en/articles/zero-trust-architecture-in-legacy-scada-environments" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://ot-sec.blog.br/pt/articles/zero-trust-architecture-in-legacy-scada-environments" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://ot-sec.blog.br/es/articles/zero-trust-architecture-in-legacy-scada-environments" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ot-sec.blog.br/en/articles/zero-trust-architecture-in-legacy-scada-environments" />
   </url>
   <url>
-    <loc>https://ot-sec.blog.br/articles/analyzing-the-impact-of-5g-on-smart-grid-security</loc>
+    <loc>https://ot-sec.blog.br/pt/articles/zero-trust-architecture-in-legacy-scada-environments</loc>
+    <lastmod>2026-05-15</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ot-sec.blog.br/en/articles/zero-trust-architecture-in-legacy-scada-environments" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://ot-sec.blog.br/pt/articles/zero-trust-architecture-in-legacy-scada-environments" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://ot-sec.blog.br/es/articles/zero-trust-architecture-in-legacy-scada-environments" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ot-sec.blog.br/en/articles/zero-trust-architecture-in-legacy-scada-environments" />
+  </url>
+  <url>
+    <loc>https://ot-sec.blog.br/es/articles/zero-trust-architecture-in-legacy-scada-environments</loc>
+    <lastmod>2026-05-15</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ot-sec.blog.br/en/articles/zero-trust-architecture-in-legacy-scada-environments" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://ot-sec.blog.br/pt/articles/zero-trust-architecture-in-legacy-scada-environments" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://ot-sec.blog.br/es/articles/zero-trust-architecture-in-legacy-scada-environments" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ot-sec.blog.br/en/articles/zero-trust-architecture-in-legacy-scada-environments" />
+  </url>
+  <url>
+    <loc>https://ot-sec.blog.br/en/articles/analyzing-the-impact-of-5g-on-smart-grid-security</loc>
     <lastmod>2026-04-02</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ot-sec.blog.br/en/articles/analyzing-the-impact-of-5g-on-smart-grid-security" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://ot-sec.blog.br/pt/articles/analyzing-the-impact-of-5g-on-smart-grid-security" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://ot-sec.blog.br/es/articles/analyzing-the-impact-of-5g-on-smart-grid-security" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ot-sec.blog.br/en/articles/analyzing-the-impact-of-5g-on-smart-grid-security" />
   </url>
   <url>
-    <loc>https://ot-sec.blog.br/articles/reverse-engineering-proprietary-plc-protocols</loc>
+    <loc>https://ot-sec.blog.br/pt/articles/analyzing-the-impact-of-5g-on-smart-grid-security</loc>
+    <lastmod>2026-04-02</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ot-sec.blog.br/en/articles/analyzing-the-impact-of-5g-on-smart-grid-security" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://ot-sec.blog.br/pt/articles/analyzing-the-impact-of-5g-on-smart-grid-security" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://ot-sec.blog.br/es/articles/analyzing-the-impact-of-5g-on-smart-grid-security" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ot-sec.blog.br/en/articles/analyzing-the-impact-of-5g-on-smart-grid-security" />
+  </url>
+  <url>
+    <loc>https://ot-sec.blog.br/es/articles/analyzing-the-impact-of-5g-on-smart-grid-security</loc>
+    <lastmod>2026-04-02</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ot-sec.blog.br/en/articles/analyzing-the-impact-of-5g-on-smart-grid-security" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://ot-sec.blog.br/pt/articles/analyzing-the-impact-of-5g-on-smart-grid-security" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://ot-sec.blog.br/es/articles/analyzing-the-impact-of-5g-on-smart-grid-security" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ot-sec.blog.br/en/articles/analyzing-the-impact-of-5g-on-smart-grid-security" />
+  </url>
+  <url>
+    <loc>https://ot-sec.blog.br/en/articles/reverse-engineering-proprietary-plc-protocols</loc>
     <lastmod>2026-03-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ot-sec.blog.br/en/articles/reverse-engineering-proprietary-plc-protocols" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://ot-sec.blog.br/pt/articles/reverse-engineering-proprietary-plc-protocols" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://ot-sec.blog.br/es/articles/reverse-engineering-proprietary-plc-protocols" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ot-sec.blog.br/en/articles/reverse-engineering-proprietary-plc-protocols" />
   </url>
   <url>
-    <loc>https://ot-sec.blog.br/articles/nerc-cip-002-how-bes-cyber-systems-are-classified-by-impact</loc>
+    <loc>https://ot-sec.blog.br/pt/articles/reverse-engineering-proprietary-plc-protocols</loc>
+    <lastmod>2026-03-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ot-sec.blog.br/en/articles/reverse-engineering-proprietary-plc-protocols" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://ot-sec.blog.br/pt/articles/reverse-engineering-proprietary-plc-protocols" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://ot-sec.blog.br/es/articles/reverse-engineering-proprietary-plc-protocols" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ot-sec.blog.br/en/articles/reverse-engineering-proprietary-plc-protocols" />
+  </url>
+  <url>
+    <loc>https://ot-sec.blog.br/es/articles/reverse-engineering-proprietary-plc-protocols</loc>
+    <lastmod>2026-03-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ot-sec.blog.br/en/articles/reverse-engineering-proprietary-plc-protocols" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://ot-sec.blog.br/pt/articles/reverse-engineering-proprietary-plc-protocols" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://ot-sec.blog.br/es/articles/reverse-engineering-proprietary-plc-protocols" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ot-sec.blog.br/en/articles/reverse-engineering-proprietary-plc-protocols" />
+  </url>
+  <url>
+    <loc>https://ot-sec.blog.br/en/articles/nerc-cip-002-how-bes-cyber-systems-are-classified-by-impact</loc>
     <lastmod>2026-08-04</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ot-sec.blog.br/en/articles/nerc-cip-002-how-bes-cyber-systems-are-classified-by-impact" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://ot-sec.blog.br/pt/articles/nerc-cip-002-how-bes-cyber-systems-are-classified-by-impact" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://ot-sec.blog.br/es/articles/nerc-cip-002-how-bes-cyber-systems-are-classified-by-impact" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ot-sec.blog.br/en/articles/nerc-cip-002-how-bes-cyber-systems-are-classified-by-impact" />
+  </url>
+  <url>
+    <loc>https://ot-sec.blog.br/pt/articles/nerc-cip-002-how-bes-cyber-systems-are-classified-by-impact</loc>
+    <lastmod>2026-08-04</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ot-sec.blog.br/en/articles/nerc-cip-002-how-bes-cyber-systems-are-classified-by-impact" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://ot-sec.blog.br/pt/articles/nerc-cip-002-how-bes-cyber-systems-are-classified-by-impact" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://ot-sec.blog.br/es/articles/nerc-cip-002-how-bes-cyber-systems-are-classified-by-impact" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ot-sec.blog.br/en/articles/nerc-cip-002-how-bes-cyber-systems-are-classified-by-impact" />
+  </url>
+  <url>
+    <loc>https://ot-sec.blog.br/es/articles/nerc-cip-002-how-bes-cyber-systems-are-classified-by-impact</loc>
+    <lastmod>2026-08-04</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ot-sec.blog.br/en/articles/nerc-cip-002-how-bes-cyber-systems-are-classified-by-impact" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://ot-sec.blog.br/pt/articles/nerc-cip-002-how-bes-cyber-systems-are-classified-by-impact" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://ot-sec.blog.br/es/articles/nerc-cip-002-how-bes-cyber-systems-are-classified-by-impact" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ot-sec.blog.br/en/articles/nerc-cip-002-how-bes-cyber-systems-are-classified-by-impact" />
   </url>
 </urlset>

@@ -16,26 +16,31 @@ const LANGUAGE_NAMES: Record<ArticleLanguage, Record<ArticleLanguage, string>> =
   es: { en: 'inglés', pt: 'portugués', es: 'español' },
 };
 
-export function ArticleDetail() {
+export function ArticleDetail({ routeLanguage }: { routeLanguage?: ArticleLanguage } = {}) {
   const { slug, id } = useParams<{ slug?: string; id?: string }>();
   const identifier = slug || id || '';
   const { articles, updateArticle, recordPageView } = useBlog();
-  const { language, t } = useLanguage();
+  const { language: selectedLanguage, setLanguage, t } = useLanguage();
+  const language = routeLanguage ?? selectedLanguage;
+
+  useEffect(() => {
+    if (routeLanguage && routeLanguage !== selectedLanguage) setLanguage(routeLanguage);
+  }, [routeLanguage, selectedLanguage, setLanguage]);
 
   // Procurar primeiro por article.slug, depois por article.id
   const rawArticle = findPublicArticle(articles, identifier);
 
   useEffect(() => {
     if (rawArticle && identifier === rawArticle.slug) {
-      recordPageView(`/articles/${rawArticle.slug}`);
+      recordPageView(`/${language}/articles/${rawArticle.slug}`);
       // Increment views count once
       updateArticle(rawArticle.id, { views: (rawArticle.views || 0) + 1 });
     }
-  }, [rawArticle?.id, identifier]);
+  }, [rawArticle?.id, identifier, language]);
 
   // Keep hooks unconditional when navigating between legacy IDs and public slugs.
   if (rawArticle && identifier === rawArticle.id && rawArticle.slug && identifier !== rawArticle.slug) {
-    return <Navigate to={`/articles/${rawArticle.slug}`} replace />;
+    return <Navigate to={`/${language}/articles/${rawArticle.slug}`} replace />;
   }
 
   if (!rawArticle) {
@@ -62,7 +67,7 @@ export function ArticleDetail() {
 
   return (
     <article className="w-full px-4 sm:px-6 lg:px-8 py-10 sm:py-16 md:py-20">
-      <ArticleSEO article={article} />
+      <ArticleSEO article={article} language={language} />
       {/* Navigation & Header: Max-width ~1100px */}
       <div className="max-w-[1100px] mx-auto">
         <Link

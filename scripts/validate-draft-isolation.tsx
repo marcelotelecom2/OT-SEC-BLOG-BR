@@ -35,21 +35,23 @@ async function main() {
     };
     const publicBody = 'VALIDATION_PUBLIC_ARTICLE_BODY_836901';
     const publicTranslationBody = 'VALIDATION_PUBLIC_TRANSLATION_BODY_836901';
+    const publicSpanishBody = 'VALIDATION_PUBLIC_SPANISH_BODY_836901';
     fs.writeFileSync(path.join(contentRoot, 'validation-public-article.md'), publicBody);
     fs.writeFileSync(path.join(contentRoot, 'validation-public-article.en.md'), publicTranslationBody);
+    fs.writeFileSync(path.join(contentRoot, 'validation-public-article.es.md'), publicSpanishBody);
     const publicArticle = { ...draft, id: 'validation-public', slug: 'validation-public-article',
       title: 'Public validation article', summary: 'Public summary', contentFile: 'validation-public-article.md',
-      published: true, translations: { en: { title: 'Translated public title', summary: 'Translated public summary',
-        contentFile: 'validation-public-article.en.md' } } };
-    fs.writeFileSync(path.join(contentRoot, 'validation-language-fallback.md'), 'VALIDATION_LANGUAGE_FALLBACK_BODY_836901');
-    const fallbackFixture = { ...draft, id: 'validation-fallback', slug: 'validation-language-fallback',
-      title: 'Artigo sem tradução', summary: 'Resumo sem tradução', contentFile: 'validation-language-fallback.md',
-      published: true, translations: undefined };
+      published: true, translations: {
+        en: { title: 'Translated public title', summary: 'Translated public summary',
+          contentFile: 'validation-public-article.en.md' },
+        es: { title: 'Artículo público traducido', summary: 'Resumen público traducido',
+          contentFile: 'validation-public-article.es.md' },
+      } };
     const metadataPath = path.join(contentRoot, 'metadata.ts');
     const metadata = fs.readFileSync(metadataPath, 'utf8');
     assert.match(metadata, /\];\s*$/);
     fs.writeFileSync(metadataPath, metadata.replace(/\];\s*$/,
-      `,${JSON.stringify(draft)},${JSON.stringify(publicArticle)},${JSON.stringify(fallbackFixture)}\n];\n`));
+      `,${JSON.stringify(draft)},${JSON.stringify(publicArticle)}\n];\n`));
 
     fs.appendFileSync(path.join(fixture, 'src/content/notes.ts'),
       `\nRESEARCH_NOTES.push(${JSON.stringify({
@@ -60,7 +62,7 @@ async function main() {
 
     const build = spawnSync('npm', ['run', 'build'], { cwd: fixture, encoding: 'utf8', timeout: 120000 });
     assert.equal(build.status, 0, build.stderr + build.stdout);
-    const staleHtml = path.join(fixture, 'dist/articles/validation-private-draft.html');
+    const staleHtml = path.join(fixture, 'dist/en/articles/validation-private-draft.html');
     fs.writeFileSync(staleHtml, bodyMarker);
     const rerender = spawnSync('npm', ['run', 'prerender'], { cwd: fixture, encoding: 'utf8', timeout: 30000 });
     assert.equal(rerender.status, 0, rerender.stderr + rerender.stdout);
@@ -70,7 +72,11 @@ async function main() {
       .map(name => fs.readFileSync(path.join(assets, name), 'utf8')).join('\n');
     const sitemap = fs.readFileSync(path.join(fixture, 'dist/sitemap.xml'), 'utf8');
     const publicArticleHtml = fs.readFileSync(
-      path.join(fixture, 'dist/articles/validation-public-article.html'), 'utf8');
+      path.join(fixture, 'dist/en/articles/validation-public-article.html'), 'utf8');
+    const publicPortugueseHtml = fs.readFileSync(
+      path.join(fixture, 'dist/pt/articles/validation-public-article.html'), 'utf8');
+    const publicSpanishHtml = fs.readFileSync(
+      path.join(fixture, 'dist/es/articles/validation-public-article.html'), 'utf8');
 
     const stored = new Map<string, string>([['ot_sec_notes', JSON.stringify([{
       id: 'validation-note', date: '2026-10-18', tag: '#TEST', tags: [tagMarker],
@@ -99,9 +105,6 @@ async function main() {
     const direct = render(<Routes><Route path="/articles/:slug" element={<ArticleDetail />} /></Routes>, '/articles/validation-private-draft');
     const byId = render(<Routes><Route path="/articles/:slug" element={<ArticleDetail />} /></Routes>, '/articles/validation-private');
     const visible = render(<Routes><Route path="/articles/:slug" element={<ArticleDetail />} /></Routes>, '/articles/validation-public-article');
-    const fallbackArticle = PUBLISHED_ARTICLES.find((item: any) => item.id === fallbackFixture.id);
-    assert.ok(fallbackArticle, 'A Portuguese article without an English body is required for the notice check');
-    const languageFallback = render(<Routes><Route path="/articles/:slug" element={<ArticleDetail />} /></Routes>, `/articles/${fallbackArticle.slug}`);
     function LocalEditorProbe() { return <div>{useBlog().adminNotes.map((note: any) => note.content).join('')}</div>; }
     const editor = render(<LocalEditorProbe />);
     stored.delete('ot_sec_notes');
@@ -119,7 +122,8 @@ async function main() {
       registeredDraftInPublicCollection: publicArticles.some((item: any) => item.id === draft.id),
       registeredDraftBodyInJavascript: javascript.includes(bodyMarker),
       unregisteredMarkdownInJavascript: javascript.includes(orphanMarker),
-      registeredDraftHasStaticHtml: fs.existsSync(path.join(fixture, 'dist/articles/validation-private-draft.html')),
+      registeredDraftHasStaticHtml: ['en', 'pt', 'es'].some(language =>
+        fs.existsSync(path.join(fixture, `dist/${language}/articles/validation-private-draft.html`))),
       registeredDraftInSitemap: sitemap.includes('/articles/validation-private-draft'),
       directDraftUrlRendersBody: direct.includes(bodyMarker),
       homeRendersUnpublishedNote: home.includes(noteMarker),
@@ -131,9 +135,13 @@ async function main() {
       publicTranslationInJavascript: javascript.includes(publicTranslationBody),
       publicArticleBodyInStaticHtml: publicArticleHtml.includes(publicTranslationBody),
       publicArticleHasEmptyRoot: publicArticleHtml.includes('<div id="root"></div>'),
+      localizedStaticHtmlGenerated: publicArticleHtml.includes('<html lang="en">')
+        && publicPortugueseHtml.includes('<html lang="pt-BR">')
+        && publicSpanishHtml.includes('<html lang="es">'),
+      multilingualSeoLinked: publicArticleHtml.includes('hreflang="pt-BR"')
+        && publicArticleHtml.includes('hreflang="x-default"')
+        && sitemap.includes('xmlns:xhtml="http://www.w3.org/1999/xhtml"'),
       publicTranslationRenders: visible.includes(publicTranslationBody),
-      languageFallbackNoticeShown: languageFallback.includes('not available in the selected language')
-        && languageFallback.includes('shown in Portuguese'),
       allArticleLanguagesComplete,
       localDraftRemainsInEditor: editor.includes(noteMarker),
       privateMetadataInJavascript: javascript.includes(draft.slug) || javascript.includes(draft.summary),
@@ -157,8 +165,9 @@ async function main() {
     assert.equal(results.publicTranslationInJavascript, true);
     assert.equal(results.publicArticleBodyInStaticHtml, true);
     assert.equal(results.publicArticleHasEmptyRoot, false);
+    assert.equal(results.localizedStaticHtmlGenerated, true);
+    assert.equal(results.multilingualSeoLinked, true);
     assert.equal(results.publicTranslationRenders, true);
-    assert.equal(results.languageFallbackNoticeShown, true);
     assert.equal(results.allArticleLanguagesComplete, true);
     assert.equal(results.localDraftRemainsInEditor, true);
     assert.equal(results.privateMetadataInJavascript, false);

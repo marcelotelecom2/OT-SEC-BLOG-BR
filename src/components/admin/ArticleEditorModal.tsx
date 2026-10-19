@@ -204,7 +204,7 @@ export function ArticleEditorModal({
         id: 'slug-empty',
         type: 'error',
         title: 'Slug da rota não definido',
-        message: 'A rota /articles/[slug] ficará inacessível sem um identificador de URL.',
+        message: 'As rotas /en|pt|es/articles/[slug] ficarão inacessíveis sem um identificador de URL.',
         field: 'slug',
         fixAction: {
           label: 'Gerar do Título',
@@ -242,7 +242,7 @@ export function ArticleEditorModal({
             id: 'slug-duplicate',
             type: 'error',
             title: 'Conflito de rota (Slug duplicado)',
-            message: `Já existe outro artigo publicado utilizando o slug "/articles/${cleanSlug}". Escolha um slug único para evitar conflito de rotas.`,
+            message: `Já existe outro artigo publicado utilizando o slug "/en/articles/${cleanSlug}". Escolha um slug único para evitar conflito de rotas.`,
             field: 'slug',
             fixAction: {
               label: 'Adicionar sufixo numérico',
@@ -257,7 +257,7 @@ export function ArticleEditorModal({
             id: 'slug-ok',
             type: 'pass',
             title: 'Slug da rota válido e único',
-            message: `Acessível em /articles/${cleanSlug}`
+            message: `Acessível em /en/articles/${cleanSlug}`
           });
         }
       }
@@ -544,7 +544,7 @@ export function ArticleEditorModal({
   };
 
   // Live article URL for preview
-  const liveArticleUrl = `/articles/${slug || article.slug || ''}`;
+  const liveArticleUrl = `/en/articles/${slug || article.slug || ''}`;
 
   return (
     <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
@@ -572,7 +572,7 @@ export function ArticleEditorModal({
                 )}
               </div>
               <p className="text-[11px] font-mono text-gray-500 truncate max-w-xs sm:max-w-md">
-                {title ? title : 'Sem título definido'} {slug ? `• /articles/${slug}` : ''}
+                {title ? title : 'Sem título definido'} {slug ? `• /en/articles/${slug}` : ''}
               </p>
             </div>
           </div>
@@ -800,7 +800,7 @@ export function ArticleEditorModal({
 
                 <div className="flex items-center">
                   <span className="px-3 py-2 bg-gray-900 border border-r-0 border-gray-800 text-gray-500 text-xs font-mono rounded-l select-none">
-                    /articles/
+                    /en/articles/
                   </span>
                   <input
                     type="text"
@@ -814,7 +814,7 @@ export function ArticleEditorModal({
                   />
                 </div>
                 <p className="text-[11px] text-gray-500">
-                  URL canônica permanente da publicação. Ex: <span className="text-cyan-400">/articles/{slug || 'slug-do-artigo'}</span>
+                  URL canônica inglesa da publicação. Ex: <span className="text-cyan-400">/en/articles/{slug || 'article-slug'}</span>
                 </p>
               </div>
 
@@ -1149,7 +1149,7 @@ export function ArticleEditorModal({
               <div className="p-3 bg-cyan-950/20 border border-cyan-800/50 rounded-lg flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
                 <div className="flex items-center gap-2 text-cyan-300">
                   <Eye className="w-4 h-4 text-cyan-400" />
-                  <span>PREVIEW EM TEMPO REAL: Renderização idêntica à visualização pública em /articles/{slug || 'preview'}</span>
+                  <span>PREVIEW EM TEMPO REAL: Renderização idêntica à visualização pública em /en/articles/{slug || 'preview'}</span>
                 </div>
                 <button
                   type="button"

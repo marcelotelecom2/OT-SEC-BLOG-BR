@@ -4,13 +4,14 @@ import { fileURLToPath } from 'node:url';
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { ARTICLES_METADATA } from '../src/content/articles/metadata';
-import { Article } from '../src/types';
+import { Article, ArticleLanguage } from '../src/types';
 import { ArticleContent } from '../src/components/article/ArticleContent';
 import { localizeArticle } from '../src/lib/articleLocalization';
 import {
   formatMetaDescription,
   resolveImageUrl,
   getArticleCanonicalUrl,
+  getArticleLanguageUrls,
   buildArticleStructuredData,
 } from '../src/lib/seo';
 
@@ -85,11 +86,12 @@ function renderArticleBody(article: Article): string {
  * containing individual title, description, canonical link, Open Graph,
  * Twitter card, and Schema.org Article structured data.
  */
-export function prerenderArticleHtml(templateHtml: string, article: Article): string {
-  const canonicalUrl = getArticleCanonicalUrl(article.slug);
+export function prerenderArticleHtml(templateHtml: string, article: Article, language: ArticleLanguage): string {
+  const canonicalUrl = getArticleCanonicalUrl(article.slug, language);
+  const languageUrls = getArticleLanguageUrls(article.slug);
   const formattedDescription = formatMetaDescription(article.summary, 160);
   const imageUrl = resolveImageUrl(article.coverImage);
-  const schema = buildArticleStructuredData(article);
+  const schema = buildArticleStructuredData(article, language);
 
   // 1. Remove generic head metadata tags from index.html template
   let cleanedHtml = templateHtml;
@@ -102,6 +104,9 @@ export function prerenderArticleHtml(templateHtml: string, article: Article): st
 
   // Remove existing <link rel="canonical" ...>
   cleanedHtml = cleanedHtml.replace(/<link\s+[^>]*?rel=["']canonical["'][^>]*?>/gis, '');
+  cleanedHtml = cleanedHtml.replace(/<link\s+[^>]*?rel=["']alternate["'][^>]*?>/gis, '');
+  cleanedHtml = cleanedHtml.replace(/<html\s+lang=["'][^"']+["']/i,
+    `<html lang="${language === 'pt' ? 'pt-BR' : language}"`);
 
   // Remove existing og:* meta tags
   cleanedHtml = cleanedHtml.replace(/<meta\s+[^>]*?(?:property|name)=["']og:[^"']+["'][^>]*?>/gis, '');
@@ -133,6 +138,10 @@ export function prerenderArticleHtml(templateHtml: string, article: Article): st
     <title>${escapeHtml(`${article.title} | OT-SEC`)}</title>
     <meta name="description" content="${escapeHtml(formattedDescription)}" />
     <link rel="canonical" href="${escapeHtml(canonicalUrl)}" />
+    <link rel="alternate" hreflang="en" href="${escapeHtml(languageUrls.en)}" />
+    <link rel="alternate" hreflang="pt-BR" href="${escapeHtml(languageUrls.pt)}" />
+    <link rel="alternate" hreflang="es" href="${escapeHtml(languageUrls.es)}" />
+    <link rel="alternate" hreflang="x-default" href="${escapeHtml(languageUrls.en)}" />
 
     <!-- Open Graph -->
     <meta property="og:type" content="article" />
@@ -204,51 +213,36 @@ export function main() {
       throw new Error(`Invalid article slug: ${article.slug}`);
     }
   }
-  const expectedFiles = new Set(publishedArticles.map(article => `${article.slug}.html`));
+  const languages: ArticleLanguage[] = ['en', 'pt', 'es'];
+  console.log(`[Prerender] Found ${publishedArticles.length} published articles in ${languages.length} languages.`);
 
-  console.log(`[Prerender] Found ${publishedArticles.length} published articles to prerender.`);
-
-  const articlesDir = path.resolve(distDir, 'articles');
-  if (!fs.existsSync(articlesDir)) {
-    fs.mkdirSync(articlesDir, { recursive: true });
-  } else {
-    // Clean up any legacy directory versions inside dist/articles (e.g. dist/articles/{slug}/)
-    const items = fs.readdirSync(articlesDir, { withFileTypes: true });
-    for (const item of items) {
-      if (item.isDirectory()) {
-        const itemDir = path.resolve(articlesDir, item.name);
-        fs.rmSync(itemDir, { recursive: true, force: true });
-      } else if (item.isFile() && item.name.endsWith('.html') && !expectedFiles.has(item.name)) {
-        // Standalone prerenders must not retain pages for articles that were unpublished or removed.
-        fs.unlinkSync(path.resolve(articlesDir, item.name));
-      }
-    }
+  // Remove output from earlier builds before writing the current published set.
+  fs.rmSync(path.resolve(distDir, 'articles'), { recursive: true, force: true });
+  for (const language of languages) {
+    fs.rmSync(path.resolve(distDir, language, 'articles'), { recursive: true, force: true });
+    fs.mkdirSync(path.resolve(distDir, language, 'articles'), { recursive: true });
   }
 
   let count = 0;
   for (const articleMeta of publishedArticles) {
     const sourceArticle = loadArticleContent(articleMeta);
-    const article = localizeArticle(sourceArticle, 'en').article;
-
-    const articleHtml = prerenderArticleHtml(templateHtml, article);
-    if (!articleHtml.includes('data-prerendered-article="true"')
-      || !articleHtml.includes('article-editorial-content')) {
-      throw new Error(`Article body was not prerendered: ${article.slug}`);
+    for (const language of languages) {
+      const localization = localizeArticle(sourceArticle, language);
+      if (!localization.bodyTranslated) throw new Error(`Missing ${language.toUpperCase()} body: ${sourceArticle.slug}`);
+      const article = localization.article;
+      const articleHtml = prerenderArticleHtml(templateHtml, article, language);
+      if (!articleHtml.includes('data-prerendered-article="true"')
+        || !articleHtml.includes('article-editorial-content')) {
+        throw new Error(`Article body was not prerendered: ${language}/${article.slug}`);
+      }
+      const outputFilePath = path.resolve(distDir, language, 'articles', `${article.slug}.html`);
+      fs.writeFileSync(outputFilePath, articleHtml, 'utf-8');
+      count++;
+      console.log(`[Prerender] Generated: /${language}/articles/${article.slug}`);
     }
-
-    // Remove legacy directory if it still exists
-    const legacyArticleDir = path.resolve(articlesDir, article.slug);
-    if (fs.existsSync(legacyArticleDir) && fs.statSync(legacyArticleDir).isDirectory()) {
-      fs.rmSync(legacyArticleDir, { recursive: true, force: true });
-    }
-
-    const outputFilePath = path.resolve(articlesDir, `${article.slug}.html`);
-    fs.writeFileSync(outputFilePath, articleHtml, 'utf-8');
-    count++;
-    console.log(`[Prerender] Generated static HTML for: /articles/${article.slug} (${outputFilePath})`);
   }
 
-  console.log(`[Prerender] Successfully generated ${count} article static HTML pages.`);
+  console.log(`[Prerender] Successfully generated ${count} localized article pages.`);
 }
 
 main();

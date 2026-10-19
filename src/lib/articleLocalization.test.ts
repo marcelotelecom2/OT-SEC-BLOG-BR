@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import type { Article } from '../types';
 import { localizeArticle, localizeReadTime } from './articleLocalization';
-import { resolveLanguagePreference } from '../context/LanguageContext';
+import { resolveLanguageFromPath, resolveLanguagePreference } from '../context/LanguageContext';
 
 const article: Article = {
   id: '1', slug: 'artigo', title: 'Título original', summary: 'Resumo original',
@@ -54,6 +54,10 @@ test('a first visit defaults to English and valid saved choices restore Portugue
   assert.equal(resolveLanguagePreference('invalid'), 'en');
   assert.equal(resolveLanguagePreference('pt'), 'pt');
   assert.equal(resolveLanguagePreference('es'), 'es');
+  assert.equal(resolveLanguageFromPath('/en/articles/example'), 'en');
+  assert.equal(resolveLanguageFromPath('/pt/articles/example'), 'pt');
+  assert.equal(resolveLanguageFromPath('/es/articles/example'), 'es');
+  assert.equal(resolveLanguageFromPath('/articles/example'), null);
 });
 
 test('reading time and article areas follow the selected interface language', () => {

@@ -4,7 +4,7 @@
  */
 
 import { lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useParams } from 'react-router-dom';
 import { BlogProvider } from './context/BlogContext';
 import { LanguageProvider } from './context/LanguageContext';
 import { PageLayout } from './components/layout/PageLayout';
@@ -27,6 +27,11 @@ function RouteFallback() {
   );
 }
 
+function LegacyArticleRedirect() {
+  const { slug = '' } = useParams();
+  return <Navigate to={`/en/articles/${slug}`} replace />;
+}
+
 export default function App() {
   return (
     <LanguageProvider>
@@ -37,7 +42,10 @@ export default function App() {
               <Route path="/" element={<PageLayout />}>
                 <Route index element={<Home />} />
                 <Route path="articles" element={<Articles />} />
-                <Route path="articles/:slug" element={<ArticleDetail />} />
+                <Route path="articles/:slug" element={<LegacyArticleRedirect />} />
+                <Route path="en/articles/:slug" element={<ArticleDetail routeLanguage="en" />} />
+                <Route path="pt/articles/:slug" element={<ArticleDetail routeLanguage="pt" />} />
+                <Route path="es/articles/:slug" element={<ArticleDetail routeLanguage="es" />} />
                 <Route path="insights" element={<Research />} />
                 <Route path="research" element={<Navigate to="/insights" replace />} />
                 <Route path="projects" element={<Projects />} />

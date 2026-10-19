@@ -1,4 +1,4 @@
-import { Article } from '../types';
+import { Article, ArticleLanguage } from '../types';
 
 export const SITE_URL = 'https://ot-sec.blog.br';
 
@@ -60,9 +60,17 @@ export function resolveImageUrl(image?: string): string | null {
 /**
  * Returns canonical URL for an article using its slug.
  */
-export function getArticleCanonicalUrl(slug: string): string {
+export function getArticleCanonicalUrl(slug: string, language: ArticleLanguage = 'en'): string {
   const cleanSlug = encodeURIComponent(slug.trim()).replace(/%2F/g, '/');
-  return `${SITE_URL}/articles/${cleanSlug}`;
+  return `${SITE_URL}/${language}/articles/${cleanSlug}`;
+}
+
+export function getArticleLanguageUrls(slug: string): Record<ArticleLanguage, string> {
+  return {
+    en: getArticleCanonicalUrl(slug, 'en'),
+    pt: getArticleCanonicalUrl(slug, 'pt'),
+    es: getArticleCanonicalUrl(slug, 'es'),
+  };
 }
 
 /**
@@ -127,11 +135,29 @@ export function setCanonicalTag(href: string | null): void {
   }
 }
 
+export function setArticleLanguageLinks(slug: string): void {
+  if (typeof document === 'undefined') return;
+  document.head.querySelectorAll('link[rel="alternate"][hreflang]').forEach(element => element.remove());
+  const urls = getArticleLanguageUrls(slug);
+  for (const [language, href] of Object.entries(urls)) {
+    const link = document.createElement('link');
+    link.rel = 'alternate';
+    link.hreflang = language === 'pt' ? 'pt-BR' : language;
+    link.href = href;
+    document.head.appendChild(link);
+  }
+  const fallback = document.createElement('link');
+  fallback.rel = 'alternate';
+  fallback.hreflang = 'x-default';
+  fallback.href = urls.en;
+  document.head.appendChild(fallback);
+}
+
 /**
  * Builds Schema.org Article structured data (JSON-LD) for an article.
  */
-export function buildArticleStructuredData(article: Article): Record<string, unknown> {
-  const canonicalUrl = getArticleCanonicalUrl(article.slug);
+export function buildArticleStructuredData(article: Article, language: ArticleLanguage = 'en'): Record<string, unknown> {
+  const canonicalUrl = getArticleCanonicalUrl(article.slug, language);
   const imageUrl = resolveImageUrl(article.coverImage);
 
   const schema: Record<string, unknown> = {
@@ -143,6 +169,7 @@ export function buildArticleStructuredData(article: Article): Record<string, unk
     dateModified: article.updatedAt && article.updatedAt.trim() ? article.updatedAt.trim() : article.date,
     mainEntityOfPage: canonicalUrl,
     url: canonicalUrl,
+    inLanguage: language === 'pt' ? 'pt-BR' : language,
     publisher: {
       '@type': 'Organization',
       name: 'OT-SEC',
@@ -175,10 +202,10 @@ export function buildArticleStructuredData(article: Article): Record<string, unk
 /**
  * Injects or updates the JSON-LD script for an article in document.head.
  */
-export function setArticleStructuredData(article: Article): void {
+export function setArticleStructuredData(article: Article, language: ArticleLanguage = 'en'): void {
   if (typeof document === 'undefined') return;
 
-  const schema = buildArticleStructuredData(article);
+  const schema = buildArticleStructuredData(article, language);
   const jsonString = JSON.stringify(schema, null, 2);
 
   let script = document.head.querySelector<HTMLScriptElement>('script#article-jsonld');
@@ -211,12 +238,12 @@ export function removeArticleStructuredData(): void {
 /**
  * Applies dynamic SEO metadata for an article.
  */
-export function applyArticleSEO(article: Article): void {
+export function applyArticleSEO(article: Article, language: ArticleLanguage = 'en'): void {
   if (typeof document === 'undefined') return;
 
   const articleTitle = `${article.title} | OT-SEC`;
   const description = formatMetaDescription(article.summary);
-  const canonical = getArticleCanonicalUrl(article.slug);
+  const canonical = getArticleCanonicalUrl(article.slug, language);
   const imageUrl = resolveImageUrl(article.coverImage);
 
   // Document title
@@ -225,6 +252,7 @@ export function applyArticleSEO(article: Article): void {
   // Standard metadata
   setMetaTag('name', 'description', description);
   setCanonicalTag(canonical);
+  setArticleLanguageLinks(article.slug);
 
   // Open Graph
   setMetaTag('property', 'og:type', 'article');
@@ -241,7 +269,7 @@ export function applyArticleSEO(article: Article): void {
   setMetaTag('name', 'twitter:image', imageUrl);
 
   // Structured Data (JSON-LD)
-  setArticleStructuredData(article);
+  setArticleStructuredData(article, language);
 }
 
 /**
@@ -255,6 +283,7 @@ export function applyDefaultSEO(): void {
   // Standard metadata
   setMetaTag('name', 'description', DEFAULT_SEO.description);
   setCanonicalTag(DEFAULT_SEO.canonical);
+  document.head.querySelectorAll('link[rel="alternate"][hreflang]').forEach(element => element.remove());
 
   // Open Graph
   setMetaTag('property', 'og:type', DEFAULT_SEO.ogType);

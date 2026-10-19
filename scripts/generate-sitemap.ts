@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ARTICLES_METADATA } from '../src/content/articles/metadata';
+import type { ArticleLanguage } from '../src/types';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -32,6 +33,7 @@ const PUBLIC_STATIC_ROUTES = [
 interface SitemapUrlEntry {
   loc: string;
   lastmod?: string;
+  alternates?: Array<{ language: string; href: string }>;
 }
 
 function escapeXml(unsafe: string): string {
@@ -70,23 +72,34 @@ export function generateSitemapXml(): { xml: string; entries: SitemapUrlEntry[] 
     }
   }
 
-  // 2. Add published articles using semantic slugs only
+  // 2. Add each translated article URL and connect the equivalents with hreflang.
   const publishedArticles = ARTICLES_METADATA.filter((article) => article.published === true);
+  const languages: ArticleLanguage[] = ['en', 'pt', 'es'];
 
   for (const article of publishedArticles) {
-    const loc = `${BASE_URL}/articles/${encodeURIComponent(article.slug)}`;
-    if (!seenUrls.has(loc)) {
-      seenUrls.add(loc);
-      const rawDate = article.updatedAt || article.date;
-      const lastmod = formatLastmod(rawDate);
-      entries.push({ loc, lastmod });
+    const slug = encodeURIComponent(article.slug);
+    const alternates = [
+      ...languages.map(language => ({
+        language: language === 'pt' ? 'pt-BR' : language,
+        href: `${BASE_URL}/${language}/articles/${slug}`,
+      })),
+      { language: 'x-default', href: `${BASE_URL}/en/articles/${slug}` },
+    ];
+    for (const language of languages) {
+      const loc = `${BASE_URL}/${language}/articles/${slug}`;
+      if (!seenUrls.has(loc)) {
+        seenUrls.add(loc);
+        const rawDate = article.updatedAt || article.date;
+        const lastmod = formatLastmod(rawDate);
+        entries.push({ loc, lastmod, alternates });
+      }
     }
   }
 
   // 3. Assemble valid XML compliant with sitemap 0.9 protocol
   const xmlLines = [
     '<?xml version="1.0" encoding="UTF-8"?>',
-    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">',
   ];
 
   for (const entry of entries) {
@@ -94,6 +107,9 @@ export function generateSitemapXml(): { xml: string; entries: SitemapUrlEntry[] 
     xmlLines.push(`    <loc>${escapeXml(entry.loc)}</loc>`);
     if (entry.lastmod) {
       xmlLines.push(`    <lastmod>${escapeXml(entry.lastmod)}</lastmod>`);
+    }
+    for (const alternate of entry.alternates ?? []) {
+      xmlLines.push(`    <xhtml:link rel="alternate" hreflang="${escapeXml(alternate.language)}" href="${escapeXml(alternate.href)}" />`);
     }
     xmlLines.push('  </url>');
   }
