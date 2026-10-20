@@ -153,7 +153,7 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
         "contentFile": "iec-62351-entendendo-ameacas-deliberadas.es.md"
       }
     },
-    "published": true,
+    "published": false,
     "views": 0,
     "tags": [
       "IEC 62351",
