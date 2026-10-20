@@ -5,7 +5,6 @@ import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { createServer } from 'vite';
 
 async function main() {
@@ -86,15 +85,26 @@ async function main() {
       id: 'retired-cached-note', date: '2026-07-20', tag: '#LEGACY',
       content: retiredNoteMarker, published: true,
     }])]]);
+    stored.set('ot_sec_projects', JSON.stringify([{
+      id: 's7-comm-fuzzer', title: 'Cached unverified project',
+      description: 'VALIDATION_CACHED_PROJECT_836901', status: 'RELEASED',
+      tags: [], githubUrl: 'https://github.com/ot-sec/s7-fuzzer',
+    }]));
     (globalThis as any).localStorage = {
       getItem: (key: string) => stored.get(key) ?? null,
       setItem: (key: string, value: string) => stored.set(key, value),
       removeItem: (key: string) => stored.delete(key),
     };
     server = await createServer({ root: fixture, server: { middlewareMode: true, hmr: false }, appType: 'custom' });
+    // Resolve the router through the same Vite SSR graph as the components.
+    fs.writeFileSync(path.join(fixture, 'src/validation-router.tsx'),
+      "export { MemoryRouter, Routes, Route } from 'react-router-dom';\n");
+    const { MemoryRouter, Routes, Route } = await server.ssrLoadModule('/src/validation-router.tsx');
     const { BlogProvider, useBlog } = await server.ssrLoadModule('/src/context/BlogContext.tsx');
     const { LanguageProvider } = await server.ssrLoadModule('/src/context/LanguageContext.tsx');
     const { Home } = await server.ssrLoadModule('/src/pages/Home.tsx');
+    const { Projects } = await server.ssrLoadModule('/src/pages/Projects.tsx');
+    const { Footer } = await server.ssrLoadModule('/src/components/layout/Footer.tsx');
     const { Research } = await server.ssrLoadModule('/src/pages/Research.tsx');
     const { ArticleDetail } = await server.ssrLoadModule('/src/pages/ArticleDetail.tsx');
     const { PUBLISHED_ARTICLES } = await server.ssrLoadModule('/src/content/articles/index.ts');
@@ -106,6 +116,20 @@ async function main() {
     const render = (node: React.ReactElement, route = '/') => renderToStaticMarkup(
       <LanguageProvider><BlogProvider><MemoryRouter initialEntries={[route]}>{node}</MemoryRouter></BlogProvider></LanguageProvider>
     );
+    const projects = render(<Projects />, '/projects');
+    const footer = render(<Footer />);
+    assert.ok(projects.includes('https://github.com/marcelotelecom2/open-noc-ai'));
+    assert.ok(projects.includes('IN DEVELOPMENT'));
+    assert.ok(!projects.includes('VALIDATION_CACHED_PROJECT_836901'));
+    assert.ok(!projects.includes('Live Demo'));
+    assert.ok(!javascript.includes('High-Interaction Modbus Honeypot'));
+    assert.ok(!javascript.includes('without causing hardware faults'));
+    assert.ok(!javascript.includes('demo.ot-sec-lab.org'));
+    assert.ok(!footer.includes('<form'));
+    assert.ok(!footer.includes('href="#"'));
+    assert.ok(footer.includes('https://github.com/marcelotelecom2/OT-SEC-BLOG-BR'));
+    function ProjectEditorProbe() { return <div>{useBlog().adminProjects.map((project: any) => project.description).join('')}</div>; }
+    assert.ok(render(<ProjectEditorProbe />).includes('VALIDATION_CACHED_PROJECT_836901'));
     const home = render(<Home />);
     const research = render(<Research />, '/insights');
     const direct = render(<Routes><Route path="/articles/:slug" element={<ArticleDetail />} /></Routes>, '/articles/validation-private-draft');

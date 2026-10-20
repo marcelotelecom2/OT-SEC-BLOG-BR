@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --port=3000 --host=0.0.0.0",
-    "prebuild": "tsx scripts/generate-responsive-images.ts && tsx scripts/generate-sitemap.ts",
+    "prebuild": "tsx scripts/generate-social-image.ts && tsx scripts/generate-responsive-images.ts && tsx scripts/generate-sitemap.ts",
     "build": "vite build",
     "postbuild": "tsx scripts/prerender-articles.ts",
     "prerender": "tsx scripts/prerender-articles.ts",

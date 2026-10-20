@@ -216,7 +216,7 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
         "contentFile": "ai-detecting-anomalies-ics-networks.es.md"
       }
     },
-    "published": true,
+    "published": false,
     "views": 0,
     "coverImage": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1200&auto=format&fit=crop&q=80"
   },
@@ -242,7 +242,7 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
         "contentFile": "stuxnet-payload-retrospective.es.md"
       }
     },
-    "published": true,
+    "published": false,
     "views": 0,
     "coverImage": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=1200&auto=format&fit=crop&q=80"
   },
@@ -268,7 +268,7 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
         "contentFile": "zero-trust-legacy-scada.es.md"
       }
     },
-    "published": true,
+    "published": false,
     "views": 0,
     "coverImage": "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=1200&auto=format&fit=crop&q=80"
   },
@@ -294,7 +294,7 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
         "contentFile": "5g-smart-grid-security.es.md"
       }
     },
-    "published": true,
+    "published": false,
     "views": 0,
     "coverImage": "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=1200&auto=format&fit=crop&q=80"
   },
@@ -320,7 +320,7 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
         "contentFile": "reverse-engineering-plc-protocols.es.md"
       }
     },
-    "published": true,
+    "published": false,
     "views": 0,
     "coverImage": "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1200&auto=format&fit=crop&q=80"
   },

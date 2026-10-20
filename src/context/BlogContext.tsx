@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Article, ResearchNote, Project, MediaItem, AnalyticsKPIs } from '../types';
 import { PUBLISHED_ARTICLES } from '../content/articles';
-import { PUBLISHED_NOTES as INITIAL_NOTES } from 'virtual:published-articles';
+import { PUBLISHED_NOTES as INITIAL_NOTES, PUBLISHED_PROJECTS as INITIAL_PROJECTS } from 'virtual:published-articles';
 import { mergeArticles, publicNotes, updateLocalArticle } from '../lib/articleState';
 import { usePersistentState } from '../lib/usePersistentState';
 import { generateSlug, loadLocalArticles, LOCAL_ARTICLES_KEY } from '../lib/articleStorage';
@@ -9,35 +9,6 @@ import { compressImageFile } from '../lib/storage';
 import { adminApi } from '../lib/adminApi';
 import { isArticleArray, isStringArray, isViewCounts, isNoteArray, isProjectArray, isMediaArray, isAnalytics } from '../lib/storageSchemas';
 export { CONTENT_VERSION_KEY, CURRENT_CONTENT_VERSION } from '../lib/articleStorage';
-
-const INITIAL_PROJECTS: Project[] = [
-  {
-    id: 'open-noc-ai',
-    title: 'Open-NOC-AI',
-    description: 'An open-source initiative exploring the integration of localized small language models (SLMs) into Network Operations Centers to automate the parsing of proprietary industrial protocol logs.',
-    status: 'ACTIVE RESEARCH',
-    tags: ['AI/ML', 'Log Analysis', 'SLM'],
-    githubUrl: 'https://github.com/ot-sec/open-noc-ai',
-    demoUrl: 'https://demo.ot-sec-lab.org'
-  },
-  {
-    id: 's7-comm-fuzzer',
-    title: 'S7-Comm Protocol Fuzzer',
-    description: 'A specialized mutation-based fuzzer designed specifically for the S7comm and S7comm-plus protocols, capable of identifying edge-case vulnerabilities in Siemens PLCs without causing hardware faults.',
-    status: 'RELEASED',
-    tags: ['Fuzzing', 'Siemens', 'Vulnerability Research'],
-    githubUrl: 'https://github.com/ot-sec/s7-fuzzer'
-  },
-  {
-    id: 'modbus-honeypot',
-    title: 'High-Interaction Modbus Honeypot',
-    description: 'A realistic honeypot that emulates a water treatment facility\'s PLC network. It responds to Modbus TCP requests with physically plausible values to keep attackers engaged longer for better threat intelligence gathering.',
-    status: 'BETA',
-    tags: ['Honeypot', 'Threat Intel', 'Modbus'],
-    githubUrl: 'https://github.com/ot-sec/modbus-honeypot',
-    demoUrl: 'https://honeypot.ot-sec-lab.org'
-  }
-];
 
 const INITIAL_MEDIA: MediaItem[] = [
   {
@@ -99,6 +70,7 @@ interface BlogContextType {
   notes: ResearchNote[];
   adminNotes: ResearchNote[];
   projects: Project[];
+  adminProjects: Project[];
   mediaLibrary: MediaItem[];
   analytics: AnalyticsKPIs;
   storageError: string | null;
@@ -346,7 +318,9 @@ export function BlogProvider({ children }: { children: React.ReactNode }) {
         // adminNotes so stale template entries cannot reappear after unpublishing.
         notes: publicNotes(INITIAL_NOTES),
         adminNotes: notes,
-        projects,
+        // Public projects follow the reviewed deployment, never stale browser seeds.
+        projects: INITIAL_PROJECTS,
+        adminProjects: projects,
         mediaLibrary,
         analytics,
         storageError,

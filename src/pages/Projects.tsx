@@ -36,6 +36,9 @@ export function Projects() {
         <p className="text-gray-400 font-mono text-xs sm:text-sm">{t.projects.subtitle}</p>
       </div>
       
+      {projects.length === 0 && (
+        <p className="text-gray-400 font-mono text-sm" role="status">{t.projects.empty}</p>
+      )}
       <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -99,7 +102,7 @@ export function Projects() {
                         rel="noopener noreferrer"
                         className="ml-auto inline-flex items-center text-xs sm:text-sm font-mono text-cyan-500 hover:text-cyan-300 transition-colors group/link py-2"
                       >
-                        {t.projects.liveDemo} <ArrowRight className="w-4 h-4 ml-1.5 group-hover/link:translate-x-1 transition-transform" />
+                        {project.demoUrl ? t.projects.liveDemo : t.projects.viewGithub} <ArrowRight className="w-4 h-4 ml-1.5 group-hover/link:translate-x-1 transition-transform" />
                       </a>
                     );
                   })()}

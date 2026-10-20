@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
+import { getPageSEO } from '../src/lib/seo';
 import { STATIC_ROUTE_PATHS, writeStaticRoutePages } from './static-route-pages';
 
 test('the 404 fallback has readable content, recovery links and no homepage canonical', () => {
@@ -22,8 +23,10 @@ test('the 404 fallback has readable content, recovery links and no homepage cano
     assert.match(html, /src="\/assets\/app.js"/);
 
     for (const route of STATIC_ROUTE_PATHS) {
-      assert.equal(fs.readFileSync(path.join(dist, `${route.slice(1)}.html`), 'utf8'), template,
-        `${route} must remain available as a direct request instead of falling back to 404`);
+      const routeHtml = fs.readFileSync(path.join(dist, `${route.slice(1)}.html`), 'utf8');
+      assert.ok(routeHtml.includes(`<title>${getPageSEO(route).title}</title>`));
+      assert.ok(routeHtml.includes(`href="${getPageSEO(route).canonical}"`));
+      if (route === '/admin' || route === '/research') assert.match(routeHtml, /noindex, follow/);
     }
     assert.equal(fs.existsSync(path.join(dist, 'missing.html')), false);
     const redirects = fs.readFileSync(path.join(dist, '_redirects'), 'utf8');

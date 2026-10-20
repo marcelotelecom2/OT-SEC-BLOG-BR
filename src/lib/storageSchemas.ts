@@ -27,7 +27,8 @@ export const isNoteArray = (value: unknown): value is ResearchNote[] => Array.is
   && optionalTags(item) && (item.published === undefined || typeof item.published === 'boolean'));
 export const isProjectArray = (value: unknown): value is Project[] => Array.isArray(value) && value.every(item =>
   record(item) && ['id', 'title', 'description', 'status'].every(field => typeof item[field] === 'string')
-  && strings(item.tags) && optionalStrings(item, ['githubUrl', 'demoUrl', 'coverImage']));
+  && strings(item.tags) && optionalStrings(item, ['githubUrl', 'demoUrl', 'coverImage'])
+  && (item.published === undefined || typeof item.published === 'boolean'));
 export const isMediaArray = (value: unknown): value is MediaItem[] => Array.isArray(value) && value.every(item =>
   record(item) && ['id', 'name', 'url', 'type', 'size', 'uploadDate'].every(field => typeof item[field] === 'string')
   && optionalStrings(item, ['dimensions']));

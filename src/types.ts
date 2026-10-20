@@ -55,7 +55,9 @@ export interface Project {
   id: string;
   title: string;
   description: string;
-  status: 'ACTIVE RESEARCH' | 'RELEASED' | 'BETA' | 'CONCEPT';
+  status: 'ACTIVE RESEARCH' | 'RELEASED' | 'BETA' | 'CONCEPT' | 'IN DEVELOPMENT';
+  /** Only explicitly reviewed repository entries are published. */
+  published?: boolean;
   tags: string[];
   githubUrl?: string;
   demoUrl?: string;

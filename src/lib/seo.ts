@@ -13,12 +13,25 @@ export const DEFAULT_SEO = {
   ogDescription:
     'Independent OT/ICS cybersecurity research for critical electric power infrastructure, with technical standards studies and applied research.',
   ogUrl: 'https://ot-sec.blog.br/',
+  image: 'https://ot-sec.blog.br/images/ot-sec-social.png',
   siteName: 'OT-SEC Digital Research Lab',
   twitterCard: 'summary_large_image',
   twitterTitle: 'OT-SEC Digital Research Lab',
   twitterDescription:
     'Independent OT/ICS cybersecurity research for critical electric power infrastructure, with technical standards studies and applied research.',
 };
+
+export const STATIC_PAGE_TITLES: Record<string, string> = {
+  '/articles': 'Articles', '/insights': 'Research', '/projects': 'Projects', '/about': 'About',
+};
+
+export function getPageSEO(pathname = '/') {
+  const page = STATIC_PAGE_TITLES[pathname];
+  return {
+    title: page ? `${page} | ${DEFAULT_SEO.title}` : DEFAULT_SEO.title,
+    canonical: page ? `${SITE_URL}${pathname}` : DEFAULT_SEO.canonical,
+  };
+}
 
 /**
  * Truncates an article summary safely to ~150-160 characters without cutting words inappropriately.
@@ -276,31 +289,30 @@ export function applyArticleSEO(article: Article, language: ArticleLanguage = 'e
 /**
  * Restores the default institutional metadata for the homepage and other pages.
  */
-export function applyDefaultSEO(): void {
+export function applyDefaultSEO(pathname = '/'): void {
   if (typeof document === 'undefined') return;
 
-  document.title = DEFAULT_SEO.title;
+  const page = getPageSEO(pathname);
+  document.title = page.title;
 
   // Standard metadata
   setMetaTag('name', 'description', DEFAULT_SEO.description);
-  setCanonicalTag(DEFAULT_SEO.canonical);
+  setCanonicalTag(page.canonical);
   document.head.querySelectorAll('link[rel="alternate"][hreflang]').forEach(element => element.remove());
 
   // Open Graph
   setMetaTag('property', 'og:type', DEFAULT_SEO.ogType);
-  setMetaTag('property', 'og:title', DEFAULT_SEO.ogTitle);
+  setMetaTag('property', 'og:title', page.title);
   setMetaTag('property', 'og:description', DEFAULT_SEO.ogDescription);
-  setMetaTag('property', 'og:url', DEFAULT_SEO.ogUrl);
+  setMetaTag('property', 'og:url', page.canonical);
   setMetaTag('property', 'og:site_name', DEFAULT_SEO.siteName);
-  // Remove og:image if it exists
-  setMetaTag('property', 'og:image', null);
+  setMetaTag('property', 'og:image', DEFAULT_SEO.image);
 
   // Twitter
   setMetaTag('name', 'twitter:card', DEFAULT_SEO.twitterCard);
-  setMetaTag('name', 'twitter:title', DEFAULT_SEO.twitterTitle);
+  setMetaTag('name', 'twitter:title', page.title);
   setMetaTag('name', 'twitter:description', DEFAULT_SEO.twitterDescription);
-  // Remove twitter:image if it exists
-  setMetaTag('name', 'twitter:image', null);
+  setMetaTag('name', 'twitter:image', DEFAULT_SEO.image);
 
   // Remove Article Structured Data (JSON-LD)
   removeArticleStructuredData();

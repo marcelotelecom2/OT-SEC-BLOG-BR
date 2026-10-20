@@ -2,6 +2,7 @@
 
 declare module 'virtual:published-articles' {
   export const PUBLISHED_ARTICLES: import('./types').Article[];
+  export const PUBLISHED_PROJECTS: import('./types').Project[];
   export const PUBLISHED_NOTES: import('./types').ResearchNote[];
 }
 

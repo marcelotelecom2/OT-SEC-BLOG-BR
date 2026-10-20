@@ -101,6 +101,7 @@ export const TRANSLATIONS = {
     projects: {
       title: 'Projects & Tools',
       subtitle: 'Applied research, open-source tools, and threat intelligence platforms.',
+      empty: 'No verified projects have been published yet.',
       loader: 'LOADING REPOSITORIES...',
       viewGithub: 'View on GitHub',
       liveDemo: 'Live Demo',
@@ -202,6 +203,7 @@ export const TRANSLATIONS = {
       empty: 'Ainda não há pesquisas próprias do laboratório publicadas.',
     },
     projects: {
+      empty: 'Nenhum projeto verificado foi publicado até o momento.',
       title: 'Projetos & Ferramentas',
       subtitle: 'Pesquisa aplicada, ferramentas de código aberto e plataformas de threat intelligence.',
       loader: 'CARREGANDO REPOSITÓRIOS...',
@@ -305,6 +307,7 @@ export const TRANSLATIONS = {
       empty: 'Aún no se han publicado investigaciones propias del laboratorio.',
     },
     projects: {
+      empty: 'Todavía no se han publicado proyectos verificados.',
       title: 'Proyectos & Herramientas',
       subtitle: 'Investigación aplicada, herramientas de código abierto y plataformas de ciberdefensa.',
       loader: 'CARGANDO REPOSITORIOS...',

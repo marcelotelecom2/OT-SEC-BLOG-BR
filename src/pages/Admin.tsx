@@ -31,7 +31,7 @@ import { localizeArticleArea } from '../lib/articleLocalization';
 export function Admin() {
   const { language } = useLanguage();
   const {
-    adminArticles: articles, adminNotes: notes, projects, mediaLibrary, analytics, storageError,
+    adminArticles: articles, adminNotes: notes, adminProjects: projects, mediaLibrary, analytics, storageError,
     isAdminLoggedIn, loginAdmin, logoutAdmin, changePassword,
     saveArticle, deleteArticle,
     addNote, updateNote, deleteNote,
@@ -1050,7 +1050,7 @@ export function Admin() {
       {activeTab === 'projects' && (
         <div className="space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-gray-950/60 p-4 border border-gray-800 rounded">
-            <p className="text-xs font-mono text-gray-400">Open-source tools, platforms, and research initiatives</p>
+            <p className="text-xs font-mono text-gray-400">Projetos: as edições são locais neste navegador. A publicação depende da revisão de src/content/projects.ts e de um novo deploy.</p>
             <button
               onClick={() => {
                 setEditingProject({
@@ -1058,7 +1058,7 @@ export function Admin() {
                   description: '',
                   status: 'ACTIVE RESEARCH',
                   tags: ['AI/ML'],
-                  githubUrl: 'https://github.com/ot-sec/',
+                  githubUrl: '',
                   demoUrl: ''
                 });
                 setShowProjectForm(true);
@@ -1142,6 +1142,7 @@ export function Admin() {
                           onChange={e => setEditingProject(prev => ({ ...prev, status: e.target.value as any }))}
                           className="w-full px-3 py-2 bg-gray-950 border border-gray-800 text-cyan-300 focus:border-cyan-500 rounded"
                         >
+                          <option value="IN DEVELOPMENT">IN DEVELOPMENT</option>
                           <option value="ACTIVE RESEARCH">ACTIVE RESEARCH</option>
                           <option value="RELEASED">RELEASED</option>
                           <option value="BETA">BETA</option>

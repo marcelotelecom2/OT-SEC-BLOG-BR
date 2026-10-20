@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
+import { getPageSEO } from '../src/lib/seo';
 import { NotFoundContent } from '../src/components/ui/NotFoundContent';
 
 // Cloudflare Pages stops applying its SPA fallback when a root 404.html exists.
@@ -14,7 +15,17 @@ export function writeStaticRoutePages(
   publishedArticles: ReadonlyArray<{ id: string; slug: string }> = [],
 ): void {
   for (const route of STATIC_ROUTE_PATHS) {
-    fs.writeFileSync(path.join(distDir, `${route.slice(1)}.html`), templateHtml, 'utf8');
+    const page = getPageSEO(route);
+    let html = templateHtml
+      .replace(/<title>[\s\S]*?<\/title>/i, `<title>${page.title}</title>`)
+      .replace(/(<link\s+[^>]*rel=["']canonical["'][^>]*href=["'])[^"']+/, `$1${page.canonical}`)
+      .replace(/(<meta\s+[^>]*property=["']og:url["'][^>]*content=["'])[^"']+/, `$1${page.canonical}`)
+      .replace(/(<meta\s+[^>]*(?:property=["']og:title["']|name=["']twitter:title["'])[^>]*content=["'])[^"']+/g, `$1${page.title}`);
+    if (route === '/admin' || route === '/research') {
+      html = html.replace(/<meta\s+[^>]*name=["']robots["'][^>]*>/gi, '')
+        .replace('</head>', '<meta name="robots" content="noindex, follow" /></head>');
+    }
+    fs.writeFileSync(path.join(distDir, `${route.slice(1)}.html`), html, 'utf8');
   }
 
   const root = '<div id="root"></div>';

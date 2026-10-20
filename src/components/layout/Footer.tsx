@@ -1,9 +1,12 @@
-import { Github, Linkedin, Rss } from 'lucide-react';
+import { Github } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
 
 export function Footer() {
   const { t } = useLanguage();
+  // No subscription service is configured. Keep the form unmounted until integration
+  // and consent handling are implemented and verified.
+  const newsletterEnabled = false;
 
   return (
     <footer className="relative border-t border-gray-800/50 mt-16 sm:mt-24 overflow-hidden bg-[#050505]">
@@ -40,18 +43,12 @@ export function Footer() {
           <div>
             <h3 className="text-xs font-mono tracking-widest text-gray-400 uppercase mb-3 sm:mb-4">{t.footer.connect}</h3>
             <div className="flex items-center space-x-2">
-              <a href="#" className="text-gray-500 hover:text-white transition-colors w-9 h-9 rounded flex items-center justify-center hover:bg-gray-900" aria-label="GitHub">
+              <a href="https://github.com/marcelotelecom2/OT-SEC-BLOG-BR" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-white transition-colors w-9 h-9 rounded flex items-center justify-center hover:bg-gray-900" aria-label="GitHub">
                 <Github className="w-4 h-4" />
-              </a>
-              <a href="#" className="text-gray-500 hover:text-cyan-400 transition-colors w-9 h-9 rounded flex items-center justify-center hover:bg-gray-900" aria-label="LinkedIn">
-                <Linkedin className="w-4 h-4" />
-              </a>
-              <a href="#" className="text-gray-500 hover:text-rose-500 transition-colors w-9 h-9 rounded flex items-center justify-center hover:bg-gray-900" aria-label="RSS Feed">
-                <Rss className="w-4 h-4" />
               </a>
             </div>
             
-            <div className="mt-6 sm:mt-8">
+            {newsletterEnabled && <div className="mt-6 sm:mt-8">
               <h3 className="text-xs font-mono tracking-widest text-gray-400 uppercase mb-3">{t.footer.newsletter}</h3>
               <form className="flex max-w-sm" onSubmit={(e) => e.preventDefault()}>
                 <input 
@@ -63,7 +60,7 @@ export function Footer() {
                   {t.footer.newsletterBtn}
                 </button>
               </form>
-            </div>
+            </div>}
           </div>
         </div>
         

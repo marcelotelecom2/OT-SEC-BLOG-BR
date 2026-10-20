@@ -3,6 +3,7 @@ import path from 'node:path';
 import type { Plugin } from 'vite';
 import { ARTICLES_METADATA } from '../src/content/articles/metadata';
 import { RESEARCH_NOTES } from '../src/content/notes';
+import { PROJECTS } from '../src/content/projects';
 import { publicNotes } from '../src/lib/articleState';
 
 /** Generate the client module at build time. Draft metadata and bodies never enter its graph. */
@@ -23,6 +24,7 @@ export function publishedArticlesPlugin(): Plugin {
       const contentFiles = new Set<string>();
       this.addWatchFile(path.join(root, 'src/content/articles/metadata.ts'));
       this.addWatchFile(path.join(root, 'src/content/notes.ts'));
+      this.addWatchFile(path.join(root, 'src/content/projects.ts'));
       for (const { contentFile, ...metadata } of ARTICLES_METADATA) {
         if (metadata.published !== true) continue;
         if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(metadata.slug)) {
@@ -81,7 +83,8 @@ export function publishedArticlesPlugin(): Plugin {
       }
       const notes = publicNotes(RESEARCH_NOTES);
       return `${imports.join('\n')}\nexport const PUBLISHED_ARTICLES = [${entries.join(',\n')}];\n`
-        + `export const PUBLISHED_NOTES = ${JSON.stringify(notes)};\n`;
+        + `export const PUBLISHED_NOTES = ${JSON.stringify(notes)};\n`
+        + `export const PUBLISHED_PROJECTS = ${JSON.stringify(PROJECTS.filter(project => project.published === true))};\n`;
     },
   };
 }
