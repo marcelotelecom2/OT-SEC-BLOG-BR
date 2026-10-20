@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useBlog } from '../context/BlogContext';
 import { motion, AnimatePresence } from 'motion/react';
-import { DecodeText } from '../components/ui/DecodeText';
 import { SpotlightCard } from '../components/ui/SpotlightCard';
 import {
   AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer,
@@ -218,9 +217,9 @@ export function Admin() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-gray-800 pb-6 mb-6 sm:mb-8 gap-4">
         <div>
           <div className="flex items-center gap-3 mb-1">
-            <span className="flex w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_10px_rgba(34,211,238,0.8)] shrink-0" />
+            <span className="flex w-2.5 h-2.5 rounded-full bg-cyan-400 shrink-0" />
             <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white tracking-tight font-sans">
-              <DecodeText text="ADMINISTRATOR PANEL" delay={100} />
+              ADMINISTRATOR PANEL
             </h1>
             <span className="text-[10px] sm:text-xs font-mono px-2 py-0.5 rounded bg-cyan-950 border border-cyan-800 text-cyan-400 shrink-0">
               v2.6

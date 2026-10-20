@@ -14,7 +14,7 @@ export function SpotlightCard({ children, className = "" }: SpotlightCardProps) 
   const [opacity, setOpacity] = useState(0);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!divRef.current || isFocused) return;
+    if (!divRef.current || isFocused || document.body.classList.contains('admin-mode')) return;
 
     const div = divRef.current;
     const rect = div.getBoundingClientRect();
@@ -23,6 +23,7 @@ export function SpotlightCard({ children, className = "" }: SpotlightCardProps) 
   };
 
   const handleFocus = () => {
+    if (document.body.classList.contains('admin-mode')) return;
     setIsFocused(true);
     setOpacity(1);
   };
@@ -33,6 +34,7 @@ export function SpotlightCard({ children, className = "" }: SpotlightCardProps) 
   };
 
   const handleMouseEnter = () => {
+    if (document.body.classList.contains('admin-mode')) return;
     setOpacity(1);
   };
 
@@ -48,10 +50,10 @@ export function SpotlightCard({ children, className = "" }: SpotlightCardProps) 
       onBlur={handleBlur}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className={`relative overflow-hidden rounded-xl border border-gray-800 bg-gray-900/20 transition-colors hover:border-gray-600 ${className}`}
+      className={`spotlight-card relative overflow-hidden rounded-xl border border-gray-800 bg-gray-900/20 transition-colors hover:border-gray-600 ${className}`}
     >
       <div
-        className="pointer-events-none absolute -inset-px opacity-0 transition duration-300"
+        className="spotlight-glow pointer-events-none absolute -inset-px opacity-0 transition duration-300"
         style={{
           opacity,
           background: `radial-gradient(600px circle at ${position.x}px ${position.y}px, rgba(34,211,238,.1), transparent 40%)`,
