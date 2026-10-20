@@ -8,7 +8,6 @@ import {
 } from 'lucide-react';
 import { Article, ArticleLanguage, ArticleTranslation, MediaItem } from '../../types';
 import { ArticleContent } from '../article/ArticleContent';
-import { DecodeText } from '../ui/DecodeText';
 import { downloadArticleExport } from '../../lib/articleExport';
 
 // Error Boundary for Live Preview
@@ -1183,7 +1182,7 @@ export function ArticleEditorModal({
                     </div>
 
                     <h1 className="text-2xl sm:text-4xl font-bold text-white tracking-tight leading-tight mb-6 font-sans">
-                      {title ? <DecodeText text={title} delay={50} /> : <span className="text-gray-600">[Título não preenchido]</span>}
+                      {title || <span className="text-gray-600">[Título não preenchido]</span>}
                     </h1>
 
                     <p className="text-base sm:text-lg text-gray-300 font-sans leading-relaxed border-l-2 border-cyan-500 pl-4 py-2 bg-cyan-950/20 rounded-r">

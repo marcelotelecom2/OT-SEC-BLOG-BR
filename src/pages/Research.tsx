@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'motion/react';
 import { Filter, Tag, Hash, ShieldAlert, X, ExternalLink } from 'lucide-react';
-import { DecodeText } from '../components/ui/DecodeText';
 import { useBlog } from '../context/BlogContext';
 import { useLanguage } from '../context/LanguageContext';
 import { sanitizeExternalUrl } from '../lib/sanitizeUrl';
@@ -64,7 +63,7 @@ export function Research() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
             <h1 className="text-3xl sm:text-4xl font-bold text-white tracking-tight mb-2 sm:mb-3 cursor-crosshair">
-              <DecodeText text={t.insights.title} delay={100} />
+              {t.insights.title}
             </h1>
             <p className="text-gray-400 font-mono text-xs sm:text-sm">
               {t.insights.subtitle}

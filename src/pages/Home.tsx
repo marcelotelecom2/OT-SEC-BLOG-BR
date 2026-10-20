@@ -63,7 +63,7 @@ export function Home() {
           </motion.div>
           
           <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-sans font-bold tracking-tight text-white mb-6">
-            {t.hero.title1} <br />
+            <DecodeText text={t.hero.title1} delay={800} /> <br />
             <motion.span 
               initial={false}
               className="text-transparent bg-clip-text bg-gradient-to-r from-gray-200 to-gray-500 inline-block"

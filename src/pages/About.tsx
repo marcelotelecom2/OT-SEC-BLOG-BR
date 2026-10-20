@@ -1,5 +1,4 @@
 import { motion } from 'motion/react';
-import { DecodeText } from '../components/ui/DecodeText';
 import { SpotlightCard } from '../components/ui/SpotlightCard';
 import { Terminal, Shield, Network } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
@@ -11,7 +10,7 @@ export function About() {
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-24">
       <div className="border-b border-gray-800 pb-6 sm:pb-8 mb-8 sm:mb-12">
         <h1 className="text-3xl sm:text-4xl font-bold text-white tracking-tight mb-2 sm:mb-4 cursor-crosshair">
-          <DecodeText text={t.about.title} delay={100} />
+          {t.about.title}
         </h1>
         <p className="text-gray-400 font-mono text-xs sm:text-sm">{t.about.subtitle}</p>
       </div>
