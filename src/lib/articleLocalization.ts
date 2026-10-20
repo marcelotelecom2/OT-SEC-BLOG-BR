@@ -13,6 +13,7 @@ const AREA_TRANSLATIONS: Record<string, Partial<Record<ArticleLanguage, string>>
   'Vulnerability Analysis': { pt: 'Análise de Vulnerabilidades', es: 'Análisis de Vulnerabilidades' },
   'Network Engineering': { pt: 'Engenharia de Redes', es: 'Ingeniería de Redes' },
   'Regulation Update': { pt: 'Atualização Regulatória', es: 'Actualización Regulatoria' },
+  'Technical Standards': { pt: 'Normas Técnicas', es: 'Normas Técnicas' },
   'ICS Security': { pt: 'Segurança ICS', es: 'Seguridad ICS' },
   'Power Grid Security': { pt: 'Segurança de Redes Elétricas', es: 'Seguridad de Redes Eléctricas' },
   'Threat Intelligence': { pt: 'Inteligência de Ameaças', es: 'Inteligencia de Amenazas' },
@@ -26,11 +27,15 @@ export function localizeReadTime(readTime: string, language: ArticleLanguage): s
   return `${minutes} min read`;
 }
 
+export function localizeArticleArea(area: string, language: ArticleLanguage): string {
+  return AREA_TRANSLATIONS[area]?.[language] ?? area;
+}
+
 function localizeSharedMetadata(article: Article, language: ArticleLanguage): Article {
   return {
     ...article,
     readTime: localizeReadTime(article.readTime, language),
-    area: AREA_TRANSLATIONS[article.area]?.[language] ?? article.area,
+    area: localizeArticleArea(article.area, language),
   };
 }
 

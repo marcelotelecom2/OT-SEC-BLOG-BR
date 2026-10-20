@@ -9,6 +9,13 @@ import {
 import { Article, ArticleLanguage, ArticleTranslation, MediaItem } from '../../types';
 import { ArticleContent } from '../article/ArticleContent';
 import { downloadArticleExport } from '../../lib/articleExport';
+import { useLanguage } from '../../context/LanguageContext';
+import { localizeArticleArea } from '../../lib/articleLocalization';
+
+const ARTICLE_AREAS = [
+  'ICS Security', 'Artificial Intelligence', 'Network Engineering', 'Power Grid Security',
+  'Vulnerability Analysis', 'Threat Intelligence', 'Technical Standards', 'Regulation Update',
+];
 
 // Error Boundary for Live Preview
 interface ErrorBoundaryProps {
@@ -92,6 +99,7 @@ export function ArticleEditorModal({
   uploadImage,
   onOpenMediaPicker
 }: ArticleEditorModalProps) {
+  const { language } = useLanguage();
   // Form State
   const [editorId] = useState(() => article.id || Date.now().toString());
   const [title, setTitle] = useState(article.title || '');
@@ -831,15 +839,12 @@ export function ArticleEditorModal({
                     }}
                     className="w-full px-3 py-2 bg-gray-950 border border-gray-800 text-cyan-300 focus:border-cyan-500 rounded text-xs"
                   >
-                    <option value="ICS Security">ICS Security</option>
-                    {!['ICS Security', 'Artificial Intelligence', 'Network Engineering', 'Power Grid Security', 'Vulnerability Analysis', 'Threat Intelligence'].includes(area) && (
-                      <option value={area}>{area}</option>
+                    {!ARTICLE_AREAS.includes(area) && (
+                      <option value={area}>{localizeArticleArea(area, language)}</option>
                     )}
-                    <option value="Artificial Intelligence">Artificial Intelligence</option>
-                    <option value="Network Engineering">Network Engineering</option>
-                    <option value="Power Grid Security">Power Grid Security</option>
-                    <option value="Vulnerability Analysis">Vulnerability Analysis</option>
-                    <option value="Threat Intelligence">Threat Intelligence</option>
+                    {ARTICLE_AREAS.map(value => (
+                      <option key={value} value={value}>{localizeArticleArea(value, language)}</option>
+                    ))}
                   </select>
                 </div>
 
@@ -1165,7 +1170,7 @@ export function ArticleEditorModal({
                   <header className="border-b border-gray-800 pb-6 mb-8">
                     <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs font-mono text-gray-500 mb-4">
                       <span className="flex items-center gap-1.5 text-cyan-400 font-medium">
-                        <Tag className="w-3.5 h-3.5 shrink-0" /> {area}
+                        <Tag className="w-3.5 h-3.5 shrink-0" /> {localizeArticleArea(area, language)}
                       </span>
                       <span>•</span>
                       <span className="flex items-center gap-1.5">

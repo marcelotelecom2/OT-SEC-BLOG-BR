@@ -6,18 +6,18 @@ export const SITE_URL = 'https://ot-sec.blog.br';
 export const DEFAULT_SEO = {
   title: 'OT-SEC Digital Research Lab',
   description:
-    'Independent research on Industrial Cybersecurity, Power Grid Security, Artificial Intelligence and Critical Infrastructure.',
+    'Independent OT/ICS cybersecurity research for critical electric power infrastructure, with technical standards studies and applied research.',
   canonical: 'https://ot-sec.blog.br/',
   ogType: 'website',
   ogTitle: 'OT-SEC Digital Research Lab',
   ogDescription:
-    'Independent research on Industrial Cybersecurity, Power Grid Security, Artificial Intelligence and Critical Infrastructure.',
+    'Independent OT/ICS cybersecurity research for critical electric power infrastructure, with technical standards studies and applied research.',
   ogUrl: 'https://ot-sec.blog.br/',
   siteName: 'OT-SEC Digital Research Lab',
   twitterCard: 'summary_large_image',
   twitterTitle: 'OT-SEC Digital Research Lab',
   twitterDescription:
-    'Independent research on Industrial Cybersecurity, Power Grid Security, Artificial Intelligence and Critical Infrastructure.',
+    'Independent OT/ICS cybersecurity research for critical electric power infrastructure, with technical standards studies and applied research.',
 };
 
 /**

@@ -1,8 +1,11 @@
 import type { ResearchNote } from '../types';
 
+// Unverified seed entries from the initial project template (e3dfdda).
+// Retained for editorial history, excluded from publication and the public bundle.
 export const RESEARCH_NOTES: ResearchNote[] = [
   {
     id: '1',
+    published: false,
     date: '2026-07-20',
     tag: '#IEC62443',
     tags: ['IEC62443', 'ICS', 'SCADA'],
@@ -12,6 +15,7 @@ export const RESEARCH_NOTES: ResearchNote[] = [
   },
   {
     id: '2',
+    published: false,
     date: '2026-07-18',
     tag: '#OT_SECURITY',
     tags: ['OT_SECURITY', 'CISA', 'SCADA'],
@@ -21,6 +25,7 @@ export const RESEARCH_NOTES: ResearchNote[] = [
   },
   {
     id: '3',
+    published: false,
     date: '2026-07-05',
     tag: '#SCADA',
     tags: ['SCADA', 'ICS', 'IEC61850'],
@@ -30,6 +35,7 @@ export const RESEARCH_NOTES: ResearchNote[] = [
   },
   {
     id: '4',
+    published: false,
     date: '2026-06-22',
     tag: '#ICS',
     tags: ['ICS', 'OT_SECURITY', 'POWER_GRID'],
@@ -39,6 +45,7 @@ export const RESEARCH_NOTES: ResearchNote[] = [
   },
   {
     id: '5',
+    published: false,
     date: '2026-06-01',
     tag: '#AI',
     tags: ['AI', 'LLM', 'SCADA'],

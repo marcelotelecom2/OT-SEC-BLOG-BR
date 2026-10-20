@@ -25,8 +25,11 @@ import {
 import { ArticleEditorModal } from '../components/admin/ArticleEditorModal';
 import { downloadArticleExport } from '../lib/articleExport';
 import { downloadEditorialBackup } from '../lib/persistence';
+import { useLanguage } from '../context/LanguageContext';
+import { localizeArticleArea } from '../lib/articleLocalization';
 
 export function Admin() {
+  const { language } = useLanguage();
   const {
     adminArticles: articles, adminNotes: notes, projects, mediaLibrary, analytics, storageError,
     isAdminLoggedIn, loginAdmin, logoutAdmin, changePassword,
@@ -621,7 +624,9 @@ export function Admin() {
                 </thead>
                 <tbody className="divide-y divide-gray-800/60 text-xs font-mono text-gray-300">
                   {articles
-                    .filter(a => a.title.toLowerCase().includes(searchTerm.toLowerCase()) || a.area.toLowerCase().includes(searchTerm.toLowerCase()))
+                    .filter(a => a.title.toLowerCase().includes(searchTerm.toLowerCase())
+                      || a.area.toLowerCase().includes(searchTerm.toLowerCase())
+                      || localizeArticleArea(a.area, language).toLowerCase().includes(searchTerm.toLowerCase()))
                     .map((article) => (
                       <tr key={article.id} className="hover:bg-gray-900/40 transition-colors">
                         <td className="p-4 font-sans font-semibold text-white max-w-xs truncate">
@@ -629,7 +634,7 @@ export function Admin() {
                         </td>
                         <td className="p-4">
                           <span className="px-2 py-0.5 rounded bg-cyan-950 border border-cyan-800/60 text-cyan-400 text-[10px]">
-                            {article.area}
+                            {localizeArticleArea(article.area, language)}
                           </span>
                         </td>
                         <td className="p-4 text-gray-400 whitespace-nowrap">{article.date}</td>

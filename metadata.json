@@ -1,6 +1,6 @@
 {
   "name": "OT-SEC Digital Research Lab",
-  "description": "Independent research on Industrial Cybersecurity, Power Grid Security, Artificial Intelligence and Critical Infrastructure.",
+  "description": "Independent OT/ICS cybersecurity research for critical electric power infrastructure, with technical standards studies and applied research.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

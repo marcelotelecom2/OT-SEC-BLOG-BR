@@ -181,7 +181,7 @@ export function Research() {
           {filteredNotes.length === 0 ? (
             <div className="text-gray-500 font-mono text-center py-16 border border-dashed border-gray-800 rounded">
               <ShieldAlert className="w-8 h-8 text-gray-600 mx-auto mb-3" />
-              <p>{t.insights.noNotes}</p>
+              <p>{publishedNotes.length === 0 ? t.insights.empty : t.insights.noNotes}</p>
               {(selectedType !== 'All' || selectedTag !== 'All') && (
                 <button
                   onClick={() => {

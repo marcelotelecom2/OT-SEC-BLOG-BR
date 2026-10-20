@@ -1,7 +1,9 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import type { Article } from '../types';
-import { localizeArticle, localizeReadTime } from './articleLocalization';
+import { localizeArticle, localizeArticleArea, localizeReadTime } from './articleLocalization';
+import { ARTICLES_METADATA } from '../content/articles/metadata';
 import { resolveLanguageFromPath, resolveLanguagePreference } from '../context/LanguageContext';
 
 const article: Article = {
@@ -65,4 +67,45 @@ test('reading time and article areas follow the selected interface language', ()
   assert.equal(localizeReadTime('12 min read', 'pt'), '12 min de leitura');
   assert.equal(localizeReadTime('12 min read', 'es'), '12 min de lectura');
   assert.equal(localizeArticle({ ...article, area: 'Regulation Update' }, 'es').article.area, 'Actualización Regulatoria');
+});
+
+test('published IEC studies use the same standards category in every language', () => {
+  const studies = ARTICLES_METADATA.filter(item => item.published && item.slug.startsWith('iec-62351-'));
+  assert.equal(studies.length, 4);
+  for (const metadata of studies) {
+    assert.equal(metadata.area, 'Technical Standards');
+    for (const language of ['en', 'pt', 'es'] as const) {
+      const localized = localizeArticle({ ...metadata, content: 'Body' }, language).article;
+      assert.equal(localized.area, localizeArticleArea(metadata.area, language));
+      assert.equal(localized.area, language === 'en' ? 'Technical Standards' : 'Normas Técnicas');
+      assert.equal(localized.slug, metadata.slug);
+    }
+  }
+  assert.equal(ARTICLES_METADATA.find(item => item.id === '6')?.area, 'Technical Standards');
+  assert.equal(localizeArticleArea('Regulation Update', 'pt'), 'Atualização Regulatória');
+  assert.equal(localizeArticleArea('Vulnerability Analysis', 'pt'), 'Análise de Vulnerabilidades');
+  assert.equal(localizeArticleArea('Custom area', 'pt'), 'Custom area');
+});
+
+test('published IEC studies separate the standard summary, author analysis and references in all languages', () => {
+  const headings = {
+    pt: ['Síntese da norma', 'Análise técnica', 'Referências'],
+    en: ['Standard summary', 'Technical analysis', 'References'],
+    es: ['Síntesis de la norma', 'Análisis técnico', 'Referencias'],
+  };
+  const scope = {
+    pt: 'não estabelece exigências normativas adicionais',
+    en: 'does not establish additional normative requirements',
+    es: 'no establece exigencias normativas adicionales',
+  };
+  for (const metadata of ARTICLES_METADATA.filter(item => item.published && item.slug.startsWith('iec-62351-'))) {
+    for (const language of ['pt', 'en', 'es'] as const) {
+      const filename = metadata.sourceLanguage === language ? metadata.contentFile : metadata.translations?.[language]?.contentFile;
+      assert.ok(filename);
+      const markdown = readFileSync(new URL(`../content/articles/${filename}`, import.meta.url), 'utf8');
+      assert.deepEqual([...markdown.matchAll(/^## (.+)$/gm)].map(match => match[1]), headings[language]);
+      assert.ok(markdown.includes(scope[language]));
+      assert.ok(markdown.includes('https://webstore.iec.ch/en/publication/6903'));
+    }
+  }
 });

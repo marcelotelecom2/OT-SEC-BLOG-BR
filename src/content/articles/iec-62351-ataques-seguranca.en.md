@@ -1,10 +1,14 @@
+## Standard summary
+
+*Editorial summary of IEC 62351-1. Highlighted passages are not presented as verbatim quotations; the normative document remains the reference.*
+
 In section **5.3.4 — Security attacks**, **IEC 62351-1** reinforces an important idea for those working with cybersecurity in electrical and OT systems:
 
 > **a threat can be implemented by different types of attacks.**
 
 In other words, there is no simple and direct relationship between security requirements, threats and attacks.
 
-## The same attack can appear in different threats
+### The same attack can appear in different threats
 
 The standard explains that security attacks form a kind of network.
 
@@ -14,9 +18,9 @@ This means that, in practice, protecting a security requirement does not depend 
 
 Each type of attack capable of realizing a threat needs to be considered when defining countermeasures.
 
-## There is no 1:1 relationship
+### There is no 1:1 relationship
 
-This is probably the main point of section 5.3.4.
+**Author’s reading:** This is probably the main point of section 5.3.4.
 
 There is no **1 to 1** relationship between:
 
@@ -24,13 +28,13 @@ There is no **1 to 1** relationship between:
 - threat;
 - attack.
 
-For example, an integrity threat can arise through different techniques. Likewise, the same attack can affect more than one security requirement, depending on how it is executed.
+**Author’s application comment:** For example, an integrity threat can arise through different techniques. Likewise, the same attack can affect more than one security requirement, depending on how it is executed.
 
 Therefore, the standard shows that protection should not be thought of in an isolated or simplified way.
 
 ![IEC 62351-1 — Relationship between security requirements, threats and attack examples.](/images/articles/iec-62351-ataques-esquema.webp)
 
-## The idea of “chain of attacks”
+### The idea of “chain of attacks”
 
 Another important concept presented here is that of **chain of attacks**.
 
@@ -42,9 +46,13 @@ This sequence can:
 - happen in stages;
 - occur over time.
 
+## Technical analysis
+
+*The author’s technical reading of the summarized concepts; it does not establish additional normative requirements.*
+
 This is especially relevant in OT, where an incident can start in a less critical asset and, from there, evolve to affect more important functions of the operation.
 
-## What does this mean in practice?
+### What does this mean in practice?
 
 The key message from section 5.3.4 is that risk analysis should not just look at isolated attacks.
 
@@ -56,3 +64,8 @@ It needs to consider:
 - the need for multiple countermeasures.
 
 In other words, **it is not enough to protect against a specific attack**. It is necessary to understand how different attacks can contribute to the realization of the same threat.
+
+
+## References
+
+1. **Technical specification** — IEC. *IEC 62351-1 — Introduction to security issues*. [Official catalogue](https://webstore.iec.ch/en/publication/6903). The article does not state the edition consulted; the link identifies the official catalogue entry.

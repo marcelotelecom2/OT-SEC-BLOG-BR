@@ -10,7 +10,7 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
     "summary": "A seção 5.3.4 da IEC 62351-1 explica como diferentes ataques e cadeias de ataques podem concretizar uma ameaça nos sistemas elétricos e em OT.",
     "date": "2026-10-18",
     "readTime": "3 min de leitura",
-    "area": "Regulation Update",
+    "area": "Technical Standards",
     "author": "Walter Rodrigues",
     "sourceLanguage": "pt",
     "translations": {
@@ -42,7 +42,7 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
     "summary": "Uma síntese comentada das seções 5.3.1 a 5.3.3 da IEC 62351-1: requisitos de segurança, ameaças e vulnerabilidades nos sistemas elétricos.",
     "date": "2026-10-18",
     "readTime": "3 min de leitura",
-    "area": "Regulation Update",
+    "area": "Technical Standards",
     "author": "Walter Rodrigues",
     "sourceLanguage": "pt",
     "translations": {
@@ -74,7 +74,7 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
     "summary": "Um resumo comentado da IEC 62351-1 sobre ameaças deliberadas: pessoas, acessos, equipamentos e informações que precisam ser considerados na segurança OT.",
     "date": "2026-10-18",
     "readTime": "4 min de leitura",
-    "area": "Regulation Update",
+    "area": "Technical Standards",
     "author": "Walter Rodrigues",
     "sourceLanguage": "pt",
     "translations": {
@@ -106,7 +106,7 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
     "summary": "A IEC 62351-1 amplia a segurança OT ao considerar falhas humanas, equipamentos, safety e desastres naturais como ameaças aos sistemas elétricos.",
     "date": "2026-10-18",
     "readTime": "4 min de leitura",
-    "area": "Regulation Update",
+    "area": "Technical Standards",
     "author": "Walter Rodrigues",
     "sourceLanguage": "pt",
     "translations": {
@@ -332,7 +332,7 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
     "summary": "A deep technical breakdown of NERC CIP-002 criteria, explaining how Bulk Electric System (BES) cyber assets and systems are categorized into High, Medium, and Low impact ratings.",
     "date": "2026-08-04",
     "readTime": "14 min read",
-    "area": "Regulation Update",
+    "area": "Technical Standards",
     "sourceLanguage": "en",
     "translations": {
       "pt": {

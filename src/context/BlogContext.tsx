@@ -342,7 +342,9 @@ export function BlogProvider({ children }: { children: React.ReactNode }) {
       value={{
         articles,
         adminArticles,
-        notes: publicNotes(notes),
+        // Public notes follow the reviewed deployment. Browser copies remain in
+        // adminNotes so stale template entries cannot reappear after unpublishing.
+        notes: publicNotes(INITIAL_NOTES),
         adminNotes: notes,
         projects,
         mediaLibrary,

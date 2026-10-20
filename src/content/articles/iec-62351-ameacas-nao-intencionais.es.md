@@ -1,3 +1,7 @@
+## Síntesis de la norma
+
+*Síntesis editorial de IEC 62351-1. Los pasajes destacados no se presentan como citas literales; el documento normativo sigue siendo la referencia.*
+
 Cuando pensamos en ciberseguridad, es común asociar las amenazas con hackers, malware o ataques a la red.
 
 **IEC 62351-1**, sin embargo, presenta una visión más amplia.
@@ -6,7 +10,7 @@ En el apartado **5.2 — Tipos de amenazas a la seguridad**, el estándar consid
 
 Por lo tanto, la protección debe considerar tanto las **amenazas físicas** como las **amenazas cibernéticas**.
 
-## No todas las amenazas son deliberadas
+### No todas las amenazas son deliberadas
 
 La sección **5.2.1 — General** hace una distinción importante: una amenaza puede surgir tanto de un evento no intencional como de un ataque deliberado.
 
@@ -26,21 +30,21 @@ El estándar también refuerza la importancia del **análisis de riesgos** para 
 
 Y hay otro principio importante: **no existe una solución única para todos los escenarios**. Es preferible utilizar capas de seguridad que depender de una única protección.
 
-## 5.2.2 — Amenazas inadvertidas
+### 5.2.2 — Amenazas inadvertidas
 
 A continuación, IEC 62351 presenta cuatro tipos de **amenazas no intencionales**.
 
-### Fallos de seguridad
+#### Fallos de seguridad
 
 La seguridad siempre ha sido una preocupación central en el sector eléctrico, especialmente en entornos de alta tensión.
 
 La norma destaca que los procedimientos siguen siendo fundamentales, pero que el seguimiento, los registros y las alarmas pueden ayudar a reforzarlos.
 
-Un punto interesante es que algunos controles creados inicialmente por razones de seguridad también pueden contribuir a la seguridad.
+**Comentario de aplicación del autor:** Un punto interesante es que algunos controles creados inicialmente por razones de seguridad también pueden contribuir a la seguridad.
 
 El control de acceso a una subestación, por ejemplo, puede proteger a las personas y, al mismo tiempo, ayudar a reducir el vandalismo y el robo.
 
-### Fallas de equipos
+#### Fallas de equipos
 
 Las fallas de los equipos se tratan como amenazas esperadas al funcionamiento confiable del sistema eléctrico.
 
@@ -50,7 +54,7 @@ IEC 62351 llama la atención sobre el hecho de que esta información también pu
 
 En otras palabras, el monitoreo creado para la operación también puede traer beneficios de seguridad.
 
-### Descuido
+#### Descuido
 
 El factor humano también aparece como una amenaza.
 
@@ -64,9 +68,9 @@ El problema no siempre está en una acción maliciosa.
 
 Puede surgir de la complacencia, el descuido o incluso la percepción de que un determinado control de seguridad dificulta el trabajo.
 
-Este es un punto especialmente importante en OT: **un control sólo es realmente efectivo si también funciona dentro de la realidad operativa**.
+**Comentario de aplicación del autor:** Este es un punto especialmente importante en OT: **un control sólo es realmente efectivo si también funciona dentro de la realidad operativa**.
 
-### Desastres naturales
+#### Desastres naturales
 
 También se incluyen en el análisis tormentas, huracanes y terremotos.
 
@@ -76,7 +80,9 @@ Por ello, la norma resalta el valor del monitoreo en tiempo real del estado fís
 
 Este monitoreo funciona como los **“ojos y oídos”** de la operación durante situaciones adversas.
 
-## El aprendizaje principal
+## Análisis técnico
+
+*Lectura técnica del autor a partir de los conceptos sintetizados; no establece exigencias normativas adicionales.*
 
 El mensaje de esta primera parte de la sección 5.2 es simple:
 
@@ -87,3 +93,8 @@ Desde una perspectiva de seguridad de la información y ciberseguridad OT, tambi
 IEC 62351 comienza así por construir una visión de la seguridad que va más allá de los ciberataques y considera el sistema eléctrico como un conjunto de **personas, equipos, información, procesos y entorno operativo**.
 
 En la siguiente parte, entraremos en el otro grupo que presenta el estándar: **5.2.3 — Amenazas deliberadas**, amenazas deliberadas.
+
+
+## Referencias
+
+1. **Especificación técnica** — IEC. *IEC 62351-1 — Introduction to security issues*. [Catálogo oficial](https://webstore.iec.ch/en/publication/6903). El artículo no indica la edición consultada; el enlace identifica el registro del catálogo oficial.

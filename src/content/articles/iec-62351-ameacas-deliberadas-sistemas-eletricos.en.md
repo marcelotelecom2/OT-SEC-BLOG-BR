@@ -1,8 +1,12 @@
+## Standard summary
+
+*Editorial summary of IEC 62351-1. Highlighted passages are not presented as verbatim quotations; the normative document remains the reference.*
+
 In the previous publication, we saw that IEC 62351-1 does not limit the concept of threat to cyber attacks. Equipment failures, safety problems, human carelessness and natural disasters are also part of the analysis.
 
 In section **5.2.3 — Deliberate threats**, the standard starts to deal with threats in which there is an **intentional action** against the assets of the electrical system.
 
-## 5.2.3 — Deliberate threats
+### 5.2.3 — Deliberate threats
 
 IEC 62351 highlights that deliberate threats can cause more targeted harm than unintentional events.
 
@@ -10,7 +14,7 @@ The attacker can choose the target, seek a specific advantage and act with some 
 
 Therefore, the standard once again highlights the importance of **monitoring**, **real-time alerts** and **forensic trails**, both to help with prevention and to understand what happened after an incident.
 
-## Disgruntled employee
+### Disgruntled employee
 
 Dissatisfied employees appear as a relevant threat because they have something that an external attacker may not have:
 
@@ -20,15 +24,15 @@ They can know equipment, processes, systems and specific characteristics of the 
 
 In a specialized sector like electrical, this knowledge can significantly increase the potential for damage.
 
-## industrial espionage
+### industrial espionage
 
 Industrial espionage shows that **information is also an asset**.
 
 The objective may be to obtain knowledge, financial or competitive advantage, or even damage the image of another organization.
 
-This point reinforces that the protection of electrical systems is not just about availability. Technical and operational information also needs to be protected.
+**Author’s application comment:** This point reinforces that the protection of electrical systems is not just about availability. Technical and operational information also needs to be protected.
 
-## Vandalism
+### Vandalism
 
 In vandalism, the goal may simply be to cause harm.
 
@@ -36,7 +40,7 @@ IEC 62351 cites both physical actions against equipment and the shutdown of equi
 
 Once again, monitoring access and abnormal behavior appears as an important measure.
 
-## cyber hackers
+### cyber hackers
 
 The part about hackers brings up an especially interesting reflection.
 
@@ -54,7 +58,7 @@ That's why:
 
 > **being isolated from the Internet does not mean being free from cybersecurity risks.**
 
-## Viruses and worms
+### Viruses and worms
 
 The same reasoning applies to viruses and worms.
 
@@ -64,7 +68,7 @@ Software installed on the system, insecure laptops or other equipment can act as
 
 This shows that the risk does not just depend on permanent network connection.
 
-## Theft
+### Theft
 
 For IEC 62351, theft does not just mean taking equipment.
 
@@ -72,9 +76,9 @@ The attacker can remove:
 
 **equipment, data or knowledge.**
 
-This definition brings physical security and information security even closer together.
+**Author’s application comment:** This definition brings physical security and information security even closer together.
 
-## Terrorism
+### Terrorism
 
 The standard considers terrorism to be a less likely threat, but with the potential for very high consequences.
 
@@ -82,7 +86,9 @@ And it draws attention to another important point: a sophisticated attacker may 
 
 He may seek to compromise **specific and critical equipment**, capable of causing greater impacts on the electrical system.
 
-## The main learning
+## Technical analysis
+
+*The author’s technical reading of the summarized concepts; it does not establish additional normative requirements.*
 
 Section 5.2.3 shows that a deliberate threat can take different forms.
 
@@ -106,3 +112,8 @@ Therefore, section **5.2 of IEC 62351-1** presents two complementary perspective
 
 **5.2.2 — which may unintentionally compromise the system.**
 **5.2.3 — what can be done intentionally against the system.**
+
+
+## References
+
+1. **Technical specification** — IEC. *IEC 62351-1 — Introduction to security issues*. [Official catalogue](https://webstore.iec.ch/en/publication/6903). The article does not state the edition consulted; the link identifies the official catalogue entry.

@@ -56,3 +56,11 @@ A critical mistake in OT audit preparations is failing to distinguish between th
 1. **The 15-Minute Rule**: If an asset can fail without affecting the reliability functions of the BES within a 15-minute window, it is generally not a BES Cyber Asset.
 2. **Transient Cyber Assets (TCAs)**: Laptops, test sets, and USB maintenance drives are subject to CIP-010 controls whenever they cross the ESP barrier.
 3. **Low-Impact Obligations**: Never assume Low Impact means "no security." CIP-003 Attachment 1 mandates cyber security awareness, physical access controls, electronic access controls, and incident response planning for all Low Impact assets.
+
+
+## References
+
+1. **Technical standard** — NERC. *CIP-002-5.1a — Cyber Security — BES Cyber System Categorization*. [Official document (PDF)](https://www.nerc.com/globalassets/standards/reliability-standards/cip/cip-002-5.1a.pdf).
+2. **Official catalogue** — NERC. *CIP — Critical Infrastructure Protection*. [CIP standards](https://www.nerc.com/standards/reliability-standards/cip).
+
+The text also mentions CIP-003 and CIP-010 without specifying versions. The catalogue identifies these documents without attributing an unrecorded edition.

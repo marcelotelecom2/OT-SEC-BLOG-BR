@@ -100,7 +100,7 @@ export function Home() {
       {/* Main Content Area */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-24 w-full">
         
-        {/* Latest Research */}
+        {/* Latest Articles: technical publications and standards studies. */}
         <motion.section 
           initial="hidden"
           whileInView="show"
@@ -195,7 +195,8 @@ export function Home() {
         </motion.section>
 
         {/* Insights */}
-        <motion.section 
+        {latestNotes.length > 0 && <motion.section
+          data-lab-notes
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-100px" }}
@@ -252,7 +253,7 @@ export function Home() {
               );
             })}
           </div>
-        </motion.section>
+        </motion.section>}
 
       </div>
     </div>

@@ -1,8 +1,12 @@
+## Standard summary
+
+*Editorial summary of IEC 62351-1. Highlighted passages are not presented as verbatim quotations; the normative document remains the reference.*
+
 After presenting the different types of threats, **IEC 62351-1** begins, in section **5.3**, to organize some fundamental cybersecurity concepts.
 
 The idea is to relate **what we need to protect**, **what could compromise this protection** and **what weaknesses could allow this to happen**.
 
-## 5.3.1 — Security requirements
+### 5.3.1 — Security requirements
 
 The standard presents four basic security requirements:
 
@@ -25,7 +29,7 @@ The standard also establishes an important premise:
 
 Before determining **what someone can do**, it is necessary to establish **who that user or application is**.
 
-## 5.3.2 — Security threats
+### 5.3.2 — Security threats
 
 Next, IEC 62351 presents four threats directly related to the previous requirements:
 
@@ -47,7 +51,7 @@ Therefore, protecting a security requirement does not simply mean applying a sin
 
 Countermeasures need to consider **how that threat could actually happen**.
 
-## 5.3.3 — Security vulnerabilities
+### 5.3.3 — Security vulnerabilities
 
 The definition of vulnerability presented by IEC 62351 also deserves attention.
 
@@ -62,13 +66,15 @@ The standard cites the following as possible origins:
 - equipment failures;
 - physical actions.
 
-This is especially important in OT.
+**Author’s application comment:** This is especially important in OT.
 
 A vulnerability may be in the software, equipment, architecture or even the physical conditions surrounding that system.
 
 Furthermore, it may only exist theoretically or already have a **known exploit**.
 
-## The main learning
+## Technical analysis
+
+*The author’s technical reading of the summarized concepts; it does not establish additional normative requirements.*
 
 Sections **5.3.1 to 5.3.3** begin to assemble a logical sequence:
 
@@ -89,3 +95,8 @@ Flaws in design, equipment and physical aspects can also create risky conditions
 In the next part, IEC 62351 adds another element to this relationship:
 
 **5.3.4 — Security attacks**, showing how different types of attacks can transform a threat into a real event.
+
+
+## References
+
+1. **Technical specification** — IEC. *IEC 62351-1 — Introduction to security issues*. [Official catalogue](https://webstore.iec.ch/en/publication/6903). The article does not state the edition consulted; the link identifies the official catalogue entry.

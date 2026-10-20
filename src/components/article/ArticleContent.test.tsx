@@ -9,3 +9,18 @@ test('standalone Markdown images render as valid top-level figures', () => {
   assert.match(html, /<figcaption[^>]*>Diagrama<\/figcaption>/);
   assert.doesNotMatch(html, /<p[^>]*>\s*<figure/);
 });
+
+test('final references have a subdued heading and preserve technical content and image paths', () => {
+  for (const title of ['Referências', 'References', 'Referencias']) {
+    const content = `## Technical section\n\nOriginal paragraph.\n\n![Original diagram](/images/diagram.webp)\n\n## ${title}\n\n1. **Official document** — [Source](https://example.org/document).`;
+    const html = renderToStaticMarkup(<ArticleContent content={content} />);
+    assert.match(html, /Original paragraph\./);
+    assert.match(html, /src="\/images\/diagram.webp"/);
+    assert.match(html, /id="references" class="text-base/);
+    assert.match(html, /href="https:\/\/example.org\/document"/);
+    assert.match(html, /rel="noopener noreferrer"/);
+    assert.ok(html.indexOf('id="references"') > html.indexOf('src="/images/diagram.webp"'));
+  }
+  const noReferences = renderToStaticMarkup(<ArticleContent content="## Technical section\n\nOriginal body." />);
+  assert.doesNotMatch(noReferences, /id="references"/);
+});

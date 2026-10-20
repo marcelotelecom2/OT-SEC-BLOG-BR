@@ -1,8 +1,12 @@
+## Síntese da norma
+
+*Síntese editorial da IEC 62351-1. Os destaques não são apresentados como transcrições literais; o documento normativo continua sendo a referência.*
+
 Depois de apresentar os diferentes tipos de ameaças, a **IEC 62351-1** começa, na seção **5.3**, a organizar alguns conceitos fundamentais de cibersegurança.
 
 A ideia é relacionar **o que precisamos proteger**, **o que pode comprometer essa proteção** e **quais fraquezas podem permitir que isso aconteça**.
 
-## 5.3.1 — Security requirements
+### 5.3.1 — Security requirements
 
 A norma apresenta quatro requisitos básicos de segurança:
 
@@ -25,7 +29,7 @@ A norma também estabelece uma premissa importante:
 
 Antes de determinar **o que alguém pode fazer**, é necessário estabelecer **quem é esse usuário ou aplicação**.
 
-## 5.3.2 — Security threats
+### 5.3.2 — Security threats
 
 Na sequência, a IEC 62351 apresenta quatro ameaças diretamente relacionadas aos requisitos anteriores:
 
@@ -47,7 +51,7 @@ Por isso, proteger um requisito de segurança não significa simplesmente aplica
 
 As contramedidas precisam considerar **como aquela ameaça pode realmente acontecer**.
 
-## 5.3.3 — Security vulnerabilities
+### 5.3.3 — Security vulnerabilities
 
 A definição de vulnerabilidade apresentada pela IEC 62351 também merece atenção.
 
@@ -62,13 +66,15 @@ A norma cita como possíveis origens:
 - falhas de equipamentos;
 - ações físicas.
 
-Isso é especialmente importante em OT.
+**Comentário de aplicação do autor:** Isso é especialmente importante em OT.
 
 Uma vulnerabilidade pode estar no software, no equipamento, na arquitetura ou até nas condições físicas que envolvem aquele sistema.
 
 Além disso, ela pode existir apenas teoricamente ou já possuir um **exploit conhecido**.
 
-## O principal aprendizado
+## Análise técnica
+
+*Leitura técnica do autor a partir dos conceitos sintetizados; não estabelece exigências normativas adicionais.*
 
 As seções **5.3.1 a 5.3.3** começam a montar uma sequência lógica:
 
@@ -89,3 +95,8 @@ Falhas de projeto, equipamentos e aspectos físicos também podem criar condiç�
 Na próxima parte, a IEC 62351 adiciona outro elemento a essa relação:
 
 **5.3.4 — Security attacks**, mostrando como diferentes tipos de ataques podem transformar uma ameaça em um evento real.
+
+
+## Referências
+
+1. **Especificação técnica** — IEC. *IEC 62351-1 — Introduction to security issues*. [Catálogo oficial](https://webstore.iec.ch/en/publication/6903). A edição consultada não foi informada no artigo; o link identifica o registro no catálogo oficial.

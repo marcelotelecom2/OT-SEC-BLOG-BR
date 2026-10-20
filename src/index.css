@@ -6,6 +6,18 @@
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 }
 
+/* A final Markdown references section shares the article width and stays subdued. */
+.article-editorial-content > #references ~ :is(p, ul, ol) {
+  font-size: 0.875rem;
+  line-height: 1.75;
+  color: var(--color-gray-400);
+}
+
+.article-editorial-content > #references ~ :is(ul, ol) p {
+  font-size: inherit;
+  color: inherit;
+}
+
 @layer base {
   body {
     @apply bg-[#050505] text-gray-200 antialiased selection:bg-cyan-900 selection:text-cyan-100;

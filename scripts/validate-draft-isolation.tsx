@@ -19,6 +19,7 @@ async function main() {
   const translationMarker = 'VALIDATION_PRIVATE_TRANSLATION_836901';
   const sourceNoteMarker = 'VALIDATION_PRIVATE_SOURCE_NOTE_836901';
   const publicNoteMarker = 'VALIDATION_PUBLIC_SOURCE_NOTE_836901';
+  const retiredNoteMarker = 'VALIDATION_RETIRED_CACHED_NOTE_836901';
   try {
     for (const name of ['src', 'scripts', 'public', 'package.json', 'tsconfig.json', 'vite.config.ts', 'index.html', 'favicon.svg']) {
       fs.cpSync(path.join(sourceRoot, name), path.join(fixture, name), { recursive: true });
@@ -81,6 +82,9 @@ async function main() {
     const stored = new Map<string, string>([['ot_sec_notes', JSON.stringify([{
       id: 'validation-note', date: '2026-10-18', tag: '#TEST', tags: [tagMarker],
       content: noteMarker, author: 'Validation', published: false,
+    }, {
+      id: 'retired-cached-note', date: '2026-07-20', tag: '#LEGACY',
+      content: retiredNoteMarker, published: true,
     }])]]);
     (globalThis as any).localStorage = {
       getItem: (key: string) => stored.get(key) ?? null,
@@ -94,6 +98,8 @@ async function main() {
     const { Research } = await server.ssrLoadModule('/src/pages/Research.tsx');
     const { ArticleDetail } = await server.ssrLoadModule('/src/pages/ArticleDetail.tsx');
     const { PUBLISHED_ARTICLES } = await server.ssrLoadModule('/src/content/articles/index.ts');
+    const { PUBLISHED_NOTES } = await server.ssrLoadModule('virtual:published-articles');
+    const { RESEARCH_NOTES } = await server.ssrLoadModule('/src/content/notes.ts');
     const { mergeArticles } = await server.ssrLoadModule('/src/lib/articleState.ts');
     const { localizeArticle } = await server.ssrLoadModule('/src/lib/articleLocalization.ts');
     const publicArticles = mergeArticles(PUBLISHED_ARTICLES, [], [], {});
@@ -109,6 +115,13 @@ async function main() {
     const editor = render(<LocalEditorProbe />);
     stored.delete('ot_sec_notes');
     const sourceHome = render(<Home />);
+    // Simulate a deployment with no reviewed notes while retaining stale browser data.
+    const reviewedNotes = PUBLISHED_NOTES.splice(0);
+    stored.set('ot_sec_notes', JSON.stringify([{
+      id: 'retired-cached-note', date: '2026-07-20', tag: '#LEGACY', content: retiredNoteMarker,
+    }]));
+    const emptyNotesHome = render(<Home />);
+    PUBLISHED_NOTES.push(...reviewedNotes);
     const productionArticles = PUBLISHED_ARTICLES.filter((item: any) => !item.id.startsWith('validation-'));
     const allArticleLanguagesComplete = productionArticles.every((item: any) =>
       ['en', 'pt', 'es'].every(language => {
@@ -149,6 +162,13 @@ async function main() {
       privateSourceNoteInJavascript: javascript.includes(sourceNoteMarker),
       publicSourceNoteInJavascript: javascript.includes(publicNoteMarker),
       privateSourceNoteInHome: sourceHome.includes(sourceNoteMarker),
+      retiredCachedNoteInHome: home.includes(retiredNoteMarker),
+      retiredCachedNoteInInsights: research.includes(retiredNoteMarker),
+      retiredCachedNotePreservedInEditor: editor.includes(retiredNoteMarker),
+      reviewedSourceNoteSurvivesBrowserCache: home.includes(publicNoteMarker),
+      emptyNotesSectionHidden: !emptyNotesHome.includes('data-lab-notes'),
+      templateNotesInJavascript: RESEARCH_NOTES.filter((note: any) => ['1', '2', '3', '4', '5'].includes(note.id))
+        .some((note: any) => javascript.includes(note.content)),
     };
     assert.equal(results.registeredDraftInPublicCollection, false);
     assert.equal(results.directDraftUrlRendersBody, false);
@@ -175,6 +195,12 @@ async function main() {
     assert.equal(results.privateSourceNoteInJavascript, false);
     assert.equal(results.publicSourceNoteInJavascript, true);
     assert.equal(results.privateSourceNoteInHome, false);
+    assert.equal(results.retiredCachedNoteInHome, false);
+    assert.equal(results.retiredCachedNoteInInsights, false);
+    assert.equal(results.retiredCachedNotePreservedInEditor, true);
+    assert.equal(results.reviewedSourceNoteSurvivesBrowserCache, true);
+    assert.equal(results.emptyNotesSectionHidden, true);
+    assert.equal(results.templateNotesInJavascript, false);
     console.log(JSON.stringify(results, null, 2));
   } finally {
     await server?.close();

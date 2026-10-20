@@ -18,15 +18,31 @@ const markdownComponents: Components = {
       {children}
     </h1>
   ),
-  h2: ({ children, ...props }) => (
-    <h2
+  h2: ({ children, node, ...props }) => {
+    const text = React.Children.toArray(children).join('').trim().toLowerCase();
+    if (['referências', 'references', 'referencias'].includes(text)) {
+      return (
+        <h2 {...props} id="references" className="text-base font-semibold text-gray-300 mt-12 mb-4 pt-6 border-t border-gray-800/80 font-sans">
+          {children}
+        </h2>
+      );
+    }
+    if (['síntese da norma', 'análise técnica', 'standard summary', 'technical analysis',
+      'síntesis de la norma', 'análisis técnico'].includes(text)) {
+      return (
+        <h2 {...props} className="text-base sm:text-lg font-semibold text-gray-200 mt-10 mb-5 pt-5 border-t border-gray-800/60 font-sans">
+          {children}
+        </h2>
+      );
+    }
+    return <h2
       className="text-xl sm:text-2xl md:text-[28px] font-bold text-white mt-12 mb-5 pt-6 border-t border-gray-800/80 tracking-tight font-sans leading-snug flex items-center gap-3"
       {...props}
     >
       <span className="w-1.5 h-6 bg-cyan-400 rounded-full shrink-0 inline-block" />
       <span>{children}</span>
-    </h2>
-  ),
+    </h2>;
+  },
   h3: ({ children, ...props }) => (
     <h3
       className="text-lg sm:text-xl md:text-[22px] font-semibold text-gray-100 mt-8 mb-3 tracking-tight font-sans leading-snug"

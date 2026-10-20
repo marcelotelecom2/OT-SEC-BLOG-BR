@@ -1,3 +1,7 @@
+## Síntese da norma
+
+*Síntese editorial da IEC 62351-1. Os destaques não são apresentados como transcrições literais; o documento normativo continua sendo a referência.*
+
 Quando pensamos em cibersegurança, é comum associar ameaça a hackers, malware ou ataques pela rede.
 
 A **IEC 62351-1**, porém, apresenta uma visão mais ampla.
@@ -6,7 +10,7 @@ Na seção **5.2 — Types of security threats**, a norma considera como ativos 
 
 Por isso, a proteção deve considerar tanto **ameaças físicas** quanto **ameaças cibernéticas**.
 
-## Nem toda ameaça é deliberada
+### Nem toda ameaça é deliberada
 
 A seção **5.2.1 — General** faz uma distinção importante: uma ameaça pode surgir tanto de um evento não intencional quanto de um ataque deliberado.
 
@@ -26,21 +30,21 @@ A norma também reforça a importância da **análise de risco** para determinar
 
 E deixa outro princípio importante: **não existe uma solução única para todos os cenários**. Camadas de segurança são preferíveis a depender de uma única proteção.
 
-## 5.2.2 — Inadvertent threats
+### 5.2.2 — Inadvertent threats
 
 Na sequência, a IEC 62351 apresenta quatro tipos de **ameaças não intencionais**.
 
-### Safety failures
+#### Safety failures
 
 Safety sempre foi uma preocupação central no setor elétrico, especialmente em ambientes de alta tensão.
 
 A norma destaca que procedimentos continuam sendo fundamentais, mas que monitoramento, registros e alarmes podem ajudar a reforçá-los.
 
-Um ponto interessante é que alguns controles criados inicialmente por razões de safety também podem contribuir para security.
+**Comentário de aplicação do autor:** Um ponto interessante é que alguns controles criados inicialmente por razões de safety também podem contribuir para security.
 
 Um controle de acesso a uma subestação, por exemplo, pode proteger pessoas e, ao mesmo tempo, ajudar a reduzir vandalismo e furto.
 
-### Equipment failures
+#### Equipment failures
 
 Falhas de equipamentos são tratadas como ameaças esperadas à operação confiável do sistema elétrico.
 
@@ -50,7 +54,7 @@ A IEC 62351 chama atenção para o fato de que essas informações também podem
 
 Ou seja, um monitoramento criado para operação pode também trazer benefícios para segurança.
 
-### Carelessness
+#### Carelessness
 
 O fator humano também aparece como ameaça.
 
@@ -64,9 +68,9 @@ O problema nem sempre está em uma ação maliciosa.
 
 Pode surgir de complacência, descuido ou até da percepção de que determinado controle de segurança atrapalha o trabalho.
 
-Esse é um ponto especialmente importante em OT: **um controle só é realmente eficaz se também funcionar dentro da realidade operacional**.
+**Comentário de aplicação do autor:** Esse é um ponto especialmente importante em OT: **um controle só é realmente eficaz se também funcionar dentro da realidade operacional**.
 
-### Natural disasters
+#### Natural disasters
 
 Tempestades, furacões e terremotos também entram na análise.
 
@@ -76,7 +80,9 @@ Por isso, a norma destaca o valor do monitoramento em tempo real do estado físi
 
 Esse monitoramento funciona como os **“olhos e ouvidos”** da operação durante situações adversas.
 
-## O principal aprendizado
+## Análise técnica
+
+*Leitura técnica do autor a partir dos conceitos sintetizados; não estabelece exigências normativas adicionais.*
 
 A mensagem dessa primeira parte da seção 5.2 é simples:
 
@@ -87,3 +93,8 @@ Do ponto de vista de segurança da informação e cibersegurança OT, também pr
 A IEC 62351 começa, assim, construindo uma visão de segurança que vai além do ataque cibernético e considera o sistema elétrico como um conjunto de **pessoas, equipamentos, informação, processos e ambiente operacional**.
 
 Na próxima parte, entraremos no outro grupo apresentado pela norma: **5.2.3 — Deliberate threats**, as ameaças deliberadas.
+
+
+## Referências
+
+1. **Especificação técnica** — IEC. *IEC 62351-1 — Introduction to security issues*. [Catálogo oficial](https://webstore.iec.ch/en/publication/6903). A edição consultada não foi informada no artigo; o link identifica o registro no catálogo oficial.

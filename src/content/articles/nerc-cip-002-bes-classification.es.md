@@ -56,3 +56,11 @@ Un error crítico en los preparativos de la auditoría de OT es no distinguir en
 1. **La regla de los 15 minutos**: Si un activo puede fallar sin afectar las funciones de confiabilidad del BES dentro de un período de 15 minutos, generalmente no es un activo cibernético de BES.
 2. **Activos cibernéticos transitorios (TCA)**: las computadoras portátiles, los equipos de prueba y las unidades de mantenimiento USB están sujetos a controles CIP-010 cada vez que cruzan la barrera ESP.
 3. **Obligaciones de bajo impacto**: Nunca asuma que bajo impacto significa "sin seguridad". El Anexo 1 de CIP-003 exige concienciación sobre la seguridad cibernética, controles de acceso físico, controles de acceso electrónico y planificación de respuesta a incidentes para todos los activos de bajo impacto.
+
+
+## Referencias
+
+1. **Norma técnica** — NERC. *CIP-002-5.1a — Cyber Security — BES Cyber System Categorization*. [Documento oficial (PDF)](https://www.nerc.com/globalassets/standards/reliability-standards/cip/cip-002-5.1a.pdf).
+2. **Catálogo oficial** — NERC. *CIP — Critical Infrastructure Protection*. [Normas CIP](https://www.nerc.com/standards/reliability-standards/cip).
+
+El texto también menciona CIP-003 y CIP-010 sin indicar sus versiones. El catálogo permite identificar estos documentos sin atribuir una edición no registrada.

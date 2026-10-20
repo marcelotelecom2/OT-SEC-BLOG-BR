@@ -60,7 +60,7 @@ export function About() {
         
         <div className="mt-6 sm:mt-8 font-mono text-xs sm:text-sm p-4 bg-[#0a0a0a] border border-gray-800 rounded">
           <div className="text-gray-500 mb-1.5">{t.about.pgpFingerprint}</div>
-          <div className="text-cyan-400 break-all select-all font-mono">A1B2 C3D4 E5F6 7890 1234  5678 90AB CDEF 1234 5678</div>
+          <div className="text-cyan-400 break-all select-all font-mono">{t.about.pgpStatus}</div>
         </div>
       </motion.div>
     </div>
