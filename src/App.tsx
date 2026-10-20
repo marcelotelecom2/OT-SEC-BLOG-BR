@@ -16,6 +16,7 @@ const Research = lazy(() => import('./pages/Research').then(module => ({ default
 const Projects = lazy(() => import('./pages/Projects').then(module => ({ default: module.Projects })));
 const About = lazy(() => import('./pages/About').then(module => ({ default: module.About })));
 const Admin = lazy(() => import('./pages/Admin').then(module => ({ default: module.Admin })));
+const NotFound = lazy(() => import('./pages/NotFound').then(module => ({ default: module.NotFound })));
 
 function RouteFallback() {
   return (
@@ -51,6 +52,7 @@ export default function App() {
                 <Route path="projects" element={<Projects />} />
                 <Route path="about" element={<About />} />
                 <Route path="admin" element={<Admin />} />
+                <Route path="*" element={<NotFound />} />
               </Route>
             </Routes>
           </Suspense>

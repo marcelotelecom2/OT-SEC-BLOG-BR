@@ -9,6 +9,7 @@ import { ArticleContent } from '../src/components/article/ArticleContent';
 import { ResponsiveImage } from '../src/components/ui/ResponsiveImage';
 import { localizeArticle } from '../src/lib/articleLocalization';
 import { getOptimizedSocialImage } from '../src/lib/responsiveImage';
+import { writeStaticRoutePages } from './static-route-pages';
 import {
   formatMetaDescription,
   resolveImageUrl,
@@ -254,6 +255,8 @@ export function main() {
   }
 
   console.log(`[Prerender] Successfully generated ${count} localized article pages.`);
+  writeStaticRoutePages(templateHtml, distDir, publishedArticles);
+  console.log('[Prerender] Generated static route entry pages and the HTTP 404 fallback.');
 }
 
 main();

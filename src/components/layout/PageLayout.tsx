@@ -1,5 +1,5 @@
 import { Outlet, useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useLayoutEffect } from 'react';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
 import { NoiseOverlay } from '../ui/NoiseOverlay';
@@ -33,7 +33,7 @@ export function PageLayout() {
   const location = useLocation();
   const isAdmin = location.pathname === '/admin';
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     // Whenever current route is not an article detail page, ensure default institutional SEO
     if (!/^\/(?:en|pt|es)\/articles\//.test(location.pathname)) {
       applyDefaultSEO();
