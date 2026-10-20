@@ -16,7 +16,9 @@ export function ArticleSEO({ article, language }: ArticleSEOProps) {
     applyArticleSEO(article, language);
 
     return () => {
-      applyDefaultSEO();
+      // Cleanup runs after the destination layout effect. Keep that route's
+      // canonical instead of overwriting it with the homepage defaults.
+      applyDefaultSEO(window.location.pathname);
     };
   }, [
     article.id,
