@@ -12,7 +12,7 @@
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",
     "lint": "tsc --noEmit",
-    "test:articles": "tsx --test src/components/article/ArticleContent.test.tsx src/lib/articleState.test.ts src/lib/articleExport.test.ts src/lib/articleLocalization.test.ts src/lib/responsiveImage.test.ts src/lib/seo.test.ts src/lib/persistence.test.ts scripts/import-article.test.ts functions/api/admin/admin.test.ts",
+    "test:articles": "tsx --test src/components/seo/ArticleSEO.test.tsx src/components/article/ArticleContent.test.tsx src/lib/articleState.test.ts src/lib/articleExport.test.ts src/lib/articleLocalization.test.ts src/lib/responsiveImage.test.ts src/lib/seo.test.ts src/lib/persistence.test.ts scripts/import-article.test.ts functions/api/admin/admin.test.ts",
     "import:article": "tsx scripts/import-article.ts",
     "test:drafts": "tsx scripts/validate-draft-isolation.tsx",
     "test:routing": "tsx --test scripts/static-route-pages.test.tsx",
@@ -35,9 +35,11 @@
     "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
+    "@types/jsdom": "^21.1.7",
     "@types/node": "^22.14.0",
     "autoprefixer": "^10.4.21",
     "esbuild": "^0.25.0",
+    "jsdom": "^26.1.0",
     "lighthouse": "^12.8.2",
     "sharp": "^0.34.4",
     "tailwindcss": "^4.1.14",
