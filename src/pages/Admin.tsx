@@ -558,10 +558,9 @@ export function Admin() {
       {activeTab === 'articles' && (
         <div className="space-y-6">
           <div className="text-xs text-amber-300 border border-amber-900/60 bg-amber-950/20 p-3 rounded space-y-2">
-            <p>Este painel é um editor local. Salvar mantém a edição neste navegador; publicar exige enviar os arquivos ao GitHub.</p>
-            <p>Para publicar: edite o artigo, marque “Pronto para publicar” e clique em “Exportar artigo”. No projeto, execute:</p>
-            <code className="block break-all">npm run import:article -- "/caminho/artigo.ot-sec.json"</code>
-            <p>Depois revise os arquivos, valide o build e envie ao GitHub. O Cloudflare Pages publica o deploy.</p>
+            <p>Este painel está conectado ao GitHub. Ao salvar ou despublicar um artigo, a alteração cria um commit no repositório e inicia automaticamente um novo deployment no Cloudflare Pages.</p>
+            <p>Para publicar: edite o artigo, marque “Pronto para publicar” e clique em “Salvar”. A atualização ficará visível quando o deployment terminar.</p>
+            <p>A exportação abaixo é opcional e serve somente para manter uma cópia de segurança dos dados locais do navegador.</p>
             <button type="button" className="text-cyan-300 underline" onClick={() => withStorageFeedback(downloadEditorialBackup)}>
               Exportar cópia de todos os dados locais
             </button>
