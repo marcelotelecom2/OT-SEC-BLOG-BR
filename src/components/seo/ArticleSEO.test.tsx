@@ -4,7 +4,8 @@ import React, { act, useLayoutEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JSDOM } from 'jsdom';
 import { ArticleSEO } from './ArticleSEO';
-import { applyDefaultSEO, getArticleCanonicalUrl, SITE_URL } from '../../lib/seo';
+import { MissingArticleSEO } from './MissingArticleSEO';
+import { applyDefaultSEO, applyArticleSEO, getPageSEO, getArticleCanonicalUrl, SITE_URL } from '../../lib/seo';
 import type { Article } from '../../types';
 
 test('article cleanup preserves destination metadata, including /insights', async () => {
@@ -38,6 +39,34 @@ test('article cleanup preserves destination metadata, including /insights', asyn
   }
 
   try {
+    // The missing-article screen shares robots management with PageLayout.
+    // Repeated entry/exit must not remove React-owned hoisted DOM nodes.
+    for (const pathname of ['/articles', '/insights', '/admin']) {
+      dom.window.history.replaceState(null, '', '/en/articles/deleted');
+      await act(async () => root.render(<MissingArticleSEO title="Article not found" language="en" />));
+      assert.equal(document.head.querySelector('link[rel="canonical"]'), null);
+      assert.equal(document.head.querySelector('meta[name="robots"]')?.getAttribute('content'), 'noindex, follow');
+      dom.window.history.pushState(null, '', pathname);
+      await act(async () => root.render(<Destination pathname={pathname} />));
+      assertMetadata(`${SITE_URL}${pathname}`);
+      assert.equal(document.head.querySelector('meta[name="robots"]')?.getAttribute('content'),
+        pathname === '/admin' ? 'noindex, follow' : 'index, follow');
+    }
+
+    applyDefaultSEO('/admin');
+    assertMetadata(`${SITE_URL}/admin`);
+    assert.equal(document.head.querySelector('meta[name="robots"]')?.getAttribute('content'), 'noindex, follow');
+    for (const language of ['pt', 'es', 'en'] as const) {
+      applyDefaultSEO('/insights', language);
+      assertMetadata(`${SITE_URL}/insights`);
+      assert.equal(document.title, getPageSEO('/insights', language).title);
+      assert.equal(document.head.querySelector('meta[name="description"]')?.getAttribute('content'), getPageSEO('/insights', language).description);
+      assert.equal(document.head.querySelector('meta[name="robots"]')?.getAttribute('content'), 'index, follow');
+    }
+    applyDefaultSEO('/admin');
+    applyArticleSEO(article, 'en');
+    assert.equal(document.head.querySelector('meta[name="robots"]')?.getAttribute('content'), 'index, follow');
+
     for (const pathname of ['/insights', '/', '/articles', '/projects', '/about']) {
       dom.window.history.replaceState(null, '', '/en/articles/first-article');
       await act(async () => root.render(<ArticleSEO article={article} language="en" />));

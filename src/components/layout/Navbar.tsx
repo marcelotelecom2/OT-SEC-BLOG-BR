@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { Search, Menu, X } from 'lucide-react';
 import { cn } from '../../lib/utils';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { LanguageSelector } from '../ui/LanguageSelector';
 
@@ -9,12 +9,16 @@ export function Navbar() {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const { t } = useLanguage();
+  useEffect(() => { setIsOpen(false); }, [location.pathname]);
+  const isActivePath = (path: string) => path === '/'
+    ? location.pathname === '/'
+    : location.pathname.startsWith(path)
+      || (path === '/articles' && /^\/(en|pt|es)\/articles\//.test(location.pathname));
 
   const navLinks = [
     { name: t.nav.home, path: '/' },
     { name: t.nav.articles, path: '/articles' },
     { name: t.nav.insights, path: '/insights' },
-    { name: t.nav.projects, path: '/projects' },
     { name: t.nav.about, path: '/about' },
   ];
 
@@ -29,7 +33,7 @@ export function Navbar() {
                 OT-SEC<span className="text-cyan-500">.</span>
               </span>
               <span className="text-[10px] tracking-widest text-gray-500 font-mono uppercase">
-                Research Lab
+                OT/ICS Security
               </span>
             </Link>
           </div>
@@ -37,14 +41,13 @@ export function Navbar() {
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center space-x-6 lg:space-x-8">
             {navLinks.map((link) => {
-              const isActive = link.path === '/' 
-                ? location.pathname === '/' 
-                : location.pathname.startsWith(link.path);
+              const isActive = isActivePath(link.path);
 
               return (
                 <Link
                   key={link.path}
                   to={link.path}
+                  aria-current={isActive ? 'page' : undefined}
                   className={cn(
                     "relative text-sm font-medium transition-colors hover:text-cyan-400 font-sans tracking-wide group flex items-center gap-1 py-1",
                     isActive ? "text-white" : "text-gray-400"
@@ -79,8 +82,9 @@ export function Navbar() {
             <button 
               onClick={() => setIsOpen(!isOpen)}
               className="w-11 h-11 flex items-center justify-center text-gray-400 hover:text-white rounded-md hover:bg-gray-900/50 transition-colors focus:outline-none focus:ring-1 focus:ring-cyan-400"
-              aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
+              aria-label={isOpen ? t.nav.closeMenu : t.nav.openMenu}
               aria-expanded={isOpen}
+              aria-controls="mobile-navigation"
             >
               {isOpen ? <X className="w-5 h-5 text-cyan-400" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -90,17 +94,16 @@ export function Navbar() {
 
       {/* Mobile Nav */}
       {isOpen && (
-        <div className="md:hidden border-t border-gray-800/80 bg-[#0a0a0a]/95 backdrop-blur-xl shadow-2xl">
+        <div id="mobile-navigation" className="md:hidden border-t border-gray-800/80 bg-[#0a0a0a]/95 backdrop-blur-xl shadow-2xl">
           <div className="px-3 pt-3 pb-4 space-y-1">
             {navLinks.map((link) => {
-              const isActive = link.path === '/' 
-                ? location.pathname === '/' 
-                : location.pathname.startsWith(link.path);
+              const isActive = isActivePath(link.path);
 
               return (
                 <Link
                   key={link.path}
                   to={link.path}
+                  aria-current={isActive ? 'page' : undefined}
                   onClick={() => setIsOpen(false)}
                   className={cn(
                     "flex items-center px-4 py-3 rounded-md text-base font-medium font-mono tracking-wide transition-colors min-h-[44px]",

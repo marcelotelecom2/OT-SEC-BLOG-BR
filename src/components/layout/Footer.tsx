@@ -26,9 +26,9 @@ export function Footer() {
             <h3 className="text-xs font-mono tracking-widest text-gray-400 uppercase mb-3 sm:mb-4">{t.footer.sitemap}</h3>
             <ul className="space-y-1">
               {[
+                { name: t.nav.home, path: '/' },
                 { name: t.nav.articles, path: '/articles' },
                 { name: t.nav.insights, path: '/insights' },
-                { name: t.nav.projects, path: '/projects' },
                 { name: t.nav.about, path: '/about' },
               ].map((item) => (
                 <li key={item.path}>

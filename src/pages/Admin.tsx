@@ -23,13 +23,14 @@ import {
   getNoteTags 
 } from '../constants/researchClassification';
 import { ArticleEditorModal } from '../components/admin/ArticleEditorModal';
+import { RadarAdmin } from '../components/admin/RadarAdmin';
 import { downloadArticleExport } from '../lib/articleExport';
 import { downloadEditorialBackup } from '../lib/persistence';
 import { useLanguage } from '../context/LanguageContext';
 import { localizeArticleArea } from '../lib/articleLocalization';
 
 export function Admin() {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const {
     adminArticles: articles, adminNotes: notes, adminProjects: projects, mediaLibrary, analytics, storageError,
     isAdminLoggedIn, loginAdmin, logoutAdmin, changePassword,
@@ -41,7 +42,7 @@ export function Admin() {
 
   const [password, setPassword] = useState('');
   const [authError, setAuthError] = useState(false);
-  const [activeTab, setActiveTab] = useState<'kpis' | 'articles' | 'notes' | 'projects' | 'media'>('kpis');
+  const [activeTab, setActiveTab] = useState<'kpis' | 'articles' | 'radar' | 'notes' | 'projects' | 'media'>('kpis');
 
   // Search & Filter States
   const [searchTerm, setSearchTerm] = useState('');
@@ -268,7 +269,8 @@ export function Admin() {
         {[
           { id: 'kpis', label: 'KPIs & Analytics', icon: BarChart3, count: null },
           { id: 'articles', label: 'Articles', icon: FileText, count: articles.length },
-          { id: 'notes', label: 'Insights', icon: FlaskConical, count: notes.length },
+          { id: 'radar', label: t.radar.title, icon: Globe, count: null },
+          { id: 'notes', label: language === 'pt' ? 'Arquivo de notas' : language === 'es' ? 'Archivo de notas' : 'Notes archive', icon: FlaskConical, count: notes.length },
           { id: 'projects', label: 'Projects', icon: FolderGit2, count: projects.length },
           { id: 'media', label: 'Image Library', icon: ImageIcon, count: mediaLibrary.length },
         ].map((tab) => {
@@ -717,6 +719,7 @@ export function Admin() {
       {/* ========================================================= */}
       {/* 3. INSIGHTS MANAGEMENT TAB */}
       {/* ========================================================= */}
+      {activeTab === 'radar' && <RadarAdmin />}
       {activeTab === 'notes' && (
         <div className="space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-gray-950/60 p-4 border border-gray-800 rounded">

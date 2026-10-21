@@ -1,35 +1,37 @@
 import { Article, ArticleLanguage } from '../types';
 import { getOptimizedSocialImage } from './responsiveImage';
+import { SITE_METADATA } from '../constants/siteMetadata';
 
 export const SITE_URL = 'https://ot-sec.blog.br';
 
 export const DEFAULT_SEO = {
-  title: 'OT-SEC Digital Research Lab',
+  title: 'OT-SEC',
   description:
-    'Independent OT/ICS cybersecurity research for critical electric power infrastructure, with technical standards studies and applied research.',
+    'Independent technical knowledge in OT/ICS cybersecurity for critical electric power infrastructure.',
   canonical: 'https://ot-sec.blog.br/',
   ogType: 'website',
-  ogTitle: 'OT-SEC Digital Research Lab',
+  ogTitle: 'OT-SEC',
   ogDescription:
-    'Independent OT/ICS cybersecurity research for critical electric power infrastructure, with technical standards studies and applied research.',
+    'Independent technical knowledge in OT/ICS cybersecurity for critical electric power infrastructure.',
   ogUrl: 'https://ot-sec.blog.br/',
   image: 'https://ot-sec.blog.br/images/ot-sec-social.png',
-  siteName: 'OT-SEC Digital Research Lab',
+  siteName: 'OT-SEC',
   twitterCard: 'summary_large_image',
-  twitterTitle: 'OT-SEC Digital Research Lab',
+  twitterTitle: 'OT-SEC',
   twitterDescription:
-    'Independent OT/ICS cybersecurity research for critical electric power infrastructure, with technical standards studies and applied research.',
+    'Independent technical knowledge in OT/ICS cybersecurity for critical electric power infrastructure.',
 };
 
-export const STATIC_PAGE_TITLES: Record<string, string> = {
-  '/articles': 'Articles', '/insights': 'Research', '/projects': 'Projects', '/about': 'About',
-};
+export const STATIC_PAGE_TITLES: Record<string, string> = SITE_METADATA.en.titles;
 
-export function getPageSEO(pathname = '/') {
-  const page = STATIC_PAGE_TITLES[pathname];
+export function getPageSEO(pathname = '/', language: ArticleLanguage = 'en') {
+  const route = pathname === '/research' ? '/insights' : pathname;
+  const metadata = SITE_METADATA[language];
+  const page = (metadata.titles as Record<string, string>)[route];
   return {
     title: page ? `${page} | ${DEFAULT_SEO.title}` : DEFAULT_SEO.title,
-    canonical: page ? `${SITE_URL}${pathname}` : DEFAULT_SEO.canonical,
+    description: (metadata.descriptions as Record<string, string>)[route] ?? metadata.description,
+    canonical: page ? `${SITE_URL}${route}` : DEFAULT_SEO.canonical,
   };
 }
 
@@ -264,6 +266,7 @@ export function applyArticleSEO(article: Article, language: ArticleLanguage = 'e
   document.title = articleTitle;
 
   // Standard metadata
+  setMetaTag('name', 'robots', 'index, follow');
   setMetaTag('name', 'description', description);
   setCanonicalTag(canonical);
   setArticleLanguageLinks(article.slug);
@@ -289,21 +292,24 @@ export function applyArticleSEO(article: Article, language: ArticleLanguage = 'e
 /**
  * Restores the default institutional metadata for the homepage and other pages.
  */
-export function applyDefaultSEO(pathname = '/'): void {
+export function applyDefaultSEO(pathname = '/', language?: ArticleLanguage): void {
   if (typeof document === 'undefined') return;
 
-  const page = getPageSEO(pathname);
+  const documentLanguage = document.documentElement.lang.split('-')[0];
+  const resolvedLanguage = language ?? (documentLanguage === 'pt' || documentLanguage === 'es' ? documentLanguage : 'en');
+  const page = getPageSEO(pathname, resolvedLanguage);
   document.title = page.title;
 
   // Standard metadata
-  setMetaTag('name', 'description', DEFAULT_SEO.description);
+  setMetaTag('name', 'robots', pathname === '/admin' || pathname === '/research' ? 'noindex, follow' : 'index, follow');
+  setMetaTag('name', 'description', page.description);
   setCanonicalTag(page.canonical);
   document.head.querySelectorAll('link[rel="alternate"][hreflang]').forEach(element => element.remove());
 
   // Open Graph
   setMetaTag('property', 'og:type', DEFAULT_SEO.ogType);
   setMetaTag('property', 'og:title', page.title);
-  setMetaTag('property', 'og:description', DEFAULT_SEO.ogDescription);
+  setMetaTag('property', 'og:description', page.description);
   setMetaTag('property', 'og:url', page.canonical);
   setMetaTag('property', 'og:site_name', DEFAULT_SEO.siteName);
   setMetaTag('property', 'og:image', DEFAULT_SEO.image);
@@ -311,7 +317,7 @@ export function applyDefaultSEO(pathname = '/'): void {
   // Twitter
   setMetaTag('name', 'twitter:card', DEFAULT_SEO.twitterCard);
   setMetaTag('name', 'twitter:title', page.title);
-  setMetaTag('name', 'twitter:description', DEFAULT_SEO.twitterDescription);
+  setMetaTag('name', 'twitter:description', page.description);
   setMetaTag('name', 'twitter:image', DEFAULT_SEO.image);
 
   // Remove Article Structured Data (JSON-LD)

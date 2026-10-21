@@ -1,5 +1,6 @@
 import type { Article } from '../types';
 import { sanitizeImageUrl } from './sanitizeUrl';
+import { isArticleCategory } from './articleCategories';
 
 export interface ArticleExport {
   format: 'ot-sec-article';
@@ -33,6 +34,7 @@ export function parseArticleExport(value: unknown): ArticleExport {
     }
   }
   if (typeof source.published !== 'boolean') throw new Error('Status de publicação inválido.');
+  if (source.category !== undefined && !isArticleCategory(source.category)) throw new Error('Categoria de artigo inválida.');
   for (const field of ['coverImage', 'author']) {
     if (source[field] !== undefined && typeof source[field] !== 'string') {
       throw new Error(`Campo inválido: ${field}.`);
@@ -85,6 +87,7 @@ export function parseArticleExport(value: unknown): ArticleExport {
     if (typeof source[field] === 'string' && source[field].trim()) article[field] = source[field].trim();
   }
   if (source.tags) article.tags = (source.tags as string[]).map(tag => tag.trim()).filter(Boolean);
+  if (isArticleCategory(source.category)) article.category = source.category;
   if (Object.keys(translations).length) article.translations = translations;
   return { format: 'ot-sec-article', version: 2, article };
 }

@@ -1,4 +1,5 @@
 import type { Article, ResearchNote, Project, MediaItem, AnalyticsKPIs } from '../types';
+import { isArticleCategory } from './articleCategories';
 
 const record = (value: unknown): value is Record<string, any> => !!value && typeof value === 'object' && !Array.isArray(value);
 const strings = (value: unknown): value is string[] => Array.isArray(value) && value.every(item => typeof item === 'string');
@@ -17,6 +18,7 @@ export const isArticleArray = (value: unknown): value is Article[] => Array.isAr
   && optionalTags(item) && (item.published === undefined || typeof item.published === 'boolean')
   && (item.sourceLanguage === undefined || articleLanguages.includes(item.sourceLanguage))
   && optionalTranslations(item)
+  && (item.category === undefined || isArticleCategory(item.category))
   && (item.views === undefined || (typeof item.views === 'number' && Number.isFinite(item.views) && item.views >= 0)));
 export const isStringArray = strings;
 export const isViewCounts = (value: unknown): value is Record<string, number> => record(value)

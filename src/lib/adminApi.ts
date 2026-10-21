@@ -1,4 +1,4 @@
-import type { Article } from '../types';
+import type { Article, RadarPublication } from '../types';
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(path, {
@@ -12,6 +12,13 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export const adminApi = {
+  radar: () => request<{ entries: RadarPublication[] }>('/api/admin/radar'),
+  saveRadar: (entry: RadarPublication) => request<{ entry: RadarPublication; commit: string }>('/api/admin/radar', {
+    method: 'PUT', body: JSON.stringify({ entry }),
+  }),
+  unpublishRadar: (id: string) => request<{ commit: string }>('/api/admin/radar', {
+    method: 'DELETE', body: JSON.stringify({ id }),
+  }),
   session: () => request<{ authenticated: boolean }>('/api/admin/session'),
   login: (password: string) => request<{ authenticated: true }>('/api/admin/login', {
     method: 'POST', body: JSON.stringify({ password }),

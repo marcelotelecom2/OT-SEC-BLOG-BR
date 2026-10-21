@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { ArrowRight, Shield, Cpu, Network } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { CyberHero } from '../components/ui/CyberHero';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
@@ -7,8 +7,6 @@ import { DecodeText } from '../components/ui/DecodeText';
 import { SpotlightCard } from '../components/ui/SpotlightCard';
 import { useBlog } from '../context/BlogContext';
 import { useLanguage, getLocalizedArticle } from '../context/LanguageContext';
-import { getTagBadgeStyle, getAuthorBadgeStyle } from '../constants/researchClassification';
-import { publicNotes } from '../lib/articleState';
 import { ResponsiveImage } from '../components/ui/ResponsiveImage';
 
 const containerVariants = {
@@ -27,7 +25,7 @@ const itemVariants = {
 };
 
 export function Home() {
-  const { articles, notes, recordPageView } = useBlog();
+  const { articles, recordPageView } = useBlog();
   const { language, t } = useLanguage();
 
   useEffect(() => {
@@ -38,14 +36,6 @@ export function Home() {
     .filter(a => a.published !== false)
     .slice(0, 3)
     .map(a => getLocalizedArticle(a, language));
-
-  const latestNotes = publicNotes(notes).slice(0, 3);
-
-  const researchAreas = [
-    { id: '1', title: t.home.area1Title, icon: Shield, desc: t.home.area1Desc },
-    { id: '2', title: t.home.area2Title, icon: Cpu, desc: t.home.area2Desc },
-    { id: '3', title: t.home.area3Title, icon: Network, desc: t.home.area3Desc },
-  ];
 
   return (
     <div className="flex flex-col w-full relative">
@@ -83,15 +73,15 @@ export function Home() {
             initial={false}
             className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto items-center justify-center"
           >
-            <Link to="/insights" className="hud-border relative overflow-hidden px-6 sm:px-8 py-3.5 text-white font-mono text-sm tracking-widest uppercase bg-transparent group min-h-[44px] flex items-center justify-center">
+            <Link to="/articles" className="hud-border relative overflow-hidden px-6 sm:px-8 py-3.5 text-white font-mono text-sm tracking-widest uppercase bg-transparent group min-h-[44px] flex items-center justify-center">
               <span className="absolute inset-0 bg-cyan-500/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"></span>
               <span className="relative z-10 flex items-center justify-center">
-                {t.hero.btnInsights}
+                {t.hero.btnArticles}
                 <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
               </span>
             </Link>
-            <Link to="/articles" className="px-6 sm:px-8 py-3.5 text-gray-300 font-mono text-sm tracking-widest uppercase hover:text-white transition-colors flex items-center justify-center border border-gray-800 hover:border-gray-600 bg-gray-900/50 min-h-[44px]">
-              {t.hero.btnArticles}
+            <Link to="/insights" className="px-6 sm:px-8 py-3.5 text-gray-300 font-mono text-sm tracking-widest uppercase hover:text-white transition-colors flex items-center justify-center border border-gray-800 hover:border-gray-600 bg-gray-900/50 min-h-[44px]">
+              {t.hero.btnInsights}
             </Link>
           </motion.div>
         </div>
@@ -162,98 +152,6 @@ export function Home() {
             ))}
           </div>
         </motion.section>
-
-        {/* Research Areas */}
-        <motion.section 
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: "-100px" }}
-          variants={containerVariants}
-          className="mb-14 sm:mb-20 md:mb-24"
-        >
-          <motion.div variants={itemVariants} className="flex items-end justify-between mb-8 sm:mb-12 border-b border-gray-800 pb-4">
-            <div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight font-sans mb-1.5 cursor-crosshair">
-                <DecodeText text={t.home.areasTitle} delay={0} />
-              </h2>
-              <p className="text-gray-500 font-mono text-xs sm:text-sm">{t.home.areasSubtitle}</p>
-            </div>
-          </motion.div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {researchAreas.map((area) => {
-              const Icon = area.icon;
-              return (
-                <SpotlightCard key={area.id} className="p-5 sm:p-6 cursor-crosshair">
-                  <Icon className="w-8 h-8 text-gray-500 group-hover:text-cyan-400 transition-colors mb-4 relative z-10" />
-                  <h3 className="text-lg font-semibold text-white mb-2 relative z-10">{area.title}</h3>
-                  <p className="text-sm text-gray-400 relative z-10">{area.desc}</p>
-                </SpotlightCard>
-              );
-            })}
-          </div>
-        </motion.section>
-
-        {/* Insights */}
-        {latestNotes.length > 0 && <motion.section
-          data-lab-notes
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: "-100px" }}
-          variants={containerVariants}
-          className="mb-14 sm:mb-20 md:mb-24"
-        >
-          <motion.div variants={itemVariants} className="flex items-end justify-between mb-6 sm:mb-8 border-b border-gray-800 pb-4">
-            <div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight font-sans cursor-crosshair mb-1.5">
-                <DecodeText text={t.home.notesTitle} delay={0} />
-              </h2>
-              <p className="text-gray-500 font-mono text-xs sm:text-sm">{t.home.notesSubtitle}</p>
-            </div>
-            <Link to="/insights" className="text-cyan-400 font-mono text-xs sm:text-sm hover:text-cyan-300 py-1 flex items-center gap-1">
-              {t.home.btnGoInsights} <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-          </motion.div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {latestNotes.map((note) => {
-              const displayTag = note.contentType || note.tag || (Array.isArray(note.tags) ? note.tags[0] : 'Insight');
-              return (
-                <motion.div 
-                  variants={itemVariants}
-                  whileHover={{ x: 5 }}
-                  key={note.id} 
-                  className="flex flex-col justify-between border-t border-gray-800 pt-4 relative group cursor-crosshair"
-                >
-                  <div className="absolute top-0 left-0 w-full h-[1px] bg-cyan-500/50 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></div>
-                  <div>
-                    <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
-                      <span className="text-xs font-mono text-gray-500">{note.date}</span>
-                      <span className={`text-[10px] font-mono px-2 py-0.5 rounded border font-semibold ${getTagBadgeStyle(displayTag)}`}>
-                        {displayTag}
-                      </span>
-                    </div>
-                    {note.title && (
-                      <h4 className="text-sm font-bold text-white mb-1.5 font-sans group-hover:text-cyan-300 transition-colors">
-                        {note.title}
-                      </h4>
-                    )}
-                    <p className="text-sm text-gray-300 leading-relaxed group-hover:text-white transition-colors mb-3">
-                      {note.content}
-                    </p>
-                  </div>
-                  {note.author && (
-                    <div className="pt-2 border-t border-gray-800/40 flex items-center justify-end mt-2">
-                      <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded border ${getAuthorBadgeStyle(note.author)}`}>
-                        {note.author}
-                      </span>
-                    </div>
-                  )}
-                </motion.div>
-              );
-            })}
-          </div>
-        </motion.section>}
 
       </div>
     </div>

@@ -14,9 +14,9 @@ const BASE_URL = 'https://ot-sec.blog.br';
  * Public routes derived directly from src/App.tsx route definitions:
  * - "/" (Home page)
  * - "/articles" (Articles archive/list)
- * - "/insights" (Research / Insights page; note: /research redirects to /insights)
- * - "/projects" (Research projects)
- * - "/about" (About OT-SEC Lab)
+ * - "/insights" (OT Radar; /research remains a legacy redirect)
+ * - "/projects" (Preserved project archive)
+ * - "/about" (About OT-SEC)
  *
  * Excluded:
  * - "/admin" (Private administration area)

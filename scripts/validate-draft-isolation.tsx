@@ -19,6 +19,8 @@ async function main() {
   const sourceNoteMarker = 'VALIDATION_PRIVATE_SOURCE_NOTE_836901';
   const publicNoteMarker = 'VALIDATION_PUBLIC_SOURCE_NOTE_836901';
   const retiredNoteMarker = 'VALIDATION_RETIRED_CACHED_NOTE_836901';
+  const privateRadarMarker = 'VALIDATION_PRIVATE_RADAR_836901';
+  const publicRadarMarker = 'VALIDATION_PUBLIC_RADAR_836901';
   try {
     for (const name of ['src', 'scripts', 'public', 'package.json', 'tsconfig.json', 'vite.config.ts', 'index.html', 'favicon.svg']) {
       fs.cpSync(path.join(sourceRoot, name), path.join(fixture, name), { recursive: true });
@@ -60,6 +62,13 @@ async function main() {
         id: 'source-public', date: '2026-10-18', tag: '#PUBLIC', content: publicNoteMarker, published: true,
       })});\n`);
 
+    // Radar fixtures exist only in the temporary checkout, never in the real registry.
+    const radarFixture = { id: 'validation-radar', type: 'advisory', title: 'Validation title', date: '2026-10-20',
+      sourceName: 'Validation source', sourceUrl: 'https://example.com/radar-validation', comment: publicRadarMarker,
+      published: true, sourceLanguage: 'en' };
+    fs.writeFileSync(path.join(fixture, 'src/content/radar.json'), JSON.stringify([
+      radarFixture, { ...radarFixture, id: 'private-radar', title: privateRadarMarker, comment: privateRadarMarker, published: false },
+    ]));
     const build = spawnSync('npm', ['run', 'build'], { cwd: fixture, encoding: 'utf8', timeout: 120000 });
     assert.equal(build.status, 0, build.stderr + build.stdout);
     const staleHtml = path.join(fixture, 'dist/en/articles/validation-private-draft.html');
@@ -95,7 +104,7 @@ async function main() {
       setItem: (key: string, value: string) => stored.set(key, value),
       removeItem: (key: string) => stored.delete(key),
     };
-    server = await createServer({ root: fixture, server: { middlewareMode: true, hmr: false }, appType: 'custom' });
+    server = await createServer({ root: fixture, cacheDir: path.join(fixture, '.vite'), server: { middlewareMode: true, hmr: false }, appType: 'custom' });
     // Resolve the router through the same Vite SSR graph as the components.
     fs.writeFileSync(path.join(fixture, 'src/validation-router.tsx'),
       "export { MemoryRouter, Routes, Route } from 'react-router-dom';\n");
@@ -106,6 +115,7 @@ async function main() {
     const { Projects } = await server.ssrLoadModule('/src/pages/Projects.tsx');
     const { Footer } = await server.ssrLoadModule('/src/components/layout/Footer.tsx');
     const { Research } = await server.ssrLoadModule('/src/pages/Research.tsx');
+    const { Radar } = await server.ssrLoadModule('/src/pages/Radar.tsx');
     const { ArticleDetail } = await server.ssrLoadModule('/src/pages/ArticleDetail.tsx');
     const { PUBLISHED_ARTICLES } = await server.ssrLoadModule('/src/content/articles/index.ts');
     const { PUBLISHED_NOTES } = await server.ssrLoadModule('virtual:published-articles');
@@ -132,6 +142,13 @@ async function main() {
     assert.ok(render(<ProjectEditorProbe />).includes('VALIDATION_CACHED_PROJECT_836901'));
     const home = render(<Home />);
     const research = render(<Research />, '/insights');
+    const radar = render(<Radar />, '/insights');
+    assert.ok(radar.includes(publicRadarMarker));
+    assert.ok(radar.includes('href="https://example.com/radar-validation"'));
+    assert.ok(radar.includes('rel="noopener noreferrer"'));
+    assert.ok(!radar.includes(privateRadarMarker));
+    assert.ok(javascript.includes(publicRadarMarker));
+    assert.ok(!javascript.includes(privateRadarMarker));
     const direct = render(<Routes><Route path="/articles/:slug" element={<ArticleDetail />} /></Routes>, '/articles/validation-private-draft');
     const byId = render(<Routes><Route path="/articles/:slug" element={<ArticleDetail />} /></Routes>, '/articles/validation-private');
     const visible = render(<Routes><Route path="/articles/:slug" element={<ArticleDetail />} /></Routes>, '/articles/validation-public-article');
@@ -155,6 +172,8 @@ async function main() {
       }));
     const results = {
       fixtureBuildPassed: true,
+      radarDraftExcludedFromBundle: !javascript.includes(privateRadarMarker),
+      radarPublicSourceRendered: radar.includes('https://example.com/radar-validation'),
       staleDraftHtmlRemoved: !fs.existsSync(staleHtml),
       registeredDraftInPublicCollection: publicArticles.some((item: any) => item.id === draft.id),
       registeredDraftBodyInJavascript: javascript.includes(bodyMarker),
@@ -167,7 +186,8 @@ async function main() {
       insightsShowsDraftTag: research.includes(tagMarker),
       insightsRendersDraftBodyInitially: research.includes(noteMarker),
       directDraftIdRendersBody: byId.includes(bodyMarker),
-      draftPageIsNoindex: direct.includes('noindex'),
+      draftPageIsNoindex: fs.readFileSync(path.join(fixture, 'dist/404.html'), 'utf8')
+        .includes('name="robots" content="noindex, follow"'),
       publicArticleInJavascript: javascript.includes(publicBody),
       publicTranslationInJavascript: javascript.includes(publicTranslationBody),
       publicArticleBodyInStaticHtml: publicArticleHtml.includes(publicTranslationBody),
@@ -189,7 +209,7 @@ async function main() {
       retiredCachedNoteInHome: home.includes(retiredNoteMarker),
       retiredCachedNoteInInsights: research.includes(retiredNoteMarker),
       retiredCachedNotePreservedInEditor: editor.includes(retiredNoteMarker),
-      reviewedSourceNoteSurvivesBrowserCache: home.includes(publicNoteMarker),
+      archivedSourceNoteAbsentFromHome: !home.includes(publicNoteMarker),
       emptyNotesSectionHidden: !emptyNotesHome.includes('data-lab-notes'),
       templateNotesInJavascript: RESEARCH_NOTES.filter((note: any) => ['1', '2', '3', '4', '5'].includes(note.id))
         .some((note: any) => javascript.includes(note.content)),
@@ -222,7 +242,7 @@ async function main() {
     assert.equal(results.retiredCachedNoteInHome, false);
     assert.equal(results.retiredCachedNoteInInsights, false);
     assert.equal(results.retiredCachedNotePreservedInEditor, true);
-    assert.equal(results.reviewedSourceNoteSurvivesBrowserCache, true);
+    assert.equal(results.archivedSourceNoteAbsentFromHome, true);
     assert.equal(results.emptyNotesSectionHidden, true);
     assert.equal(results.templateNotesInJavascript, false);
     console.log(JSON.stringify(results, null, 2));

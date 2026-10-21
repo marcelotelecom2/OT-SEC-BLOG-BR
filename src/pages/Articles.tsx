@@ -1,10 +1,11 @@
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import { motion } from 'motion/react';
 import { SpotlightCard } from '../components/ui/SpotlightCard';
 import { useBlog } from '../context/BlogContext';
-import { useLanguage, getLocalizedArticle } from '../context/LanguageContext';
+import { useLanguage } from '../context/LanguageContext';
 import { ResponsiveImage } from '../components/ui/ResponsiveImage';
+import { ARTICLE_CATEGORIES, filterStudyArticles, getArticleCategory, isArticleCategory } from '../lib/articleCategories';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -22,14 +23,24 @@ const itemVariants = {
 export function Articles() {
   const { articles, recordPageView } = useBlog();
   const { language, t } = useLanguage();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const categoryParam = searchParams.get('category');
+  const category = isArticleCategory(categoryParam) ? categoryParam : 'all';
+  const query = searchParams.get('q') ?? '';
+  const updateFilter = (name: 'category' | 'q', value: string) => {
+    setSearchParams(previous => {
+      const next = new URLSearchParams(previous);
+      if (value && !(name === 'category' && value === 'all')) next.set(name, value);
+      else next.delete(name);
+      return next;
+    }, { replace: true });
+  };
 
   useEffect(() => {
     recordPageView('/articles');
   }, []);
 
-  const publishedArticles = articles
-    .filter(a => a.published !== false)
-    .map(a => getLocalizedArticle(a, language));
+  const publishedArticles = filterStudyArticles(articles, language, category, query);
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-24 min-h-[80vh]">
@@ -39,8 +50,36 @@ export function Articles() {
         </h1>
         <p className="text-gray-400 font-mono text-xs sm:text-sm">{t.articles.subtitle}</p>
       </div>
+
+      <div className="mb-8 space-y-4">
+        <div>
+          <label htmlFor="study-search" className="block text-xs font-mono text-gray-400 mb-2">{t.articles.searchLabel}</label>
+          <input id="study-search" type="search" value={query}
+            onChange={event => updateFilter('q', event.target.value)} placeholder={t.articles.searchPlaceholder}
+            className="w-full min-h-11 rounded-md border border-gray-800 bg-gray-950 px-4 py-3 text-sm text-gray-100 placeholder:text-gray-500 focus:outline-none focus:ring-1 focus:ring-cyan-400" />
+        </div>
+        <div role="group" aria-label={t.articles.categoryLabel} className="flex flex-wrap gap-2">
+          {(['all', ...ARTICLE_CATEGORIES] as const).map(value => (
+            <button key={value} type="button" aria-pressed={category === value}
+              onClick={() => updateFilter('category', value)}
+              className={`min-h-11 rounded-md border px-3 py-2 text-xs sm:text-sm font-mono transition-colors focus:outline-none focus:ring-1 focus:ring-cyan-400 ${category === value
+                ? 'border-cyan-700 bg-cyan-950/30 text-cyan-300'
+                : 'border-gray-800 text-gray-400 hover:border-cyan-800 hover:text-white'}`}>
+              {value === 'all' ? t.articles.allCategories : t.articles.categories[value]}
+            </button>
+          ))}
+        </div>
+        <div className="flex flex-wrap items-center justify-between gap-3 text-xs font-mono text-gray-400">
+          <p role="status">{t.articles.results.replace('{count}', String(publishedArticles.length))}</p>
+          {(query || category !== 'all') && <button type="button" className="min-h-11 text-cyan-400 hover:text-cyan-300"
+            onClick={() => setSearchParams(previous => {
+              const next = new URLSearchParams(previous); next.delete('q'); next.delete('category'); return next;
+            }, { replace: true })}>{t.articles.resetFilters}</button>}
+        </div>
+      </div>
       
       <motion.div
+          key={`${category}:${query}:${language}`}
           variants={containerVariants}
           initial="hidden"
           animate="show"
@@ -48,7 +87,7 @@ export function Articles() {
         >
           {publishedArticles.length === 0 ? (
             <div className="text-gray-500 font-mono text-center py-12 border border-dashed border-gray-800 rounded">
-              {t.articles.empty}
+              {query || category !== 'all' ? t.articles.noResults : t.articles.empty}
             </div>
           ) : (
             publishedArticles.map((article, index) => (
@@ -84,7 +123,7 @@ export function Articles() {
                           )}
                         </div>
                         <div className="text-[11px] font-mono px-2 py-0.5 rounded bg-gray-900 border border-gray-800 text-cyan-500/70 group-hover:border-cyan-900/50 transition-colors">
-                          {article.area}
+                          {t.articles.categories[getArticleCategory(article)]}
                         </div>
                       </div>
 

@@ -12,8 +12,7 @@ export function NotFound() {
     setMetaTag('name', 'robots', 'noindex, follow');
     setCanonicalTag(null);
     return () => {
-      applyDefaultSEO();
-      setMetaTag('name', 'robots', 'index, follow');
+      applyDefaultSEO(window.location.pathname);
     };
   }, [language]);
 

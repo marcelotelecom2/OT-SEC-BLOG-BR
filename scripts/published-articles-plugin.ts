@@ -5,6 +5,7 @@ import { ARTICLES_METADATA } from '../src/content/articles/metadata';
 import { RESEARCH_NOTES } from '../src/content/notes';
 import { PROJECTS } from '../src/content/projects';
 import { publicNotes } from '../src/lib/articleState';
+import { parseRadarSource, publicRadar } from '../src/lib/radar';
 
 /** Generate the client module at build time. Draft metadata and bodies never enter its graph. */
 export function publishedArticlesPlugin(): Plugin {
@@ -82,8 +83,12 @@ export function publishedArticlesPlugin(): Plugin {
         entries.push(`{ ...${JSON.stringify(articleMetadata)}, content: ${name}, translations: {${translationsExpression}} }`);
       }
       const notes = publicNotes(RESEARCH_NOTES);
+      const radarPath = path.join(root, 'src/content/radar.json');
+      this.addWatchFile(radarPath);
+      const radar = publicRadar(parseRadarSource(fs.readFileSync(radarPath, 'utf8')));
       return `${imports.join('\n')}\nexport const PUBLISHED_ARTICLES = [${entries.join(',\n')}];\n`
         + `export const PUBLISHED_NOTES = ${JSON.stringify(notes)};\n`
+        + `export const PUBLISHED_RADAR = ${JSON.stringify(radar)};\n`
         + `export const PUBLISHED_PROJECTS = ${JSON.stringify(PROJECTS.filter(project => project.published === true))};\n`;
     },
   };

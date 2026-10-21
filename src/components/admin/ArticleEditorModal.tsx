@@ -6,11 +6,12 @@ import {
   Upload, X, RefreshCw, FileText, Clock, Tag, Calendar, CheckCircle2,
   Info, AlertCircle, Link2, Copy
 } from 'lucide-react';
-import { Article, ArticleLanguage, ArticleTranslation, MediaItem } from '../../types';
+import { Article, ArticleCategory, ArticleLanguage, ArticleTranslation, MediaItem } from '../../types';
 import { ArticleContent } from '../article/ArticleContent';
 import { downloadArticleExport } from '../../lib/articleExport';
 import { useLanguage } from '../../context/LanguageContext';
 import { localizeArticleArea } from '../../lib/articleLocalization';
+import { ARTICLE_CATEGORIES, getArticleCategory } from '../../lib/articleCategories';
 
 const ARTICLE_AREAS = [
   'ICS Security', 'Artificial Intelligence', 'Network Engineering', 'Power Grid Security',
@@ -99,12 +100,13 @@ export function ArticleEditorModal({
   uploadImage,
   onOpenMediaPicker
 }: ArticleEditorModalProps) {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   // Form State
   const [editorId] = useState(() => article.id || Date.now().toString());
   const [title, setTitle] = useState(article.title || '');
   const [slug, setSlug] = useState(article.slug || '');
   const [area, setArea] = useState(article.area || 'ICS Security');
+  const [category, setCategory] = useState<ArticleCategory>(() => getArticleCategory({ area: article.area || 'ICS Security', category: article.category }));
   const [readTime, setReadTime] = useState(article.readTime || '10 min read');
   const [date, setDate] = useState(article.date || new Date().toISOString().split('T')[0]);
   const [summary, setSummary] = useState(article.summary || '');
@@ -445,7 +447,7 @@ export function ArticleEditorModal({
       ...article,
       id: article.id || editorId,
       slug: slug.trim() || generateSlugFromTitle(title) || `article-${Date.now()}`,
-      title: title.trim(), summary: summary.trim(), content: content.trim(), area,
+      title: title.trim(), summary: summary.trim(), content: content.trim(), area, category,
       readTime: readTime.trim() || autoReadTime, date,
       coverImage: coverImage.trim() || undefined, published, views: article.views ?? 0,
       sourceLanguage,
@@ -511,7 +513,7 @@ export function ArticleEditorModal({
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [hasCriticalBugs, translationError, title, slug, summary, content, area, readTime, date, coverImage, published, sourceLanguage, translations, article, onSave]);
+  }, [hasCriticalBugs, translationError, title, slug, summary, content, area, category, readTime, date, coverImage, published, sourceLanguage, translations, article, onSave]);
 
   // Upload Handlers
   const handleCoverUploadFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -823,6 +825,15 @@ export function ArticleEditorModal({
                 <p className="text-[11px] text-gray-500">
                   URL canônica inglesa da publicação. Ex: <span className="text-cyan-400">/en/articles/{slug || 'article-slug'}</span>
                 </p>
+              </div>
+
+              <div>
+                <label htmlFor="article-category" className="block text-gray-400 mb-1.5">{t.articles.categoryLabel}</label>
+                <select id="article-category" value={category}
+                  onChange={event => { setCategory(event.target.value as ArticleCategory); markDirty(); }}
+                  className="w-full px-3 py-2 bg-gray-950 border border-gray-800 text-cyan-300 focus:border-cyan-500 rounded text-xs">
+                  {ARTICLE_CATEGORIES.map(value => <option key={value} value={value}>{t.articles.categories[value]}</option>)}
+                </select>
               </div>
 
               {/* Grid: Area, Read Time, Date */}

@@ -7,6 +7,7 @@ import { CustomCursor } from '../ui/CustomCursor';
 import { Scanlines } from '../ui/Scanlines';
 import { motion, useScroll, useSpring } from 'motion/react';
 import { applyDefaultSEO } from '../../lib/seo';
+import { useLanguage } from '../../context/LanguageContext';
 
 function PublicEffects() {
   const { scrollYProgress } = useScroll();
@@ -31,14 +32,15 @@ function PublicEffects() {
 
 export function PageLayout() {
   const location = useLocation();
+  const { language } = useLanguage();
   const isAdmin = location.pathname === '/admin';
 
   useLayoutEffect(() => {
     // Whenever current route is not an article detail page, ensure default institutional SEO
     if (!/^\/(?:en|pt|es)\/articles\//.test(location.pathname)) {
-      applyDefaultSEO(location.pathname);
+      applyDefaultSEO(location.pathname, language);
     }
-  }, [location.pathname]);
+  }, [location.pathname, language]);
 
   useEffect(() => {
     document.body.classList.toggle('admin-mode', isAdmin);

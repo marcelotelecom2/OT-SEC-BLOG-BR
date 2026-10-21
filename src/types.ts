@@ -1,4 +1,19 @@
 export type ArticleLanguage = 'en' | 'pt' | 'es';
+export type ArticleCategory = 'standards' | 'papers' | 'technical';
+
+export type RadarType = 'news' | 'vulnerability' | 'advisory' | 'incident' | 'regulation';
+export interface RadarPublication {
+  id: string;
+  type: RadarType;
+  title: string;
+  date: string;
+  sourceName: string;
+  sourceUrl: string;
+  comment: string;
+  published: boolean;
+  sourceLanguage: ArticleLanguage;
+  translations?: Partial<Record<ArticleLanguage, { title: string; comment: string }>>;
+}
 
 export interface ArticleTranslation {
   title: string;
@@ -14,6 +29,7 @@ export interface Article {
   summary: string;
   content?: string;
   area: string;
+  category?: ArticleCategory;
   readTime: string;
   date: string;
   coverImage?: string;

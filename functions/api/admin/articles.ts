@@ -1,4 +1,5 @@
 import { assertSameOrigin, commitFiles, isAuthenticated, json, metadataSource, parseMetadataSource, readRepositoryFile, type PagesContext } from './_shared';
+import { isArticleCategory } from '../../../src/lib/articleCategories';
 
 const languages = ['en', 'pt', 'es'] as const;
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -9,6 +10,7 @@ function cleanArticle(value: any): any {
   for (const field of required) if (typeof value[field] !== 'string' || !value[field].trim()) throw new Error(`Campo obrigatório: ${field}.`);
   if (!slugPattern.test(value.slug)) throw new Error('Slug inválido.');
   if (typeof value.published !== 'boolean') throw new Error('Status editorial inválido.');
+  if (value.category !== undefined && !isArticleCategory(value.category)) throw new Error('Categoria de artigo inválida.');
   const sourceLanguage = languages.includes(value.sourceLanguage) ? value.sourceLanguage : 'pt';
   if (value.published) for (const language of languages) {
     if (language === sourceLanguage) continue;

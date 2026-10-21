@@ -9,6 +9,7 @@ import { findPublicArticle } from '../lib/articleState';
 import { localizeArticle } from '../lib/articleLocalization';
 import type { ArticleLanguage } from '../types';
 import { ResponsiveImage } from '../components/ui/ResponsiveImage';
+import { MissingArticleSEO } from '../components/seo/MissingArticleSEO';
 
 const LANGUAGE_NAMES: Record<ArticleLanguage, Record<ArticleLanguage, string>> = {
   en: { en: 'English', pt: 'Portuguese', es: 'Spanish' },
@@ -46,9 +47,8 @@ export function ArticleDetail({ routeLanguage }: { routeLanguage?: ArticleLangua
   if (!rawArticle) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-24 text-center font-mono">
-        <title>Article Not Found | OT-SEC</title>
-        <meta name="robots" content="noindex, follow" />
-        <h2 className="text-xl text-rose-400 mb-4">{t.articleDetail.notFoundTitle}</h2>
+        <MissingArticleSEO title={t.articleDetail.notFoundTitle} language={language} />
+        <h1 className="text-xl text-rose-400 mb-4">{t.articleDetail.notFoundTitle}</h1>
         <p className="text-gray-500 mb-8">{t.articleDetail.notFoundDesc}</p>
         <Link to="/articles" className="px-4 py-2 bg-cyan-500 text-black font-bold text-xs uppercase rounded">
           {t.articleDetail.returnBtn}

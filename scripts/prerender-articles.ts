@@ -160,7 +160,7 @@ export function prerenderArticleHtml(templateHtml: string, article: Article, lan
     <meta property="og:url" content="${escapeHtml(canonicalUrl)}" />
     <meta property="og:title" content="${escapeHtml(article.title)}" />
     <meta property="og:description" content="${escapeHtml(formattedDescription)}" />
-    <meta property="og:site_name" content="OT-SEC Digital Research Lab" />${ogImageTag}
+    <meta property="og:site_name" content="OT-SEC" />${ogImageTag}
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />

@@ -20,7 +20,8 @@ export function writeStaticRoutePages(
       .replace(/<title>[\s\S]*?<\/title>/i, `<title>${page.title}</title>`)
       .replace(/(<link\s+[^>]*rel=["']canonical["'][^>]*href=["'])[^"']+/, `$1${page.canonical}`)
       .replace(/(<meta\s+[^>]*property=["']og:url["'][^>]*content=["'])[^"']+/, `$1${page.canonical}`)
-      .replace(/(<meta\s+[^>]*(?:property=["']og:title["']|name=["']twitter:title["'])[^>]*content=["'])[^"']+/g, `$1${page.title}`);
+      .replace(/(<meta\s+[^>]*(?:property=["']og:title["']|name=["']twitter:title["'])[^>]*content=["'])[^"']+/g, `$1${page.title.replace(/&/g, '&amp;')}`)
+      .replace(/(<meta\s+[^>]*(?:name=["']description["']|property=["']og:description["']|name=["']twitter:description["'])[^>]*content=["'])[^"']+/g, `$1${page.description}`);
     if (route === '/admin' || route === '/research') {
       html = html.replace(/<meta\s+[^>]*name=["']robots["'][^>]*>/gi, '')
         .replace('</head>', '<meta name="robots" content="noindex, follow" /></head>');

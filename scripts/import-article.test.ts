@@ -143,6 +143,7 @@ test('the CLI imports and reimports an export with spaces in its path without du
   fs.writeFileSync(path.join(root, 'package.json'), '{"type":"module"}');
   for (const relative of [
     'scripts/import-article.ts', 'src/lib/articleExport.ts', 'src/lib/sanitizeUrl.ts',
+    'src/lib/articleCategories.ts', 'src/lib/articleLocalization.ts',
     'src/types.ts', 'src/content/articles/metadata.ts',
   ]) {
     const destination = path.join(root, relative);

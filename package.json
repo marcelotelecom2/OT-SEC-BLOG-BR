@@ -16,7 +16,10 @@
     "import:article": "tsx scripts/import-article.ts",
     "test:drafts": "tsx scripts/validate-draft-isolation.tsx",
     "test:routing": "tsx --test scripts/static-route-pages.test.tsx",
+    "test:categories": "tsx --test src/lib/articleCategories.test.ts",
+    "test:radar": "tsx --test src/lib/radar.test.ts functions/api/admin/radar.test.ts src/components/admin/RadarAdmin.test.tsx",
     "test:performance": "tsx scripts/validate-performance.ts",
+    "test:site": "tsx scripts/validate-site.ts",
     "audit:performance": "lighthouse --only-categories=performance --form-factor=mobile --screenEmulation.mobile=true --throttling-method=simulate"
   },
   "dependencies": {

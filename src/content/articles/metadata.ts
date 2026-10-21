@@ -11,6 +11,7 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
     "date": "2026-10-18",
     "readTime": "3 min de leitura",
     "area": "Technical Standards",
+    "category": "standards",
     "author": "Walter Rodrigues",
     "sourceLanguage": "pt",
     "translations": {
@@ -43,6 +44,7 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
     "date": "2026-10-18",
     "readTime": "3 min de leitura",
     "area": "Technical Standards",
+    "category": "standards",
     "author": "Walter Rodrigues",
     "sourceLanguage": "pt",
     "translations": {
@@ -75,6 +77,7 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
     "date": "2026-10-18",
     "readTime": "4 min de leitura",
     "area": "Technical Standards",
+    "category": "standards",
     "author": "Walter Rodrigues",
     "sourceLanguage": "pt",
     "translations": {
@@ -107,6 +110,7 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
     "date": "2026-10-18",
     "readTime": "4 min de leitura",
     "area": "Technical Standards",
+    "category": "standards",
     "author": "Walter Rodrigues",
     "sourceLanguage": "pt",
     "translations": {
@@ -139,6 +143,7 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
     "date": "2026-10-18",
     "readTime": "5 min de leitura",
     "area": "Regulation Update",
+    "category": "standards",
     "author": "Walter Rodrigues",
     "sourceLanguage": "pt",
     "translations": {
@@ -171,6 +176,7 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
     "date": "2026-10-18",
     "readTime": "5 min de leitura",
     "area": "Regulation Update",
+    "category": "standards",
     "author": "Walter Rodrigues",
     "sourceLanguage": "pt",
     "translations": {
@@ -203,6 +209,7 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
     "date": "2026-07-10",
     "readTime": "12 min read",
     "area": "Artificial Intelligence",
+    "category": "technical",
     "sourceLanguage": "en",
     "translations": {
       "pt": {
@@ -229,6 +236,7 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
     "date": "2026-06-22",
     "readTime": "18 min read",
     "area": "Vulnerability Analysis",
+    "category": "technical",
     "sourceLanguage": "en",
     "translations": {
       "pt": {
@@ -255,6 +263,7 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
     "date": "2026-05-15",
     "readTime": "15 min read",
     "area": "Network Engineering",
+    "category": "technical",
     "sourceLanguage": "en",
     "translations": {
       "pt": {
@@ -281,6 +290,7 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
     "date": "2026-04-02",
     "readTime": "10 min read",
     "area": "Network Engineering",
+    "category": "technical",
     "sourceLanguage": "en",
     "translations": {
       "pt": {
@@ -307,6 +317,7 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
     "date": "2026-03-18",
     "readTime": "22 min read",
     "area": "Vulnerability Analysis",
+    "category": "technical",
     "sourceLanguage": "en",
     "translations": {
       "pt": {
@@ -333,6 +344,7 @@ export const ARTICLES_METADATA: ArticleMetadata[] = [
     "date": "2026-08-04",
     "readTime": "14 min read",
     "area": "Technical Standards",
+    "category": "standards",
     "sourceLanguage": "en",
     "translations": {
       "pt": {
