@@ -3,6 +3,35 @@ export type { ArticleMetadata } from '../../lib/articleMetadata';
 
 export const ARTICLES_METADATA: ArticleMetadata[] = [
   {
+    "id": "14",
+    "contentFile": "frenos-2026-ia-planejamento-ataques-ot.md",
+    "slug": "inteligencia-artificial-planejamento-ataques-ot-relatorio-frenos-2026",
+    "title": "Inteligência artificial já consegue planejar ataques contra sistemas OT? O que revela o relatório da Frenos",
+    "summary": "Análise do relatório da Frenos sobre planejamento de ataques OT por IA: resultados em simulações, limitações dos modelos e prioridades defensivas para o setor elétrico.",
+    "date": "2026-10-21",
+    "readTime": "4 min de leitura",
+    "area": "Artificial Intelligence",
+    "category": "technical",
+    "author": "Walter Rodrigues",
+    "sourceLanguage": "pt",
+    "translations": {
+      "en": {
+        "title": "Can artificial intelligence already plan attacks against OT systems? What the Frenos report reveals",
+        "summary": "An analysis of the Frenos report on AI-assisted OT attack planning: simulation results, model limitations and defensive priorities for the electric power sector.",
+        "contentFile": "frenos-2026-ia-planejamento-ataques-ot.en.md"
+      },
+      "es": {
+        "title": "¿La inteligencia artificial ya puede planificar ataques contra sistemas OT? Lo que revela el informe de Frenos",
+        "summary": "Análisis del informe de Frenos sobre planificación de ataques OT con IA: resultados en simulaciones, limitaciones de los modelos y prioridades defensivas para el sector eléctrico.",
+        "contentFile": "frenos-2026-ia-planejamento-ataques-ot.es.md"
+      }
+    },
+    "published": true,
+    "views": 0,
+    "tags": ["Inteligência Artificial", "Frenos", "OT Security", "Attack Paths", "Sistemas elétricos"],
+    "coverImage": "/images/articles/frenos-2026-ia-planejamento-ataques-ot-capa.png"
+  },
+  {
     "id": "13",
     "contentFile": "iec-62351-1-seguranca-ponta-a-ponta.md",
     "slug": "iec-62351-1-seguranca-ponta-a-ponta-quatro-categorias-protecao",
