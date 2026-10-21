@@ -3,6 +3,35 @@ export type { ArticleMetadata } from '../../lib/articleMetadata';
 
 export const ARTICLES_METADATA: ArticleMetadata[] = [
   {
+    "id": "13",
+    "contentFile": "iec-62351-1-seguranca-ponta-a-ponta.md",
+    "slug": "iec-62351-1-seguranca-ponta-a-ponta-quatro-categorias-protecao",
+    "title": "IEC 62351-1 | Segurança de ponta a ponta: as quatro categorias de proteção",
+    "summary": "A seção 5.3.5 da IEC 62351-1 apresenta quatro categorias complementares de proteção e explica por que uma VPN, isoladamente, não garante a segurança de ponta a ponta dos sistemas elétricos.",
+    "date": "2026-10-21",
+    "readTime": "3 min de leitura",
+    "area": "Technical Standards",
+    "category": "standards",
+    "author": "Walter Rodrigues",
+    "sourceLanguage": "pt",
+    "translations": {
+      "en": {
+        "title": "IEC 62351-1 | End-to-end security: the four protection categories",
+        "summary": "Section 5.3.5 of IEC 62351-1 presents four complementary protection categories and explains why a VPN alone does not ensure end-to-end security for electric power systems.",
+        "contentFile": "iec-62351-1-seguranca-ponta-a-ponta.en.md"
+      },
+      "es": {
+        "title": "IEC 62351-1 | Seguridad de extremo a extremo: las cuatro categorías de protección",
+        "summary": "La sección 5.3.5 de IEC 62351-1 presenta cuatro categorías complementarias de protección y explica por qué una VPN, por sí sola, no garantiza la seguridad de extremo a extremo de los sistemas eléctricos.",
+        "contentFile": "iec-62351-1-seguranca-ponta-a-ponta.es.md"
+      }
+    },
+    "published": true,
+    "views": 0,
+    "tags": ["IEC 62351", "OT Security", "Sistemas elétricos", "End-to-end", "HMI", "VPN"],
+    "coverImage": "/images/articles/iec-62351-1-seguranca-ponta-a-ponta-capa.png"
+  },
+  {
     "id": "12",
     "contentFile": "iec-62351-ataques-seguranca.md",
     "slug": "iec-62351-ataques-seguranca-relacao-ameaca-ataque",
