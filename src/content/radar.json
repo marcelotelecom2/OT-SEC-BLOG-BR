@@ -1,5 +1,26 @@
 [
   {
+    "id": "cisco-ifsp-salto-redes-industriais-2026",
+    "type": "news",
+    "title": "Cisco: curso gratuito de redes industriais aproxima TI, OT e sistemas de energia",
+    "date": "2026-10-22",
+    "sourceName": "Cisco Networking Academy — IFSP Campus Salto",
+    "sourceUrl": "https://www.netacad.com/courses/industrial-networking-essentials?courseLang=pt-BR&instance_id=d7f42742-ce98-4461-9d62-b7d26c844171",
+    "comment": "A Cisco Networking Academy do IFSP Campus Salto divulgou o curso Fundamentos Essenciais de Redes de Computadores Industriais, da Cisco. Segundo a divulgação, a formação é gratuita, autoinstrutiva, de nível intermediário e tem carga horária de 35 horas, com conclusão até 31/12/2026.\n\nO programa aborda arquiteturas industriais, componentes e protocolos OT, com aplicações em manufatura e energia. Inclui 20 atividades no Cisco Packet Tracer, com simulações de redes de automação, redes de subestações e LANs.\n\nOs pré-requisitos são informática básica e familiaridade com sistemas operacionais. Conhecimentos de PLCs, sensores, atuadores e RTUs são recomendados.\n\nNa perspectiva do OT-SEC, compreender a comunicação entre os ativos e a função de cada componente é uma base importante para analisar riscos e planejar a proteção de ambientes OT/ICS. O recorte de energia torna a iniciativa especialmente pertinente para quem busca conhecer as redes que sustentam a automação do setor elétrico.\n\nInscreva-se no curso pelo link da fonte original abaixo. Confira as condições e a disponibilidade na plataforma.",
+    "published": true,
+    "sourceLanguage": "pt",
+    "translations": {
+      "en": {
+        "title": "Cisco: free industrial networking course connects IT, OT and power systems",
+        "comment": "The Cisco Networking Academy at IFSP Campus Salto announced Cisco’s Fundamentos Essenciais de Redes de Computadores Industriais (Industrial Networking Essentials) course. According to the announcement, it is free, self-paced and intermediate-level, with 35 hours of study and a completion deadline of December 31, 2026.\n\nThe program covers industrial architectures, OT components and protocols, with applications in manufacturing and energy. It includes 20 Cisco Packet Tracer activities, simulating automation networks, substation networks and LANs.\n\nPrerequisites are basic computer skills and familiarity with operating systems. Knowledge of PLCs, sensors, actuators and RTUs is recommended.\n\nFrom OT-SEC’s perspective, understanding communication between assets and the role of each component is an important foundation for analyzing risks and planning the protection of OT/ICS environments. The energy focus makes this opportunity particularly relevant to anyone seeking to understand the networks supporting automation in the electric power sector.\n\nEnroll through the original-source link below. Check conditions and availability on the platform."
+      },
+      "es": {
+        "title": "Cisco: un curso gratuito de redes industriales conecta TI, OT y sistemas de energía",
+        "comment": "La Cisco Networking Academy del IFSP Campus Salto anunció el curso Fundamentos Essenciais de Redes de Computadores Industriais (Industrial Networking Essentials), de Cisco. Según el anuncio, la formación es gratuita, de aprendizaje autónomo y nivel intermedio, con una duración de 35 horas y fecha límite de finalización el 31/12/2026.\n\nEl programa aborda arquitecturas industriales, componentes y protocolos OT, con aplicaciones en manufactura y energía. Incluye 20 actividades en Cisco Packet Tracer, con simulaciones de redes de automatización, redes de subestaciones y LAN.\n\nLos requisitos previos son conocimientos básicos de informática y familiaridad con los sistemas operativos. Se recomiendan conocimientos de PLC, sensores, actuadores y RTU.\n\nDesde la perspectiva de OT-SEC, comprender la comunicación entre los activos y la función de cada componente constituye una base importante para analizar riesgos y planificar la protección de entornos OT/ICS. El enfoque en energía hace que la iniciativa resulte especialmente pertinente para quienes buscan conocer las redes que sustentan la automatización del sector eléctrico.\n\nInscríbase mediante el enlace de la fuente original que aparece abajo. Consulte las condiciones y la disponibilidad en la plataforma."
+      }
+    }
+  },
+  {
     "id": "ferc-2026-cip-audit-lessons",
     "type": "regulation",
     "title": "FERC 2026: auditorias NERC CIP revelam falhas na classificação de sistemas críticos e alertam para riscos da inteligência artificial",
