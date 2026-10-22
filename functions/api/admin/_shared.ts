@@ -5,6 +5,7 @@ interface Env {
   GITHUB_OWNER?: string;
   GITHUB_REPO?: string;
   GITHUB_BRANCH?: string;
+  CLOUDFLARE_ANALYTICS_TOKEN?: string;
 }
 
 export interface PagesContext { request: Request; env: Env }

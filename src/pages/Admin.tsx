@@ -3,10 +3,6 @@ import { useBlog } from '../context/BlogContext';
 import { motion, AnimatePresence } from 'motion/react';
 import { SpotlightCard } from '../components/ui/SpotlightCard';
 import {
-  AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, BarChart, Bar
-} from 'recharts';
-import {
   BarChart3, FileText, FlaskConical, FolderGit2, Image as ImageIcon,
   Plus, Trash2, Edit3, Lock, Unlock, Eye, Upload, Copy, Check,
   ExternalLink, Search, RefreshCw, ShieldCheck, Activity, Globe,
@@ -23,6 +19,7 @@ import {
   getNoteTags 
 } from '../constants/researchClassification';
 import { ArticleEditorModal } from '../components/admin/ArticleEditorModal';
+import { AnalyticsAdmin } from '../components/admin/AnalyticsAdmin';
 import { RadarAdmin } from '../components/admin/RadarAdmin';
 import { downloadArticleExport } from '../lib/articleExport';
 import { downloadEditorialBackup } from '../lib/persistence';
@@ -32,7 +29,7 @@ import { localizeArticleArea } from '../lib/articleLocalization';
 export function Admin() {
   const { language, t } = useLanguage();
   const {
-    adminArticles: articles, adminNotes: notes, adminProjects: projects, mediaLibrary, analytics, storageError,
+    adminArticles: articles, adminNotes: notes, adminProjects: projects, mediaLibrary, storageError,
     isAdminLoggedIn, loginAdmin, logoutAdmin, changePassword,
     saveArticle, deleteArticle,
     addNote, updateNote, deleteNote,
@@ -135,7 +132,7 @@ export function Admin() {
   const handleResetCounters = () => withStorageFeedback(() => {
     resetCounters();
     setShowResetModal(false);
-    setResetSuccessMessage('Todos os contadores foram zerados com sucesso (artigos e analítica em 0).');
+    setResetSuccessMessage('Os contadores deste navegador foram zerados. As métricas da Cloudflare foram preservadas.');
     setTimeout(() => setResetSuccessMessage(null), 4000);
   });
 
@@ -251,9 +248,9 @@ export function Admin() {
           <button
             onClick={() => setShowResetModal(true)}
             className="px-3 py-1.5 text-xs font-mono text-amber-400 border border-amber-800/60 bg-amber-950/30 hover:bg-amber-900/40 rounded transition-colors flex items-center gap-1.5 min-h-[36px]"
-            title="Zerar todos os contadores de visualizações e acessos do sistema"
+            title="Limpar somente contadores deste navegador"
           >
-            <RotateCcw className="w-3.5 h-3.5 shrink-0" /> Zerar Contadores
+            <RotateCcw className="w-3.5 h-3.5 shrink-0" /> Limpar contadores locais
           </button>
           <button
             onClick={logoutAdmin}
@@ -323,240 +320,8 @@ export function Admin() {
       {/* ========================================================= */}
       {/* 1. KPIS & ANALYTICS TAB */}
       {/* ========================================================= */}
-      {activeTab === 'kpis' && (
-        <div className="space-y-8">
-          {/* Action Header for KPIs */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-gray-950/60 p-4 border border-gray-800 rounded">
-            <div>
-              <h2 className="text-sm font-bold text-white font-mono flex items-center gap-2">
-                <Activity className="w-4 h-4 text-cyan-400" />
-                MÉTRICAS &amp; CONTADORES DO SISTEMA
-              </h2>
-              <p className="text-xs font-mono text-gray-500">
-                Acompanhamento em tempo real de acessos, tráfego e visualizações
-              </p>
-            </div>
-            <button
-              onClick={() => setShowResetModal(true)}
-              className="px-3 py-1.5 text-xs font-mono text-amber-400 border border-amber-800/60 bg-amber-950/30 hover:bg-amber-900/40 rounded transition-colors flex items-center gap-1.5 self-start sm:self-auto min-h-[36px]"
-              title="Zerar todos os contadores do sistema"
-            >
-              <RotateCcw className="w-3.5 h-3.5 shrink-0" /> Zerar Contadores
-            </button>
-          </div>
+      {activeTab === 'kpis' && <AnalyticsAdmin />}
 
-          {/* Top KPI Metric Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <SpotlightCard className="p-5 border border-gray-800/80 bg-gray-900/20">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-mono text-gray-400 uppercase tracking-widest">Total Visitors</span>
-                <Users className="w-4 h-4 text-cyan-400" />
-              </div>
-              <div className="text-2xl font-bold text-white font-mono">{analytics.totalVisitors.toLocaleString()}</div>
-              <div className="flex items-center gap-1 text-xs text-gray-500 font-mono mt-2">
-                {analytics.totalVisitors > 0 ? (
-                  <span className="text-emerald-400 flex items-center gap-1">
-                    <ArrowUpRight className="w-3.5 h-3.5" /> Atividade ativa
-                  </span>
-                ) : (
-                  <span>Contador zerado</span>
-                )}
-              </div>
-            </SpotlightCard>
-
-            <SpotlightCard className="p-5 border border-gray-800/80 bg-gray-900/20">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-mono text-gray-400 uppercase tracking-widest">Page Views</span>
-                <Eye className="w-4 h-4 text-cyan-400" />
-              </div>
-              <div className="text-2xl font-bold text-white font-mono">{analytics.pageViews.toLocaleString()}</div>
-              <div className="flex items-center gap-1 text-xs text-gray-500 font-mono mt-2">
-                {analytics.pageViews > 0 ? (
-                  <span className="text-emerald-400 flex items-center gap-1">
-                    <ArrowUpRight className="w-3.5 h-3.5" /> Visualizações ativas
-                  </span>
-                ) : (
-                  <span>Contador zerado</span>
-                )}
-              </div>
-            </SpotlightCard>
-
-            <SpotlightCard className="p-5 border border-gray-800/80 bg-gray-900/20">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-mono text-gray-400 uppercase tracking-widest">Avg Session Time</span>
-                <Clock className="w-4 h-4 text-cyan-400" />
-              </div>
-              <div className="text-2xl font-bold text-white font-mono">{analytics.avgTimeOnSite}</div>
-              <div className="text-xs text-gray-500 font-mono mt-2">
-                {analytics.pageViews > 0 ? 'Duração média de sessão' : 'Sem sessões ativas'}
-              </div>
-            </SpotlightCard>
-
-            <SpotlightCard className="p-5 border border-gray-800/80 bg-gray-900/20">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-mono text-gray-400 uppercase tracking-widest">Bounce Rate</span>
-                <Zap className="w-4 h-4 text-cyan-400" />
-              </div>
-              <div className="text-2xl font-bold text-white font-mono">{analytics.bounceRate}</div>
-              <div className="text-xs text-gray-500 font-mono mt-2">
-                {analytics.pageViews > 0 ? 'Taxa de retenção' : 'Sem rejeição registrada'}
-              </div>
-            </SpotlightCard>
-          </div>
-
-          {/* Charts Row */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Hourly Traffic Chart */}
-            <SpotlightCard className="lg:col-span-2 p-6 border border-gray-800/80">
-              <div className="flex items-center justify-between mb-6">
-                <div>
-                  <h3 className="text-base font-bold text-white font-sans flex items-center gap-2">
-                    <Activity className="w-4 h-4 text-cyan-400" />
-                    Hourly Traffic Pattern (Views vs Visitors)
-                  </h3>
-                  <p className="text-xs font-mono text-gray-500">Live network activity across lab endpoints</p>
-                </div>
-                <span className="text-xs font-mono px-2 py-1 rounded bg-cyan-950 border border-cyan-800 text-cyan-400">
-                  REALTIME
-                </span>
-              </div>
-
-              <div className="h-64 w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={analytics.hourlyTraffic}>
-                    <defs>
-                      <linearGradient id="colorViews" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#06b6d4" stopOpacity={0.8}/>
-                        <stop offset="95%" stopColor="#06b6d4" stopOpacity={0}/>
-                      </linearGradient>
-                      <linearGradient id="colorVisitors" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
-                        <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
-                      </linearGradient>
-                    </defs>
-                    <XAxis dataKey="hour" stroke="#6b7280" fontSize={11} fontFamily="monospace" />
-                    <YAxis stroke="#6b7280" fontSize={11} fontFamily="monospace" />
-                    <Tooltip
-                      contentStyle={{ backgroundColor: '#090a0f', borderColor: '#1f2937', color: '#fff', fontSize: '12px', fontFamily: 'monospace' }}
-                    />
-                    <Area type="monotone" dataKey="views" name="Page Views" stroke="#06b6d4" fillOpacity={1} fill="url(#colorViews)" />
-                    <Area type="monotone" dataKey="visitors" name="Unique Visitors" stroke="#3b82f6" fillOpacity={1} fill="url(#colorVisitors)" />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
-            </SpotlightCard>
-
-            {/* Traffic Sources Pie Chart */}
-            <SpotlightCard className="p-6 border border-gray-800/80 flex flex-col justify-between">
-              <div>
-                <h3 className="text-base font-bold text-white font-sans flex items-center gap-2 mb-1">
-                  <Globe className="w-4 h-4 text-cyan-400" />
-                  Traffic Acquisition
-                </h3>
-                <p className="text-xs font-mono text-gray-500 mb-4">Origin of lab visitors</p>
-
-                <div className="h-48 w-full">
-                  {analytics.trafficSources.some(s => s.value > 0) ? (
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart>
-                        <Pie
-                          data={analytics.trafficSources}
-                          cx="50%"
-                          cy="50%"
-                          innerRadius={45}
-                          outerRadius={70}
-                          paddingAngle={5}
-                          dataKey="value"
-                        >
-                          {analytics.trafficSources.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.color} />
-                          ))}
-                        </Pie>
-                        <Tooltip
-                          contentStyle={{ backgroundColor: '#090a0f', borderColor: '#1f2937', color: '#fff', fontSize: '11px', fontFamily: 'monospace' }}
-                        />
-                      </PieChart>
-                    </ResponsiveContainer>
-                  ) : (
-                    <div className="h-full w-full flex flex-col items-center justify-center border border-dashed border-gray-800/80 rounded bg-gray-950/40 text-center p-4">
-                      <Globe className="w-5 h-5 text-cyan-500/40 mb-1.5" />
-                      <span className="text-xs font-mono text-gray-400">Contadores zerados</span>
-                      <span className="text-[10px] font-mono text-gray-600 mt-0.5">Sem tráfego registrado</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div className="space-y-2 mt-4 pt-4 border-t border-gray-800/80">
-                {analytics.trafficSources.map((source) => (
-                  <div key={source.name} className="flex items-center justify-between text-xs font-mono">
-                    <div className="flex items-center gap-2">
-                      <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: source.color }} />
-                      <span className="text-gray-300">{source.name}</span>
-                    </div>
-                    <span className="text-gray-400 font-bold">{source.value}%</span>
-                  </div>
-                ))}
-              </div>
-            </SpotlightCard>
-          </div>
-
-          {/* Top Viewed Pages & Recent Traffic Logs */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Top Content Breakdown */}
-            <SpotlightCard className="p-6 border border-gray-800/80">
-              <h3 className="text-base font-bold text-white font-sans mb-4">Top Viewed Routes</h3>
-              <div className="space-y-3">
-                {Object.keys(analytics.pageViewCounts).length === 0 ? (
-                  <div className="p-4 bg-gray-950/60 border border-dashed border-gray-800/80 rounded font-mono text-xs text-gray-500 text-center">
-                    Nenhuma rota visualizada ainda (contadores zerados).
-                  </div>
-                ) : (
-                  Object.entries(analytics.pageViewCounts).map(([route, count]) => (
-                    <div key={route} className="flex items-center justify-between p-3 bg-gray-950/60 border border-gray-800/50 rounded font-mono text-xs">
-                      <span className="text-cyan-400">{route}</span>
-                      <span className="text-gray-300 font-bold">{count.toLocaleString()} views</span>
-                    </div>
-                  ))
-                )}
-              </div>
-            </SpotlightCard>
-
-            {/* Realtime Event Stream */}
-            <SpotlightCard className="p-6 border border-gray-800/80">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-base font-bold text-white font-sans flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                  Live Network Telemetry
-                </h3>
-                <span className="text-xs font-mono text-gray-500">Auto-refreshing</span>
-              </div>
-              <div className="space-y-2.5">
-                {analytics.recentEvents.length === 0 ? (
-                  <div className="p-4 bg-gray-950/80 border border-dashed border-gray-800/60 rounded font-mono text-xs text-gray-500 text-center">
-                    Nenhum evento registrado no momento (log zerado).
-                  </div>
-                ) : (
-                  analytics.recentEvents.map((ev) => (
-                    <div key={ev.id} className="p-2.5 bg-gray-950/80 border border-gray-800/60 rounded font-mono text-xs flex items-center justify-between">
-                      <div className="flex items-center gap-2 overflow-hidden">
-                        <span className="text-gray-500 text-[10px] shrink-0">{ev.time}</span>
-                        <span className="text-gray-200 truncate">{ev.event}</span>
-                      </div>
-                      <div className="text-right shrink-0">
-                        <span className="text-cyan-400/80 text-[10px] block">{ev.ip}</span>
-                        <span className="text-gray-500 text-[9px] block">{ev.location}</span>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
-            </SpotlightCard>
-          </div>
-        </div>
-      )}
-
-      {/* ========================================================= */}
       {/* 2. ARTICLES (POSTS) MANAGEMENT TAB */}
       {/* ========================================================= */}
       {activeTab === 'articles' && (
@@ -585,9 +350,9 @@ export function Admin() {
               <button
                 onClick={() => setShowResetModal(true)}
                 className="px-3 py-2 border border-amber-800/60 bg-amber-950/30 hover:bg-amber-900/40 text-amber-400 font-mono text-xs uppercase rounded transition-colors flex items-center gap-1.5"
-                title="Zerar todos os contadores de visualizações"
+                title="Limpar somente contadores deste navegador"
               >
-                <RotateCcw className="w-3.5 h-3.5" /> Zerar Contadores
+                <RotateCcw className="w-3.5 h-3.5" /> Limpar contadores locais
               </button>
               <button
                 onClick={() => {
@@ -1457,7 +1222,7 @@ export function Admin() {
                 <div className="flex items-center gap-2 text-amber-400">
                   <ShieldAlert className="w-5 h-5 shrink-0" />
                   <h3 className="text-base font-bold font-sans uppercase tracking-wider text-white">
-                    Zerar Contadores
+                    Limpar contadores locais
                   </h3>
                 </div>
                 <button
@@ -1470,15 +1235,15 @@ export function Admin() {
 
               <div className="space-y-3 font-mono text-xs text-gray-300">
                 <p>
-                  Esta operação irá redefinir imediatamente todos os contadores do sistema para <span className="text-cyan-400 font-bold">0</span>:
+                  Esta operação irá redefinir somente os contadores deste navegador para <span className="text-cyan-400 font-bold">0</span>:
                 </p>
                 <ul className="list-disc list-inside space-y-1 text-gray-400 pl-1">
-                  <li>Visualizações de todos os artigos publicados</li>
-                  <li>Contadores de visitantes (Total Visitors, Page Views)</li>
-                  <li>Histórico de acessos por rota e telemetria de rede</li>
+                  <li>Contadores locais de visualizações dos artigos</li>
+                  <li>Contadores locais antigos de páginas</li>
+                  <li>Histórico local antigo de navegação</li>
                 </ul>
                 <p className="text-amber-400/90 text-[11px] pt-1">
-                  ⚠ Os contadores serão zerados na memória do site e no armazenamento local persistente.
+                  As métricas reais da Cloudflare não serão alteradas.
                 </p>
               </div>
 

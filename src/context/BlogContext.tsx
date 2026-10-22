@@ -265,8 +265,8 @@ export function BlogProvider({ children }: { children: React.ReactNode }) {
         id: Date.now().toString(),
         time: 'Just now',
         event: `PAGE_VIEW: ${path}`,
-        ip: `${Math.floor(Math.random() * 200 + 10)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`,
-        location: 'Active Session'
+        ip: 'Não coletado',
+        location: 'Somente este navegador'
       };
 
       return {
