@@ -3,6 +3,43 @@ export type { ArticleMetadata } from '../../lib/articleMetadata';
 
 export const ARTICLES_METADATA: ArticleMetadata[] = [
   {
+    "id": "15",
+    "contentFile": "ferc-2026-auditorias-nerc-cip-ia.md",
+    "slug": "ferc-2026-auditorias-nerc-cip-classificacao-sistemas-inteligencia-artificial",
+    "title": "FERC 2026: auditorias NERC CIP revelam falhas na classificação de sistemas críticos e alertam para riscos da inteligência artificial",
+    "summary": "Relatório da equipe técnica da FERC reúne lições de auditorias NERC CIP sobre classificação de sistemas, controle agregado por terceiros e riscos de acesso por ferramentas de IA.",
+    "date": "2026-10-22",
+    "readTime": "6 min de leitura",
+    "area": "Regulation Update",
+    "category": "technical",
+    "author": "Walter Rodrigues",
+    "sourceLanguage": "pt",
+    "translations": {
+      "en": {
+        "title": "FERC 2026: NERC CIP audits reveal gaps in critical system categorization and highlight artificial intelligence risks",
+        "summary": "A FERC staff report brings together NERC CIP audit lessons on system categorization, aggregated third-party control and AI-facilitated access risks.",
+        "contentFile": "ferc-2026-auditorias-nerc-cip-ia.en.md"
+      },
+      "es": {
+        "title": "FERC 2026: auditorías NERC CIP revelan fallos en la categorización de sistemas críticos y alertan sobre los riesgos de la inteligencia artificial",
+        "summary": "Un informe técnico de la FERC reúne lecciones de auditorías NERC CIP sobre categorización de sistemas, control agregado por terceros y riesgos del acceso mediante IA.",
+        "contentFile": "ferc-2026-auditorias-nerc-cip-ia.es.md"
+      }
+    },
+    "published": true,
+    "views": 0,
+    "tags": [
+      "FERC",
+      "NERC CIP",
+      "CIP-002",
+      "CIP-004",
+      "Inteligência Artificial",
+      "Governança OT",
+      "FACTS"
+    ],
+    "coverImage": "/images/articles/ferc-2026-auditorias-nerc-cip-ia-capa.png"
+  },
+  {
     "id": "14",
     "contentFile": "frenos-2026-ia-planejamento-ataques-ot.md",
     "slug": "inteligencia-artificial-planejamento-ataques-ot-relatorio-frenos-2026",

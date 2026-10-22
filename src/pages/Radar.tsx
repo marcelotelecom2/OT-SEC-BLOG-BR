@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
+import { Link } from 'react-router-dom';
 import { ExternalLink, Radio } from 'lucide-react';
 import { PUBLISHED_RADAR } from 'virtual:published-articles';
 import { useBlog } from '../context/BlogContext';
@@ -9,7 +10,7 @@ import type { RadarType } from '../types';
 
 export function Radar() {
   const { language, t } = useLanguage();
-  const { recordPageView } = useBlog();
+  const { recordPageView, articles } = useBlog();
   const [type, setType] = useState<RadarType | 'all'>('all');
   useEffect(() => { recordPageView('/insights'); }, []);
   const entries = publicRadar(PUBLISHED_RADAR).filter(item => type === 'all' || item.type === type);
@@ -44,6 +45,8 @@ export function Radar() {
         {item.sourceLanguage !== language && <p className="mt-2 text-xs text-amber-300/80">{labels.originalNotice.replace('{language}', LANGUAGE_OPTIONS.find(option => option.code === item.sourceLanguage)!.label)}</p>}
         <h3 className="text-xs font-mono text-cyan-400 mt-5 mb-2">{labels.comment}</h3>
         <p lang={item.sourceLanguage} className="text-sm sm:text-base leading-relaxed text-gray-300 whitespace-pre-wrap break-words">{item.comment}</p>
+        {item.articleSlug && articles.some(article => article.published && article.slug === item.articleSlug) &&
+          <Link to={`/${language}/articles/${item.articleSlug}`} className="inline-flex items-center min-h-11 mt-3 text-cyan-400 hover:text-cyan-300 hover:underline text-sm font-medium">{labels.readFull}</Link>}
         <div className="mt-5 pt-4 border-t border-gray-800 text-xs font-mono flex flex-wrap gap-2 items-center">
           <span className="text-gray-500">{labels.source}:</span>
           {sourceUrl ? <a href={sourceUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 hover:underline break-all">

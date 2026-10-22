@@ -1,1 +1,24 @@
-[]
+[
+  {
+    "id": "ferc-2026-cip-audit-lessons",
+    "type": "regulation",
+    "title": "FERC 2026: auditorias NERC CIP revelam falhas na classificação de sistemas críticos e alertam para riscos da inteligência artificial",
+    "date": "2026-10-22",
+    "sourceName": "Federal Energy Regulatory Commission (FERC)",
+    "sourceUrl": "https://www.ferc.gov/sites/default/files/2026-10/26_Lessons%20Learned_1013.pdf",
+    "comment": "Publicado em 13 de outubro de 2026, o relatório da equipe técnica da FERC aponta atrasos na identificação de BES Cyber Systems, classificação insuficiente de funções agregadas de controle exercidas por afiliadas e terceiros e riscos do acesso facilitado por IA. O documento recomenda aplicar os controles existentes de classificação, gestão de acessos, perímetro, contas, informação e cadeia de suprimentos. Não cria novos requisitos NERC CIP nem proíbe o uso de IA. As implicações para subestações, transmissão e FACTS são comentários de engenharia do autor, não determinações regulatórias da FERC.",
+    "published": true,
+    "sourceLanguage": "pt",
+    "articleSlug": "ferc-2026-auditorias-nerc-cip-classificacao-sistemas-inteligencia-artificial",
+    "translations": {
+      "en": {
+        "title": "FERC 2026: NERC CIP audits reveal gaps in critical system categorization and highlight artificial intelligence risks",
+        "comment": "Published on October 13, 2026, the FERC staff report highlights delays in identifying BES Cyber Systems, inadequate categorization of aggregated control functions performed by affiliates and third parties, and risks from AI-facilitated access. It recommends applying existing controls for categorization, access management, perimeters, accounts, information and supply chains. It neither creates new NERC CIP requirements nor prohibits AI. Implications for substations, transmission and FACTS are the author’s engineering commentary, not FERC regulatory determinations."
+      },
+      "es": {
+        "title": "FERC 2026: auditorías NERC CIP revelan fallos en la categorización de sistemas críticos y alertan sobre los riesgos de la inteligencia artificial",
+        "comment": "Publicado el 13 de octubre de 2026, el informe técnico de la FERC señala retrasos en la identificación de BES Cyber Systems, categorización insuficiente de funciones agregadas de control ejercidas por afiliadas y terceros, y riesgos del acceso facilitado por IA. Recomienda aplicar controles existentes de categorización, accesos, perímetro, cuentas, información y cadena de suministro. No crea nuevos requisitos NERC CIP ni prohíbe la IA. Las implicaciones para subestaciones, transmisión y FACTS son comentarios de ingeniería del autor, no determinaciones regulatorias de la FERC."
+      }
+    }
+  }
+]

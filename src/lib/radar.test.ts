@@ -32,6 +32,16 @@ test('drafts can be incomplete, stay private and do not mutate the original regi
   assert.throws(() => parseRadarSource('{}'));
 });
 
+test('related analysis preserves the original source and rejects unsafe paths', () => {
+  const entry = validateRadarPublication({ ...fixture, articleSlug: 'ferc-2026-auditorias-nerc-cip-ia' });
+  assert.equal(entry.sourceUrl, fixture.sourceUrl);
+  assert.equal(localizeRadar(entry, 'es').articleSlug, entry.articleSlug);
+  assert.equal(parseRadarSource(JSON.stringify([entry]))[0].articleSlug, entry.articleSlug);
+  for (const articleSlug of ['../admin', '/articles/test', 'https://example.com', 'test?lang=en', null]) {
+    assert.throws(() => validateRadarPublication({ ...fixture, articleSlug }));
+  }
+});
+
 test('Portuguese and Spanish translations are optional and never fabricated', () => {
   const entry = validateRadarPublication({ ...fixture, translations: {
     pt: { title: 'Título de validação', comment: 'Comentário de validação' },

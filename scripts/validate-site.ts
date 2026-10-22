@@ -30,7 +30,10 @@ for (const language of languages) {
     /Digital Research Lab|Research Lab|desenvolvidos pelo laboratório|developed by the lab|propios del laboratorio/i);
 }
 for (const article of ARTICLES_METADATA) assert.ok(isArticleCategory(article.category), article.slug);
-parseRadarSource(fs.readFileSync('src/content/radar.json', 'utf8'));
+const radar = parseRadarSource(fs.readFileSync('src/content/radar.json', 'utf8'));
+for (const entry of radar.filter(item => item.published && item.articleSlug)) {
+  assert.ok(published.some(article => article.slug === entry.articleSlug), `Missing published Radar analysis: ${entry.articleSlug}`);
+}
 
 const sitemap = new JSDOM(read('sitemap.xml'), { contentType: 'text/xml' }).window.document;
 assert.equal(sitemap.querySelector('parsererror'), null);

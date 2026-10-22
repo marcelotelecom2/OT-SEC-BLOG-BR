@@ -30,6 +30,11 @@ export function validateRadarPublication(value: unknown): RadarPublication {
     title: input.title.trim(), date: input.date, sourceName: input.sourceName.trim(),
     sourceUrl: input.sourceUrl.trim(), comment: input.comment.trim(),
   };
+  if (input.articleSlug !== undefined && input.articleSlug !== '') {
+    if (typeof input.articleSlug !== 'string' || input.articleSlug.length > 240
+      || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(input.articleSlug)) throw new Error('Invalid related article slug.');
+    publication.articleSlug = input.articleSlug;
+  }
   if (input.translations !== undefined) {
     if (!input.translations || typeof input.translations !== 'object' || Array.isArray(input.translations)) throw new Error('Invalid translations.');
     publication.translations = {};

@@ -91,6 +91,8 @@ export function RadarAdmin() {
         <input id="radar-link" type="url" required={editing.published} placeholder="https://" value={editing.sourceUrl} onChange={event => update({ sourceUrl: event.target.value })} className={inputClass} /></div>
       <div><label htmlFor="radar-comment" className={labelClass}>{labels.comment}</label>
         <textarea id="radar-comment" required={editing.published} maxLength={2000} rows={4} value={editing.comment} onChange={event => update({ comment: event.target.value })} className={inputClass} /></div>
+      <div><label htmlFor="radar-article" className={labelClass}>{labels.articleSlug}</label>
+        <input id="radar-article" maxLength={240} pattern="[a-z0-9]+(-[a-z0-9]+)*" value={editing.articleSlug ?? ''} onChange={event => update({ articleSlug: event.target.value })} className={inputClass} /></div>
       <details className="border border-gray-800 rounded p-4">
         <summary className="cursor-pointer text-sm text-cyan-400">{labels.translations}</summary>
         <p className="text-xs text-gray-500 my-4">{labels.translationHelp}</p>

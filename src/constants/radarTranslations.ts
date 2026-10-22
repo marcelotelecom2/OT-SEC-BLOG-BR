@@ -1,5 +1,6 @@
 export const RADAR_TRANSLATIONS = {
   pt: {
+    readFull: 'Ler análise completa', articleSlug: 'Slug do artigo relacionado (opcional)',
     title: 'Radar OT', subtitle: 'Notícias e atualizações de cibersegurança OT/ICS na infraestrutura crítica de energia elétrica.',
     types: { news: 'Notícias', vulnerability: 'Vulnerabilidades', advisory: 'Advisories', incident: 'Incidentes', regulation: 'Atualizações regulatórias' },
     all: 'Todos', filter: 'Filtrar por tipo', empty: 'Nenhuma publicação no Radar OT por enquanto.',
@@ -17,6 +18,7 @@ export const RADAR_TRANSLATIONS = {
     adminEmpty: 'Nenhuma publicação cadastrada.', close: 'Fechar editor',
   },
   en: {
+    readFull: 'Read the full analysis', articleSlug: 'Related article slug (optional)',
     title: 'OT Radar', subtitle: 'OT/ICS cybersecurity news and updates for critical electric power infrastructure.',
     types: { news: 'News', vulnerability: 'Vulnerabilities', advisory: 'Advisories', incident: 'Incidents', regulation: 'Regulatory updates' },
     all: 'All', filter: 'Filter by type', empty: 'No OT Radar publications yet.',
@@ -34,6 +36,7 @@ export const RADAR_TRANSLATIONS = {
     adminEmpty: 'No publications registered.', close: 'Close editor',
   },
   es: {
+    readFull: 'Leer el análisis completo', articleSlug: 'Slug del artículo relacionado (opcional)',
     title: 'Radar OT', subtitle: 'Noticias y actualizaciones de ciberseguridad OT/ICS en infraestructura crítica de energía eléctrica.',
     types: { news: 'Noticias', vulnerability: 'Vulnerabilidades', advisory: 'Advisories', incident: 'Incidentes', regulation: 'Actualizaciones regulatorias' },
     all: 'Todos', filter: 'Filtrar por tipo', empty: 'Todavía no hay publicaciones en Radar OT.',

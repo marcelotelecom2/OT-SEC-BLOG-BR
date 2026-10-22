@@ -12,6 +12,8 @@ export interface RadarPublication {
   comment: string;
   published: boolean;
   sourceLanguage: ArticleLanguage;
+  /** Optional related long-form article, preserving the original-source link. */
+  articleSlug?: string;
   translations?: Partial<Record<ArticleLanguage, { title: string; comment: string }>>;
 }
 
