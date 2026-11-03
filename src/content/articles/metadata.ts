@@ -3,6 +3,35 @@ export type { ArticleMetadata } from '../../lib/articleMetadata';
 
 export const ARTICLES_METADATA: ArticleMetadata[] = [
   {
+    "id": "16",
+    "contentFile": "ciberseguranca-ot-dispositivos-avaliados.md",
+    "slug": "ciberseguranca-ot-como-determinar-dispositivos-avaliados",
+    "title": "Cibersegurança OT: como determinar quais dispositivos devem ser avaliados?",
+    "summary": "Uma abordagem baseada em IEC 62443, IEC 62351, NIST e NERC CIP para identificar ativos cibernéticos, superfícies de ataque e dependências físicas em sistemas industriais.",
+    "date": "2026-11-03",
+    "readTime": "10 min de leitura",
+    "area": "Technical Standards",
+    "category": "standards",
+    "author": "Walter Rodrigues",
+    "sourceLanguage": "pt",
+    "translations": {
+      "en": {
+        "title": "OT cybersecurity: how do you determine which devices should be assessed?",
+        "summary": "An approach based on IEC 62443, IEC 62351, NIST and NERC CIP to identify cyber assets, attack surfaces and physical dependencies in industrial systems.",
+        "contentFile": "ciberseguranca-ot-dispositivos-avaliados.en.md"
+      },
+      "es": {
+        "title": "Ciberseguridad OT: ¿cómo determinar qué dispositivos deben evaluarse?",
+        "summary": "Un enfoque basado en IEC 62443, IEC 62351, NIST y NERC CIP para identificar activos cibernéticos, superficies de ataque y dependencias físicas en sistemas industriales.",
+        "contentFile": "ciberseguranca-ot-dispositivos-avaliados.es.md"
+      }
+    },
+    "published": true,
+    "views": 0,
+    "tags": ["OT Security", "IEC 62443", "IEC 62351", "NIST SP 800-82", "NERC CIP", "Engenharia P&C", "Hardwired", "FACTS"],
+    "coverImage": "/images/articles/ciberseguranca-ot-dispositivos-avaliados-capa.png"
+  },
+  {
     "id": "15",
     "contentFile": "ferc-2026-auditorias-nerc-cip-ia.md",
     "slug": "ferc-2026-auditorias-nerc-cip-classificacao-sistemas-inteligencia-artificial",
