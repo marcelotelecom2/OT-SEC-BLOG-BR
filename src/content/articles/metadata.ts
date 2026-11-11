@@ -3,6 +3,42 @@ export type { ArticleMetadata } from '../../lib/articleMetadata';
 
 export const ARTICLES_METADATA: ArticleMetadata[] = [
   {
+    "id": "17",
+    "contentFile": "ataque-binance-licoes-ciberseguranca-ot.md",
+    "slug": "ataque-binance-licoes-ciberseguranca-ot",
+    "title": "O ataque à Binance e as lições para a cibersegurança OT: quando uma estação de engenharia se torna a porta de entrada",
+    "summary": "O incidente da Binance ajuda a avaliar os riscos de estações de engenharia, ferramentas de automação e acessos privilegiados em subestações e sistemas FACTS.",
+    "date": "2026-11-10",
+    "readTime": "7 min de leitura",
+    "area": "Network Engineering",
+    "category": "technical",
+    "author": "Walter Rodrigues",
+    "sourceLanguage": "pt",
+    "translations": {
+      "en": {
+        "title": "The Binance attack and its lessons for OT cybersecurity: when an engineering workstation becomes the entry point",
+        "summary": "The Binance incident offers lessons for assessing risks from engineering workstations, automation tools and privileged access in substations and FACTS systems.",
+        "contentFile": "ataque-binance-licoes-ciberseguranca-ot.en.md"
+      },
+      "es": {
+        "title": "El ataque a Binance y sus lecciones para la ciberseguridad OT: cuando una estación de ingeniería se convierte en la puerta de entrada",
+        "summary": "El incidente de Binance ofrece lecciones para evaluar los riesgos de las estaciones de ingeniería, las herramientas de automatización y los accesos privilegiados en subestaciones y sistemas FACTS.",
+        "contentFile": "ataque-binance-licoes-ciberseguranca-ot.es.md"
+      }
+    },
+    "published": true,
+    "views": 0,
+    "tags": [
+      "Binance",
+      "OT Security",
+      "Engineering Workstations",
+      "IEC 62443",
+      "NIST SP 800-82",
+      "FACTS"
+    ],
+    "coverImage": "/images/articles/ataque-binance-licoes-ciberseguranca-ot-capa.png"
+  },
+  {
     "id": "16",
     "contentFile": "ciberseguranca-ot-dispositivos-avaliados.md",
     "slug": "ciberseguranca-ot-como-determinar-dispositivos-avaliados",
